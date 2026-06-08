@@ -1,5 +1,10 @@
 # WhisPlayInfo
 
+[![Release](https://img.shields.io/github/v/release/kennss/WhisPlayInfo?color=2b9348)](https://github.com/kennss/WhisPlayInfo/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/kennss/WhisPlayInfo/total?color=2b9348)](https://github.com/kennss/WhisPlayInfo/releases)
+[![License: MIT](https://img.shields.io/github/license/kennss/WhisPlayInfo)](LICENSE)
+![Platform](https://img.shields.io/badge/platform-macOS%2014%2B%20·%20Apple%20Silicon-111)
+
 A **sudoless Apple Silicon system monitor** with a native SwiftUI GUI — and
 first-class **ANE (Neural Engine)**, **Media Engine**, and **memory-bandwidth**
 tracking that terminal monitors and Activity Monitor don't surface.
@@ -8,6 +13,19 @@ Originally built to watch how an on-device AI/media app uses the Apple Silicon
 accelerators while developing **WhisPlay** — hence the focus on ANE / Media / bandwidth.
 
 ![WhisPlayInfo dashboard](docs/img/screenshot.png)
+
+## Install
+
+**[⬇ Download the latest DMG](https://github.com/kennss/WhisPlayInfo/releases/latest)**, then:
+
+1. Open the downloaded `WhisPlayInfo-*.dmg`
+2. Drag **WhisPlayInfo** into **Applications**
+3. Launch it
+
+Signed with a Developer ID and **notarized by Apple** — it opens with no Gatekeeper
+prompt. Requires **macOS 14+ on Apple Silicon**.
+
+Prefer to build it yourself? See [Build & run](#build--run).
 
 ## Highlights
 
