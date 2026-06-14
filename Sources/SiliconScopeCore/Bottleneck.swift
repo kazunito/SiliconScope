@@ -59,15 +59,27 @@ public enum Bottleneck: String, Sendable {
     public static func classify(_ s: SystemSnapshot,
                                 ceilingGBs: Double,
                                 throttling: Bool) -> Bottleneck {
-        if s.memory.pressure == .critical { return .memoryPressured }
+        classify(memoryCritical: s.memory.pressure == .critical,
+                 gpuUsage: s.gpu.usage, bandwidthGBs: s.bandwidth.totalGBs,
+                 ceilingGBs: ceilingGBs, throttling: throttling)
+    }
+
+    /// Primitive form taking explicit inputs, so the UI can feed *smoothed* GPU/bandwidth
+    /// (a short rolling average) to keep the verdict from flickering on single-sample noise.
+    public static func classify(memoryCritical: Bool,
+                                gpuUsage: Double,
+                                bandwidthGBs: Double,
+                                ceilingGBs: Double,
+                                throttling: Bool) -> Bottleneck {
+        if memoryCritical { return .memoryPressured }
         if throttling { return .thermalThrottled }
         // Desktop compositing keeps a resting GPU around 10–25%; below this is "idle"
         // for AI-workload purposes (no meaningful GPU compute).
-        if s.gpu.usage < 0.30 { return .idle }
+        if gpuUsage < 0.30 { return .idle }
 
-        let bwFraction = ceilingGBs > 0 ? s.bandwidth.totalGBs / ceilingGBs : 0
-        if bwFraction >= 0.75 && s.gpu.usage < 0.95 { return .bandwidthBound }
-        if s.gpu.usage >= 0.90 && bwFraction < 0.60 { return .computeBound }
+        let bwFraction = ceilingGBs > 0 ? bandwidthGBs / ceilingGBs : 0
+        if bwFraction >= 0.75 && gpuUsage < 0.95 { return .bandwidthBound }
+        if gpuUsage >= 0.90 && bwFraction < 0.60 { return .computeBound }
         return .gpuActive
     }
 

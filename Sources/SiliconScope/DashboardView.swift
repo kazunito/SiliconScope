@@ -40,8 +40,7 @@ struct DashboardView: View {
                               budget: snapshot.memoryBudget,
                               memoryRisk: monitor.memoryRisk,
                               cpuOffloadLikely: snapshot.aiCPUOffloadLikely,
-                              likelyEngine: snapshot.likelyAIEngine,
-                              gpuSystemPercent: snapshot.gpu.usagePercent)
+                              likelyEngine: snapshot.likelyAIEngine)
                     .frame(height: 112)
 
                 HStack(spacing: 8) {
@@ -212,7 +211,6 @@ private struct AIRuntimeCard: View {
     let memoryRisk: MemoryBudget.Risk
     let cpuOffloadLikely: Bool
     let likelyEngine: String
-    let gpuSystemPercent: Double
 
     private static let gb = 1_073_741_824.0
 
@@ -252,23 +250,22 @@ private struct AIRuntimeCard: View {
         }
     }
 
-    // Prefer ③'s authoritative processor split; otherwise the chip-level system line
-    // (per-process GPU is sudoless-impossible — labelled "(system)", never faked).
+    // Model PLACEMENT (where the model runs) — not GPU utilization, which the GPU card
+    // already shows. ③ gives the authoritative GPU/CPU offload split; otherwise an
+    // engine-type hint (no GPU% here, to avoid duplicating the GPU card).
     @ViewBuilder private var engineLine: some View {
         if api.isReachable, let split = api.primaryModel?.processorLabel {
             HStack(spacing: 6) {
+                Text("Offload").font(.system(size: 10.5, design: .monospaced)).foregroundStyle(Theme.dim)
                 Text(split).font(.system(size: 10.5, weight: .medium, design: .monospaced))
                     .foregroundStyle(Theme.text)
-                Text("· runtime").font(.system(size: 10.5, design: .monospaced)).foregroundStyle(Theme.faint)
                 Spacer(minLength: 0)
             }
         } else {
             HStack(spacing: 6) {
-                Text(String(format: "GPU %.0f%% (system)", gpuSystemPercent))
-                    .font(.system(size: 10.5, weight: .medium, design: .monospaced))
+                Text("Engine").font(.system(size: 10.5, design: .monospaced)).foregroundStyle(Theme.dim)
+                Text(likelyEngine).font(.system(size: 10.5, weight: .medium, design: .monospaced))
                     .foregroundStyle(Theme.text)
-                Text("·").font(.system(size: 10.5)).foregroundStyle(Theme.faint)
-                Text(likelyEngine).font(.system(size: 10.5, design: .monospaced)).foregroundStyle(Theme.dim)
                 if cpuOffloadLikely {
                     Text("· likely CPU offload (est.)")
                         .font(.system(size: 10.5, design: .monospaced)).foregroundStyle(Theme.heat(0.7))
@@ -344,13 +341,20 @@ private struct AIRuntimeCard: View {
     }
 
     private var budgetText: String {
-        let now = budget.fitsNow.first?.label ?? "—"
-        if runtime.isActive,
-           budget.loadableBytes > budget.headroomNowBytes + (1 << 30),
-           let load = budget.fitsLoadable.first?.label {
-            return "free now \(now) · if you unload \(load)"
+        let nowB = budget.fitsNow.first.map { String(format: "%.0fB", $0.maxParamsBillions) } ?? "—"
+        // A resident model is taking meaningful RSS ⇒ show both scenarios; else one value.
+        let hasResidentModel = budget.loadableBytes > budget.headroomNowBytes + (1 << 30)
+        if hasResidentModel, let load = budget.fitsLoadable.first {
+            let loadB = String(format: "%.0fB", load.maxParamsBillions)
+            return "+\(nowB) alongside · ~\(loadB) if you unload \(residentModelName) (Q4_K_M)"
         }
-        return "free now \(now)"
+        return "largest model ~\(nowB) (Q4_K_M)"
+    }
+
+    private var residentModelName: String {
+        if let name = api.primaryModel?.name { return name }
+        if let kind = runtime.primaryKind { return "\(kind.displayName) model" }
+        return "current model"
     }
 }
 

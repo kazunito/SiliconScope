@@ -104,8 +104,19 @@ final class SiliconScopeMonitor {
     }
 
     /// The single dominant AI-workload bottleneck right now (hero feature verdict).
+    /// Classified on a short rolling average of GPU% and bandwidth so the verdict doesn't
+    /// flicker when the GPU oscillates sample-to-sample (e.g. 69%↔100% during decode).
     var bottleneck: Bottleneck {
-        Bottleneck.classify(snapshot, ceilingGBs: bandwidthCeilingGBs, throttling: gpuThrottling)
+        Bottleneck.classify(memoryCritical: snapshot.memory.pressure == .critical,
+                            gpuUsage: Self.tailAverage(history.gpu, count: 3, fallback: snapshot.gpu.usage),
+                            bandwidthGBs: Self.tailAverage(history.bandwidth, count: 3, fallback: snapshot.bandwidth.totalGBs),
+                            ceilingGBs: bandwidthCeilingGBs,
+                            throttling: gpuThrottling)
+    }
+
+    private static func tailAverage(_ values: [Double], count: Int, fallback: Double) -> Double {
+        let tail = values.suffix(count)
+        return tail.isEmpty ? fallback : tail.reduce(0, +) / Double(tail.count)
     }
 
     // Memory-pressure precursor: rate deltas of the lifetime VM counters (pages/sec).
