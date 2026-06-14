@@ -36,6 +36,11 @@ public final class MemorySampler {
             result.wiredBytes = UInt64(stats.wire_count) * pageSize
             result.activeBytes = UInt64(stats.active_count) * pageSize
             result.compressedBytes = UInt64(stats.compressor_page_count) * pageSize
+            // Cumulative lifetime counters (the monitor turns these into rates).
+            result.compressions = UInt64(stats.compressions)
+            result.swapins = UInt64(stats.swapins)
+            result.swapouts = UInt64(stats.swapouts)
+            result.pageouts = UInt64(stats.pageouts)
         }
 
         var swap = xsw_usage()

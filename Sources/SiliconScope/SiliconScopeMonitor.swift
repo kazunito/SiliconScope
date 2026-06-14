@@ -108,8 +108,33 @@ final class SiliconScopeMonitor {
         Bottleneck.classify(snapshot, ceilingGBs: bandwidthCeilingGBs, throttling: gpuThrottling)
     }
 
+    // Memory-pressure precursor: rate deltas of the lifetime VM counters (pages/sec).
+    // Mirrors gpuClockPeakMHz tracking — the static budget risk lives in Core, the
+    // temporal refinement (the real "before tokens/sec collapses" signal) lives here.
+    private var previousMem: (compressions: UInt64, swapins: UInt64, swapouts: UInt64, timeNs: UInt64)?
+    private(set) var memorySwapRate: Double = 0          // (swapins + swapouts) pages/sec
+    private(set) var memoryCompressionRate: Double = 0   // compressions pages/sec
+    private static let compressionRatePagesPerSec = 200.0
+
+    /// Refined memory risk: the static budget baseline plus live swap/compression rates.
+    /// swapping ⇐ active swap I/O (or the static baseline); tight ⇐ compression rising
+    /// while headroom is nearly gone — catches the collapse before static used% would.
+    var memoryRisk: MemoryBudget.Risk {
+        let base = snapshot.memoryBudget.risk
+        if base == .swapping || memorySwapRate > 0 { return .swapping }
+        if memoryCompressionRate > Self.compressionRatePagesPerSec
+            && snapshot.memoryBudget.headroomNowBytes < (1 << 30) {
+            return .tight
+        }
+        return base
+    }
+
     func start() {
         guard loopTask == nil else { return }
+        // C5: clear rate state so the first tick after (re)start emits no spurious delta.
+        previousMem = nil
+        memorySwapRate = 0
+        memoryCompressionRate = 0
         let sampler = sampler
         loopTask = Task { [weak self] in
             while !Task.isCancelled {
@@ -122,6 +147,7 @@ final class SiliconScopeMonitor {
                 self.mediaPeakGBs = max(self.mediaPeakGBs, snap.bandwidth.mediaGBs)
                 self.anePeakWatts = max(self.anePeakWatts, snap.power.aneWatts)
                 self.gpuClockPeakMHz = max(snap.gpu.freqMHz, self.gpuClockPeakMHz * Self.gpuClockPeakDecay)
+                self.updateMemoryRates(snap)
                 self.history.push(snap)
                 let interval = UserDefaults.standard.object(forKey: "refreshInterval") as? Double ?? 1.0
                 try? await Task.sleep(for: .seconds(max(0.3, interval)))
@@ -132,5 +158,26 @@ final class SiliconScopeMonitor {
     func stop() {
         loopTask?.cancel()
         loopTask = nil
+        // C5: drop rate state so a later restart doesn't diff across the pause.
+        previousMem = nil
+        memorySwapRate = 0
+        memoryCompressionRate = 0
+    }
+
+    /// Diffs the lifetime VM counters into pages/sec rates (guards against counter resets).
+    private func updateMemoryRates(_ snap: SystemSnapshot) {
+        let nowNs = DispatchTime.now().uptimeNanoseconds
+        let m = snap.memory
+        defer { previousMem = (m.compressions, m.swapins, m.swapouts, nowNs) }
+        guard let prev = previousMem, nowNs > prev.timeNs else {
+            memorySwapRate = 0
+            memoryCompressionRate = 0
+            return
+        }
+        let secs = Double(nowNs - prev.timeNs) / 1_000_000_000
+        guard secs > 0 else { return }
+        func delta(_ now: UInt64, _ was: UInt64) -> Double { now >= was ? Double(now - was) : 0 }
+        memorySwapRate = (delta(m.swapins, prev.swapins) + delta(m.swapouts, prev.swapouts)) / secs
+        memoryCompressionRate = delta(m.compressions, prev.compressions) / secs
     }
 }

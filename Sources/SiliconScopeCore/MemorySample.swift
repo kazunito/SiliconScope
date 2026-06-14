@@ -1,13 +1,16 @@
 //
 //  File:      MemorySample.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-08
+//  Updated:   2026-06-14
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Unified-memory reading split into the VM categories that sum to the total
-//             (Wired + Active + Compressed + Free), plus swap.
+//             (Wired + Active + Compressed + Free), plus swap and lifetime VM counters.
 //  Notes:     used = wired + active + compressed (these add up to what the bar shows);
 //             free = total - used (folds in inactive/speculative). wiredBytes includes
 //             Metal/GPU allocations — a key signal for local-LLM workloads.
+//             compressions/swapins/swapouts/pageouts are cumulative lifetime page
+//             counters (vm_statistics64); the monitor diffs them into rates — the real
+//             precursor to a tokens/sec collapse, not the static used% (cache keeps it high).
 //
 import Foundation
 
@@ -21,6 +24,13 @@ public struct MemorySample: Sendable, Equatable {
     public var swapTotalBytes: UInt64 = 0
     public var swapUsedBytes: UInt64 = 0
     public var pressure: Pressure = .normal   // macOS memory pressure level
+
+    // Cumulative lifetime page counters (vm_statistics64). Monotonic; the monitor
+    // diffs consecutive samples into rates to detect swap/compression pressure early.
+    public var compressions: UInt64 = 0
+    public var swapins: UInt64 = 0
+    public var swapouts: UInt64 = 0
+    public var pageouts: UInt64 = 0
 
     public init() {}
 

@@ -42,6 +42,9 @@ public final class SystemSampler: @unchecked Sendable {
         snapshot.gpu = gpu?.sample(interval: interval) ?? GPUSample()
         snapshot.bandwidth = bandwidth?.sample(interval: interval) ?? BandwidthSample()
         snapshot.memory = memory.sample()
+        // Pure arithmetic on the memory sample. activeRuntimeRSS stays 0 until feature ①
+        // (runtime detection) feeds the resident model's RSS in a later step.
+        snapshot.memoryBudget = MemoryBudget.estimate(memory: snapshot.memory)
         snapshot.thermal = thermal.sample()
         snapshot.temperature = temperature.sample()
         snapshot.network = network.sample()

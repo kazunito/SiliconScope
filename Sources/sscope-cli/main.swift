@@ -62,6 +62,13 @@ for i in 1...3 {
     print("#\(i)  \(cpuLine)  \(pwrLine)  \(memLine)  \(bwLine)  \(thermLine)")
 }
 
+let budget = MemoryBudget.estimate(memory: memory.sample())
+let reservedGB = Double(budget.reservedBytes) / (1024 * 1024 * 1024)
+print(String(format: "\nmemory budget (ctx %d tok, reserve %.1f GB) — risk: %@",
+             budget.contextTokens, reservedGB, budget.risk.rawValue))
+print(String(format: "  headroom now %.1f GB · loadable %.1f GB", budget.headroomNowGB, budget.loadableGB))
+print("  largest model that fits now: " + budget.fitsNow.map { $0.label }.joined(separator: " / "))
+
 let processes = ProcessSampler()
 _ = processes.sample(top: 1)            // prime CPU% baseline
 Thread.sleep(forTimeInterval: 0.5)

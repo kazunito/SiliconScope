@@ -22,6 +22,7 @@ public struct SystemSnapshot: Sendable {
     public var disk = DiskSample()
     public var battery = BatteryInfo()
     public var processes: [ProcessRow] = []
+    public var memoryBudget = MemoryBudget.empty
 
     public init() {}
 
@@ -60,6 +61,9 @@ public struct SystemSnapshot: Sendable {
         case .warning:  result.append(.init(level: .warning, message: "Memory pressure: elevated"))
         case .normal:   break
         }
+        // Note: a predictive "swapping now" warning is rate-based and lives on the monitor
+        // (memoryRisk → Dashboard banner). swapUsedBytes is cumulative/sticky, so it is not
+        // turned into a warning here (it would false-positive long after pressure clears).
         return result
     }
 }
