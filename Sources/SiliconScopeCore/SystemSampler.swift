@@ -23,6 +23,7 @@ public final class SystemSampler: @unchecked Sendable {
     private let disk = DiskSampler()
     private let battery = BatterySampler()
     private let processes = ProcessSampler()
+    private let aiRuntime = AIRuntimeSampler()
 
     public init() {
         let topology = cpu?.topology
@@ -42,15 +43,19 @@ public final class SystemSampler: @unchecked Sendable {
         snapshot.gpu = gpu?.sample(interval: interval) ?? GPUSample()
         snapshot.bandwidth = bandwidth?.sample(interval: interval) ?? BandwidthSample()
         snapshot.memory = memory.sample()
-        // Pure arithmetic on the memory sample. activeRuntimeRSS stays 0 until feature ①
-        // (runtime detection) feeds the resident model's RSS in a later step.
-        snapshot.memoryBudget = MemoryBudget.estimate(memory: snapshot.memory)
         snapshot.thermal = thermal.sample()
         snapshot.temperature = temperature.sample()
         snapshot.network = network.sample()
         snapshot.disk = disk.sample()
         snapshot.battery = battery.sample()
         snapshot.processes = processes.sample()   // full set; UI sorts/filters/limits
+        snapshot.aiRuntime = aiRuntime.sample(from: snapshot.processes)
+        // Budget after detection so the resident runtime's RSS lifts `loadable`
+        // (pure arithmetic on the already-taken memory sample — no extra syscalls/sleep).
+        snapshot.memoryBudget = MemoryBudget.estimate(
+            memory: snapshot.memory,
+            activeRuntimeRSS: snapshot.aiRuntime.primaryMemoryBytes
+        )
         return snapshot
     }
 }

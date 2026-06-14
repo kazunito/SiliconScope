@@ -72,7 +72,20 @@ print("  largest model that fits now: " + budget.fitsNow.map { $0.label }.joined
 let processes = ProcessSampler()
 _ = processes.sample(top: 1)            // prime CPU% baseline
 Thread.sleep(forTimeInterval: 0.5)
+let allRows = processes.sample(top: .max)
 print("\ntop processes by CPU (no sudo):")
-for p in processes.sample(top: 8) {
+for p in allRows.prefix(8) {
     print(String(format: "  %6d  %6.1f%%  %8.1f MB   %@", p.pid, p.cpuPercent, p.memoryMB, p.name))
+}
+
+let ai = AIRuntimeSampler().sample(from: allRows)
+print("\nAI runtimes detected: \(ai.isActive ? "" : "none")")
+for p in ai.processes {
+    let port = p.embeddedPort.map { " :\($0)" } ?? ""
+    print(String(format: "  %@%@  pid %d  %.0f%% CPU  %.1f GB",
+                 p.displayName, port, p.pid, p.cpuPercent, Double(p.memoryBytes) / 1e9))
+}
+if let kind = ai.primaryKind {
+    print(String(format: "  primary: %@ (RSS %.1f GB) → budget loadable %.1f GB",
+                 kind.displayName, Double(ai.primaryMemoryBytes) / 1e9, budget.loadableGB))
 }

@@ -23,8 +23,18 @@ public struct SystemSnapshot: Sendable {
     public var battery = BatteryInfo()
     public var processes: [ProcessRow] = []
     public var memoryBudget = MemoryBudget.empty
+    public var aiRuntime = AIRuntimeSample()
 
     public init() {}
+
+    /// Sudoless CPU-offload hint (est.): an active runtime burning CPU while the GPU is
+    /// only moderately busy suggests weights are partly on CPU — the #1 "why is it slow".
+    /// Anchored on the classifier's idle (0.30) / compute-bound (0.90) GPU thresholds.
+    /// Not authoritative (the exact split needs feature ③); contextually nudges enabling it.
+    public var aiCPUOffloadLikely: Bool {
+        guard aiRuntime.isActive else { return false }
+        return aiRuntime.totalCPUPercent > 100 && gpu.usage > 0.30 && gpu.usage < 0.90
+    }
 
     /// Heuristic: which compute engine the current workload most likely uses.
     public var likelyAIEngine: String {
