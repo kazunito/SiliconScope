@@ -73,13 +73,18 @@ public enum Bottleneck: String, Sendable {
                                 throttling: Bool) -> Bottleneck {
         if memoryCritical { return .memoryPressured }
         if throttling { return .thermalThrottled }
-        // Desktop compositing keeps a resting GPU around 10–25%; below this is "idle"
-        // for AI-workload purposes (no meaningful GPU compute).
+        // Desktop compositing keeps a resting GPU around 10–25%; below this is "idle".
         if gpuUsage < 0.30 { return .idle }
 
+        // Calibrated on real M1 Max LLM runs (vs the THEORETICAL ceiling, which the memory
+        // controllers rarely reach): dense 12B decode ~51%, sparse MoE 26B decode ~44%
+        // (GPU-bound), prefill ~30% (compute-bound). Decode keeps the GPU ~95% busy while
+        // stalled on memory, so we do NOT gate bandwidth-bound on a non-maxed GPU.
+        // bandwidth >= ~50% ⇒ bandwidth-bound; otherwise a pegged GPU ⇒ compute-bound.
+        // (A truly robust prefill/decode split needs tokens/sec — see NEXT_VERSION.)
         let bwFraction = ceilingGBs > 0 ? bandwidthGBs / ceilingGBs : 0
-        if bwFraction >= 0.75 && gpuUsage < 0.95 { return .bandwidthBound }
-        if gpuUsage >= 0.90 && bwFraction < 0.60 { return .computeBound }
+        if bwFraction >= 0.50 { return .bandwidthBound }
+        if gpuUsage >= 0.90 { return .computeBound }
         return .gpuActive
     }
 
