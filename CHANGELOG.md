@@ -1,5 +1,28 @@
 # Changelog
 
+## v1.4.0 — 2026-06-16
+
+Menu-bar cockpit + chip-agnostic accuracy.
+
+- **Live 6-bar menu-bar glyph** — CPU / GPU / ANE / Media / memory-usage / memory-bandwidth
+  as colored mini bars with a stacked "SS" label, drawn as a bitmap for reliable rendering.
+  The whole glyph blinks red on an alert (swap, memory-pressure critical, or GPU throttle).
+- **Revamped dropdown** — six color-matched trend graphs mirroring the glyph, each on a
+  fixed Y axis matched to its bar (no auto-scale exaggeration); memory usage is now a line
+  graph; top processes; and an **Open Dashboard** button that brings the main window
+  forward from the background. Tighter, denser layout.
+- **Honest AI attribution** — the runtime line distinguishes a loaded runtime from an idle
+  daemon (`Ollama (idle)`) and an unmanaged in-app / MLX-Swift workload
+  (`in-app / unmanaged`); the dashboard no longer credits an idle daemon for GPU work done
+  by another app.
+- **Chip-agnostic bottleneck verdict** — *bandwidth-bound* is now judged against the
+  machine's **own** observed achievable bandwidth peak (self-calibrating across M1…M5+),
+  not a fixed fraction of the theoretical spec. Observed peaks (bandwidth / media / ANE)
+  decay slowly toward a floor so a one-off spike no longer pins the normalization. The
+  theoretical "% of ceiling" gauge stays for display.
+- **Compact dashboard** — smaller card padding / heights / spacing and a narrower default
+  window.
+
 ## v1.3.0 — 2026-06-15
 
 Local-AI monitoring — a dedicated cockpit for people running LLMs on Apple Silicon.

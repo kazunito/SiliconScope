@@ -4,7 +4,7 @@ v1.0.0 is a general Apple Silicon monitor. The next version specializes toward
 **AI-inference monitoring** on Apple Silicon — the niche neither terminal monitors
 nor Activity Monitor cover.
 
-## Shipped (v1.1.0 – v1.3.0)
+## Shipped (v1.1.0 – v1.4.0)
 
 - **AI Workload view (hero)** — a bottleneck classifier with a single verdict:
   *bandwidth-bound* / *compute-bound* / *thermal-throttled* / *memory-pressured*
@@ -23,8 +23,14 @@ nor Activity Monitor cover.
 - **Runtime API (opt-in)** — reads loaded model, authoritative GPU/CPU split (Ollama
   `size_vram/size`), and tokens/sec (llama.cpp `/metrics`) from `127.0.0.1`. Off by default.
   Design: [`ai-local-features-design.md`](ai-local-features-design.md).
+- **Menu-bar cockpit (v1.4.0)** — live 6-bar glyph (CPU/GPU/ANE/Media/MEM/MBW) that blinks
+  red on alert; revamped dropdown with six color-matched, fixed-axis trend graphs, top
+  processes, and an Open-Dashboard (bring-to-front) button; honest AI attribution (loaded
+  runtime vs idle daemon vs in-app/MLX-Swift); **chip-agnostic bandwidth-bound verdict**
+  judged against the machine's own observed achievable peak (decaying) instead of a fixed
+  fraction of the theoretical spec; compact dashboard.
 
-## v1.4 roadmap — from "AI monitor" to "local-AI operations"
+## v1.5 roadmap — from "AI monitor" to "local-AI operations"
 
 The metric local-LLM users live by is **tokens/sec**, and it's the biggest remaining
 gap (we only get it from llama.cpp today). Build there first, then layer per-machine
