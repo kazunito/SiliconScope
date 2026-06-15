@@ -1,7 +1,7 @@
 //
 //  File:      DashboardView.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-14
+//  Updated:   2026-06-16
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Full-window dashboard. Header (chip, cores, SoC power, battery), then
 //             CPU + GPU side by side, combined Memory|Bandwidth and Network|Disk cards
@@ -20,7 +20,7 @@ struct DashboardView: View {
     var body: some View {
         let snapshot = monitor.snapshot
         ScrollView {
-            VStack(spacing: 8) {
+            VStack(spacing: 4) {
                 let warnings = allWarnings(snapshot)
                 if !warnings.isEmpty { WarningBanner(warnings: warnings) }
 
@@ -33,7 +33,7 @@ struct DashboardView: View {
                                chipName: monitor.topology?.chipName ?? "",
                                engineHint: snapshot.likelyAIEngine,
                                clockDropFraction: monitor.gpuClockDropFraction)
-                    .frame(height: 96)
+                    .frame(height: 76)
 
                 AIRuntimeCard(runtime: snapshot.aiRuntime,
                               api: snapshot.runtimeAPI,
@@ -41,17 +41,17 @@ struct DashboardView: View {
                               memoryRisk: monitor.memoryRisk,
                               cpuOffloadLikely: snapshot.aiCPUOffloadLikely,
                               likelyEngine: snapshot.likelyAIEngine)
-                    .frame(height: 112)
+                    .frame(height: 88)
 
-                HStack(spacing: 8) {
+                HStack(spacing: 6) {
                     CPUCard(cpu: snapshot.cpu, topology: monitor.topology, history: monitor.history.pCPU)
                     AcceleratorCard(gpu: snapshot.gpu, power: snapshot.power, bandwidth: snapshot.bandwidth,
                                     anePeak: monitor.anePeakWatts, mediaPeak: monitor.mediaPeakGBs,
                                     history: monitor.history.gpu)
                 }
-                .frame(height: 188)
+                .frame(height: 140)
 
-                HStack(alignment: .top, spacing: 8) {
+                HStack(alignment: .top, spacing: 6) {
                     MemoryBandwidthCard(memory: snapshot.memory, bandwidth: snapshot.bandwidth,
                                         bandwidthPeak: monitor.bandwidthPeakGBs,
                                         memHistory: monitor.history.memory, bwHistory: monitor.history.bandwidth)
@@ -59,15 +59,15 @@ struct DashboardView: View {
                                     downHistory: monitor.history.netDown, upHistory: monitor.history.netUp,
                                     readHistory: monitor.history.diskRead, writeHistory: monitor.history.diskWrite)
                 }
-                .frame(height: 240)
+                .frame(height: 176)
 
-                HStack(spacing: 8) {
+                HStack(spacing: 6) {
                     SensorsCard(temperature: snapshot.temperature, thermal: snapshot.thermal)
                     ProcessCard(processes: snapshot.processes)
                 }
-                .frame(height: 240)
+                .frame(height: 196)
             }
-            .padding(10)
+            .padding(8)
         }
         .background(Theme.bg)
         .foregroundStyle(Theme.text)
@@ -163,7 +163,7 @@ private struct AIWorkloadCard: View {
 
     var body: some View {
         Card(title: "AI Workload") {
-            VStack(alignment: .leading, spacing: 7) {
+            VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 8) {
                     Circle().fill(bottleneck.color).frame(width: 9, height: 9)
                     Text(bottleneck.label)
@@ -214,11 +214,17 @@ private struct AIRuntimeCard: View {
 
     private static let gb = 1_073_741_824.0
 
+    /// A model is genuinely loaded/resident (vs. a bare idle daemon) — only then do we
+    /// attribute an engine/offload split to this runtime.
+    private var modelPresent: Bool {
+        (api.status == .ok && api.primaryModel != nil) || runtime.primaryMemoryBytes > (1 << 30)
+    }
+
     var body: some View {
         Card(title: "AI Runtime") {
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 4) {
                 header
-                if runtime.isActive { engineLine }
+                if modelPresent { engineLine }
                 modelLine
                 budgetLine
             }
@@ -294,7 +300,10 @@ private struct AIRuntimeCard: View {
             // Only annotate API status when a runtime was actually detected — with none,
             // the header already says "No local AI runtime detected" (avoid redundancy).
             switch api.status {
-            case .ok:               runtimeNote("runtime running — no model loaded")
+            case .ok:
+                runtimeNote(likelyEngine.hasPrefix("GPU active")
+                    ? "runtime idle — GPU load is from another app (in-app / unmanaged)"
+                    : "runtime running — no model loaded")
             case .runningNoServer:  runtimeNote("runtime running — start its local server for model + tok/s")
             case .apiNotApplicable: runtimeNote("CLI runtime — no local API")
             case .unreachable:      runtimeNote("runtime API unreachable")
@@ -423,7 +432,7 @@ private struct MemoryBandwidthCard: View {
     }
 
     private var memorySection: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 3) {
             SubLabel("Memory")
             HStack {
                 Text(String(format: "%.1f / %.0f GB", memory.usedGB, memory.totalGB))
@@ -449,7 +458,7 @@ private struct MemoryBandwidthCard: View {
     }
 
     private var bandwidthSection: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 3) {
             SubLabel("Bandwidth")
             Bar(label: "Total", value: min(1, bandwidth.totalGBs / max(bandwidthPeak, 1)),
                 detail: String(format: "%.0f GB/s", bandwidth.totalGBs))
@@ -487,7 +496,7 @@ private struct NetworkDiskCard: View {
     }
 
     private var networkSection: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 3) {
             SubLabel("Network")
             KV(key: "↓ Download", value: formatRate(network.downloadBytesPerSec), valueColor: downColor)
             KV(key: "↑ Upload", value: formatRate(network.uploadBytesPerSec), valueColor: upColor)
@@ -498,7 +507,7 @@ private struct NetworkDiskCard: View {
     }
 
     private var diskSection: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 3) {
             SubLabel("Disk")
             KV(key: "Read", value: formatRate(disk.readBytesPerSec), valueColor: downColor)
             KV(key: "Write", value: formatRate(disk.writeBytesPerSec), valueColor: upColor)
@@ -539,7 +548,7 @@ private struct SensorsCard: View {
 
     var body: some View {
         Card(title: "Sensors") {
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 16) {
                     HStack(spacing: 6) {
                         Text("Pressure").font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
@@ -637,7 +646,7 @@ private struct ProcessCard: View {
 
     var body: some View {
         Card(title: "Processes") {
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 6) {
                     Image(systemName: "magnifyingglass").font(.system(size: 10)).foregroundStyle(Theme.faint)
                     TextField("Filter by name", text: $filter)

@@ -109,7 +109,7 @@ struct Card<Content: View>: View {
     @ViewBuilder var content: Content
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 3) {
             Text(title.uppercased())
                 .font(.system(size: 9.5, weight: .semibold, design: .monospaced))
                 .tracking(1.5)
@@ -117,7 +117,8 @@ struct Card<Content: View>: View {
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-        .padding(10)
+        .padding(.horizontal, 9)
+        .padding(.vertical, 5)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(Theme.panel, in: RoundedRectangle(cornerRadius: 9))
         .overlay(RoundedRectangle(cornerRadius: 9).strokeBorder(Theme.border, lineWidth: 1))
@@ -205,9 +206,13 @@ struct Sparkline: View {
     let values: [Double]
     var color: Color = Theme.accent
     var height: CGFloat = 26
+    /// Fixed Y range. When nil, Swift Charts auto-scales to the data (good for series that
+    /// vary). Set it (e.g. 0...1) for near-constant series like memory usage, where
+    /// auto-scaling amplifies a flat line to fill the whole height.
+    var yDomain: ClosedRange<Double>? = nil
 
     var body: some View {
-        Chart(Array(values.enumerated()), id: \.offset) { index, value in
+        let chart = Chart(Array(values.enumerated()), id: \.offset) { index, value in
             AreaMark(x: .value("t", index), y: .value("v", value))
                 .foregroundStyle(LinearGradient(colors: [color.opacity(0.28), .clear],
                                                 startPoint: .top, endPoint: .bottom))
@@ -220,5 +225,11 @@ struct Sparkline: View {
         .chartYAxis(.hidden)
         .chartLegend(.hidden)
         .frame(height: height)
+
+        if let yDomain {
+            chart.chartYScale(domain: yDomain)
+        } else {
+            chart
+        }
     }
 }

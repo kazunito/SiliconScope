@@ -1,7 +1,7 @@
 //
 //  File:      Bottleneck.swift
 //  Created:   2026-06-12
-//  Updated:   2026-06-12
+//  Updated:   2026-06-16
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  The AI-workload bottleneck classifier (hero feature). Given a snapshot,
 //             the unified-memory-bandwidth ceiling, and whether the GPU is throttling,
@@ -55,15 +55,16 @@ public enum Bottleneck: String, Sendable {
 
     // MARK: - Classification
 
-    /// Classifies the dominant bottleneck. `ceilingGBs` is the unified-memory bandwidth
-    /// ceiling; `throttling` is the GPU-clock-vs-peak throttle decision (UI-tracked).
+    /// Classifies the dominant bottleneck. `achievableGBs` is the machine's OWN observed
+    /// achievable bandwidth peak (chip-agnostic), not the theoretical spec; `throttling` is
+    /// the GPU-clock-vs-peak throttle decision (UI-tracked).
     /// Precedence: memory > thermal > (workload profile).
     public static func classify(_ s: SystemSnapshot,
-                                ceilingGBs: Double,
+                                achievableGBs: Double,
                                 throttling: Bool) -> Bottleneck {
         classify(memoryCritical: s.memory.pressure == .critical,
                  gpuUsage: s.gpu.usage, bandwidthGBs: s.bandwidth.totalGBs,
-                 ceilingGBs: ceilingGBs, throttling: throttling)
+                 achievableGBs: achievableGBs, throttling: throttling)
     }
 
     /// Primitive form taking explicit inputs, so the UI can feed *smoothed* GPU/bandwidth
@@ -71,21 +72,23 @@ public enum Bottleneck: String, Sendable {
     public static func classify(memoryCritical: Bool,
                                 gpuUsage: Double,
                                 bandwidthGBs: Double,
-                                ceilingGBs: Double,
+                                achievableGBs: Double,
                                 throttling: Bool) -> Bottleneck {
         if memoryCritical { return .memoryPressured }
         if throttling { return .thermalThrottled }
         // Desktop compositing keeps a resting GPU around 10–25%; below this is "idle".
         if gpuUsage < 0.30 { return .idle }
 
-        // Calibrated on real M1 Max LLM runs (vs the THEORETICAL ceiling, which the memory
-        // controllers rarely reach): dense 12B decode ~51%, sparse MoE 26B decode ~44%
-        // (GPU-bound), prefill ~30% (compute-bound). Decode keeps the GPU ~95% busy while
-        // stalled on memory, so we do NOT gate bandwidth-bound on a non-maxed GPU.
-        // bandwidth >= ~50% ⇒ bandwidth-bound; otherwise a pegged GPU ⇒ compute-bound.
-        // (A truly robust prefill/decode split needs tokens/sec — see NEXT_VERSION.)
-        let bwFraction = ceilingGBs > 0 ? bandwidthGBs / ceilingGBs : 0
-        if bwFraction >= 0.50 { return .bandwidthBound }
+        // Self-calibrating, chip-agnostic: compare bandwidth to the machine's OWN observed
+        // achievable peak (a decaying max), not the theoretical spec the memory controllers
+        // never reach. The achievable fraction of theoretical bandwidth differs per chip and
+        // improves each generation (M1 Max GPU saturates ~50% of 400 GB/s; newer chips more),
+        // so a fixed theoretical fraction would mis-tune on M2…M5. Near-peak bandwidth while
+        // the GPU is busy ⇒ bandwidth-bound; otherwise a pegged GPU ⇒ compute-bound. Decode
+        // keeps the GPU ~95% busy while stalled on memory, so we do NOT gate on a non-maxed
+        // GPU. (A truly robust prefill/decode split needs tokens/sec — see NEXT_VERSION.)
+        let bwFraction = achievableGBs > 0 ? bandwidthGBs / achievableGBs : 0
+        if bwFraction >= 0.85 { return .bandwidthBound }
         if gpuUsage >= 0.90 { return .computeBound }
         return .gpuActive
     }

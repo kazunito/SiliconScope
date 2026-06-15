@@ -1,7 +1,7 @@
 //
 //  File:      SiliconScopeMonitor.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-14
+//  Updated:   2026-06-16
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Observable view-model that drives the UI. Polls SystemSampler on a
 //             background task ~once per second and publishes the latest snapshot plus
@@ -23,9 +23,12 @@ final class SiliconScopeMonitor {
         var soc: [Double] = []
         var pCPU: [Double] = []        // 0...1
         var gpu: [Double] = []         // 0...1
+        var ane: [Double] = []         // Watts
+        var media: [Double] = []       // GB/s (Media Engine)
         var bandwidth: [Double] = []   // GB/s
         var dieTemp: [Double] = []     // Celsius
         var memory: [Double] = []      // GB used
+        var memFraction: [Double] = [] // 0...1 (used / total) — plotted on a fixed 0...1 axis
         var netDown: [Double] = []     // bytes/s
         var netUp: [Double] = []       // bytes/s
         var diskRead: [Double] = []    // bytes/s
@@ -35,9 +38,12 @@ final class SiliconScopeMonitor {
             roll(&soc, s.power.socWatts)
             roll(&pCPU, s.cpu.pUsage)
             roll(&gpu, s.gpu.usage)
+            roll(&ane, s.power.aneWatts)
+            roll(&media, s.bandwidth.mediaGBs)
             roll(&bandwidth, s.bandwidth.totalGBs)
             roll(&dieTemp, s.temperature.cpuCelsius)
             roll(&memory, s.memory.usedGB)
+            roll(&memFraction, s.memory.usedFraction)
             roll(&netDown, s.network.downloadBytesPerSec)
             roll(&netUp, s.network.uploadBytesPerSec)
             roll(&diskRead, s.disk.readBytesPerSec)
@@ -64,6 +70,11 @@ final class SiliconScopeMonitor {
     // a short-window max, which would normalize the suppressed clock as the new peak.
     private(set) var gpuClockPeakMHz: Double = 0
     private static let gpuClockPeakDecay = 0.999
+    // Same slow decay for the bandwidth / media / ANE peaks that normalize the menu-bar
+    // glyph + trend graphs (and the bandwidth-bound verdict): a new high is adopted
+    // instantly, otherwise the peak decays toward a floor so a one-off spike never pins the
+    // scale and it self-calibrates to whatever the chip actually achieves (M1…M5+).
+    private static let peakDecay = 0.999
 
     private let sampler = SystemSampler()
     private var loopTask: Task<Void, Never>?
@@ -110,7 +121,7 @@ final class SiliconScopeMonitor {
         Bottleneck.classify(memoryCritical: snapshot.memory.pressure == .critical,
                             gpuUsage: Self.tailAverage(history.gpu, count: 3, fallback: snapshot.gpu.usage),
                             bandwidthGBs: Self.tailAverage(history.bandwidth, count: 3, fallback: snapshot.bandwidth.totalGBs),
-                            ceilingGBs: bandwidthCeilingGBs,
+                            achievableGBs: bandwidthPeakGBs,
                             throttling: gpuThrottling)
     }
 
@@ -170,9 +181,9 @@ final class SiliconScopeMonitor {
                 var snap = sampled
                 snap.runtimeAPI = self.effectiveRuntimeAPI()    // C4 staleness applied
                 self.snapshot = snap
-                self.bandwidthPeakGBs = max(self.bandwidthPeakGBs, snap.bandwidth.totalGBs)
-                self.mediaPeakGBs = max(self.mediaPeakGBs, snap.bandwidth.mediaGBs)
-                self.anePeakWatts = max(self.anePeakWatts, snap.power.aneWatts)
+                self.bandwidthPeakGBs = max(snap.bandwidth.totalGBs, max(40, self.bandwidthPeakGBs * Self.peakDecay))
+                self.mediaPeakGBs = max(snap.bandwidth.mediaGBs, max(1, self.mediaPeakGBs * Self.peakDecay))
+                self.anePeakWatts = max(snap.power.aneWatts, max(1, self.anePeakWatts * Self.peakDecay))
                 self.gpuClockPeakMHz = max(snap.gpu.freqMHz, self.gpuClockPeakMHz * Self.gpuClockPeakDecay)
                 self.updateMemoryRates(snap)
                 self.history.push(snap)

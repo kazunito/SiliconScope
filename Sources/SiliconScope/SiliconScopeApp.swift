@@ -1,10 +1,10 @@
 //
 //  File:      SiliconScopeApp.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-14
+//  Updated:   2026-06-16
 //  Developer: Kennt Kim / Calida Lab
-//  Overview:  App entry point. Shows a full dashboard Window and a MenuBarExtra,
-//             both backed by one shared SiliconScopeMonitor.
+//  Overview:  App entry point. Shows a full dashboard Window and a MenuBarExtra (with a
+//             live 5-bar MenuBarIcon glyph), both backed by one shared SiliconScopeMonitor.
 //  Notes:     Runs as an SPM executable (xcrun swift run SiliconScope); activation
 //             policy is set to .regular at runtime so the window + Dock icon appear
 //             without a bundled Info.plist. A proper .app bundle comes in packaging.
@@ -22,7 +22,7 @@ struct SiliconScopeApp: App {
     var body: some Scene {
         Window("SiliconScope", id: "siliconscope-main") {
             DashboardView(monitor: monitor)
-                .frame(minWidth: 756, minHeight: 760)
+                .frame(minWidth: 640, minHeight: 600)
                 .onAppear {
                     NSApplication.shared.setActivationPolicy(.regular)
                     if let icon = Self.loadAppIcon() {
@@ -33,11 +33,13 @@ struct SiliconScopeApp: App {
                 }
         }
         .windowResizability(.contentMinSize)
-        .defaultSize(width: 864, height: 800)
+        .defaultSize(width: 700, height: 740)
 
-        MenuBarExtra("SiliconScope", systemImage: "chart.bar.xaxis") {
+        MenuBarExtra {
             MenuBarView(monitor: monitor)
                 .onAppear { monitor.start() }
+        } label: {
+            MenuBarIcon(monitor: monitor)
         }
         .menuBarExtraStyle(.window)
 

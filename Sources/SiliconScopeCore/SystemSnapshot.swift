@@ -1,7 +1,7 @@
 //
 //  File:      SystemSnapshot.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-14
+//  Updated:   2026-06-16
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  One unified reading of every SiliconScope metric, produced by SystemSampler
 //             and consumed by the UI. Pure value type (Sendable).
@@ -49,6 +49,31 @@ public struct SystemSnapshot: Sendable {
         guard gpuBusy else { return "idle" }
         if bandwidth.mediaGBs > 0.5 { return "GPU active — incl. video" }
         return "GPU active — type unknown"
+    }
+
+    /// True when a detected runtime actually holds a model — an API-reported loaded model,
+    /// or a multi-GB resident model. A bare daemon (e.g. Ollama idling at ~0.1 GB with no
+    /// model) is NOT active, so we never credit it for GPU work done by something else.
+    public var aiModelActive: Bool {
+        (runtimeAPI.isReachable && !runtimeAPI.loadedModels.isEmpty)
+            || aiRuntime.primaryMemoryBytes > (1 << 30)
+    }
+
+    /// GPU is doing genuine compute (not just light UI). Used to recognize an unmanaged /
+    /// in-app AI workload (e.g. an MLX-Swift app like WhisPlay) when no managed runtime
+    /// holds a model — we say so honestly instead of crediting an idle daemon.
+    public var gpuComputeBusy: Bool { gpu.usage > 0.40 || power.gpuWatts > 4.0 }
+
+    /// Honest one-line AI-runtime status for compact UI (menu bar). A detected runtime is
+    /// "active" only when it holds a model; a bare daemon reads "(idle)"; an unattributed
+    /// GPU compute load reads "in-app / unmanaged".
+    public var aiRuntimeLabel: String {
+        if let kind = aiRuntime.primaryKind {
+            if runtimeAPI.isReachable, let m = runtimeAPI.primaryModel { return "\(kind.displayName) · \(m.name)" }
+            if aiRuntime.primaryMemoryBytes > (1 << 30) { return kind.displayName }
+            return gpuComputeBusy ? "\(kind.displayName) idle · GPU: other app" : "\(kind.displayName) (idle)"
+        }
+        return gpuComputeBusy ? "in-app / unmanaged" : "none"
     }
 
     public struct Warning: Sendable, Identifiable, Equatable {
