@@ -30,11 +30,13 @@ import SiliconScopeCore
 
 struct MenuBarIcon: View {
     let monitor: SiliconScopeMonitor
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         // Reading the monitor inside body establishes the @Observable dependency, so
-        // body re-runs (and the glyph refreshes) on every sample.
-        Image(nsImage: Self.glyph(for: monitor))
+        // body re-runs (and the glyph refreshes) on every sample. colorScheme tracks the
+        // menu-bar appearance so the label/track stay visible on a light menu bar too.
+        Image(nsImage: Self.glyph(for: monitor, dark: colorScheme == .dark))
     }
 
     /// Per-metric bar colors (CPU / GPU / ANE / Media / MEM usage / Mem BW) — a fixed
@@ -48,7 +50,7 @@ struct MenuBarIcon: View {
         NSColor(srgbRed: 0.32, green: 0.82, blue: 0.86, alpha: 1),  // Mem BW cyan
     ]
 
-    private static func glyph(for monitor: SiliconScopeMonitor) -> NSImage {
+    private static func glyph(for monitor: SiliconScopeMonitor, dark: Bool) -> NSImage {
         let s = monitor.snapshot
         let values: [Double] = [
             s.cpu.pUsage,
@@ -69,14 +71,17 @@ struct MenuBarIcon: View {
         let radius: CGFloat = 1.2
         let n = CGFloat(values.count)
         let barsW = barW * n + gap * (n - 1)
-        let track = NSColor.white.withAlphaComponent(0.16)  // always-visible column slot
+        // Label + track follow the menu-bar appearance (white on dark, black on light) so
+        // they stay visible either way; the value bars keep their fixed metric colors.
+        let inkColor = dark ? NSColor.white : NSColor.black
+        let track = inkColor.withAlphaComponent(0.16)  // always-visible column slot
 
         // "SS" identifier stacked vertically to the left of the bars (iStat draws its
         // per-graph label like that — "C/P/U" stacked).
         let letter = "S" as NSString
         let labelAttrs: [NSAttributedString.Key: Any] = [
             .font: NSFont.systemFont(ofSize: 7.5, weight: .bold),
-            .foregroundColor: NSColor.white.withAlphaComponent(0.9),
+            .foregroundColor: inkColor.withAlphaComponent(0.9),
         ]
         let charSize = letter.size(withAttributes: labelAttrs)
         let labelColW = ceil(charSize.width)

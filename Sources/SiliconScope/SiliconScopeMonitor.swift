@@ -1,7 +1,7 @@
 //
 //  File:      SiliconScopeMonitor.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-16
+//  Updated:   2026-06-18
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Observable view-model that drives the UI. Polls SystemSampler on a
 //             background task ~once per second and publishes the latest snapshot plus
@@ -81,6 +81,7 @@ final class SiliconScopeMonitor {
 
     init() {
         topology = sampler.topology
+        benchmarks = Self.loadBenchmarks()
     }
 
     /// True when the GPU clock is held well below its rolling peak while the GPU is
@@ -145,6 +146,12 @@ final class SiliconScopeMonitor {
     private var apiPollTask: Task<Void, Never>?
     private(set) var runtimeAPI = RuntimeAPISample()
     private static let apiCadenceSeconds = 2.5
+
+    // On-demand benchmark (tok/s + tokens-per-watt), persisted per model.
+    private(set) var isBenchmarking = false
+    private(set) var benchmarks: [BenchmarkRecord] = []
+    private(set) var benchmarkError: String?
+    private static let benchmarksKey = "benchmarkRecords"
 
     /// Refined memory risk: the static budget baseline plus live swap/compression rates.
     /// swapping ⇐ active swap I/O (or the static baseline); tight ⇐ compression rising
@@ -260,6 +267,83 @@ final class SiliconScopeMonitor {
         return v > 0 ? v : def
     }
 
+    // MARK: - On-demand benchmark
+
+    /// Runs one bounded generation against the active runtime and records decode tok/s plus
+    /// the mean SoC package power over the run → tokens-per-watt. Needs the runtime API on
+    /// (that's how we know the loaded model name). Idempotent while a run is in flight.
+    func runBenchmark() async {
+        guard !isBenchmarking else { return }
+        guard let kind = snapshot.aiRuntime.primaryKind else {
+            benchmarkError = "No local AI runtime detected"; return
+        }
+        guard let model = snapshot.runtimeAPI.primaryModel?.name, !model.isEmpty else {
+            benchmarkError = "Enable “Connect to local AI runtimes” and load a model first"; return
+        }
+        let port = benchmarkPort(for: kind)
+        let chip = topology?.chipName ?? "Apple Silicon"
+        isBenchmarking = true
+        benchmarkError = nil
+        defer { isBenchmarking = false }
+
+        // Sample SoC power while the generation runs. Everything here stays on the main
+        // actor (the monitor loop keeps refreshing snapshot during the awaited network call).
+        let box = WattBox()
+        let powerProbe = Task { @MainActor [weak self] in
+            while !box.done && !Task.isCancelled {
+                // Only count samples while the GPU is actually decoding, so idle / ramp-up
+                // power doesn't deflate the average (which would inflate tokens-per-watt).
+                if let self, self.snapshot.gpu.usage > 0.4 {
+                    box.watts.append(self.snapshot.power.socWatts)
+                }
+                try? await Task.sleep(for: .milliseconds(250))
+            }
+        }
+        // 256 tokens keeps the decode running long enough that the ~1s power snapshots
+        // capture steady-state draw (a 128-token run can finish before power ramps).
+        let result = await BenchmarkClient().run(kind: kind, port: port, model: model, numPredict: 256)
+        box.done = true
+        powerProbe.cancel()
+
+        guard let result else {
+            benchmarkError = "Benchmark failed — is \(kind.displayName)'s local server reachable?"
+            return
+        }
+        let avgW = box.watts.isEmpty ? snapshot.power.socWatts : box.watts.reduce(0, +) / Double(box.watts.count)
+        let record = BenchmarkRecord(model: model, runtime: kind.displayName, chip: chip,
+                                     tokensPerSec: result.tokensPerSec, avgWatts: avgW, timestamp: Date())
+        benchmarks.removeAll { $0.runtime == record.runtime && $0.model == record.model }   // keep latest per model
+        benchmarks.insert(record, at: 0)
+        if benchmarks.count > 20 { benchmarks = Array(benchmarks.prefix(20)) }
+        saveBenchmarks()
+    }
+
+    /// Most recent benchmark for the currently loaded model, if any.
+    var benchmarkForCurrentModel: BenchmarkRecord? {
+        guard let kind = snapshot.aiRuntime.primaryKind,
+              let model = snapshot.runtimeAPI.primaryModel?.name else { return nil }
+        return benchmarks.first { $0.runtime == kind.displayName && $0.model == model }
+    }
+
+    private func benchmarkPort(for kind: AIRuntimeKind) -> Int {
+        switch kind {
+        case .lmStudio: return Self.port(forKey: "aiRuntimeLMStudioPort", default: 1234)
+        case .llamaCpp: return snapshot.aiRuntime.ollamaEmbeddedPort ?? 8080
+        default:        return Self.port(forKey: "aiRuntimeOllamaPort", default: 11434)
+        }
+    }
+
+    private static func loadBenchmarks() -> [BenchmarkRecord] {
+        guard let data = UserDefaults.standard.data(forKey: benchmarksKey),
+              let recs = try? JSONDecoder().decode([BenchmarkRecord].self, from: data) else { return [] }
+        return recs
+    }
+    private func saveBenchmarks() {
+        if let data = try? JSONEncoder().encode(benchmarks) {
+            UserDefaults.standard.set(data, forKey: Self.benchmarksKey)
+        }
+    }
+
     /// Diffs the lifetime VM counters into pages/sec rates (guards against counter resets).
     private func updateMemoryRates(_ snap: SystemSnapshot) {
         let nowNs = DispatchTime.now().uptimeNanoseconds
@@ -278,4 +362,11 @@ final class SiliconScopeMonitor {
         memorySwapOutRate = delta(m.swapouts, prev.swapouts) / secs
         memoryCompressionRate = delta(m.compressions, prev.compressions) / secs
     }
+}
+
+/// Mutable power-sample accumulator shared between runBenchmark and its power-probe task.
+/// Both touch it only on the main actor, so the unchecked Sendable conformance is safe.
+private final class WattBox: @unchecked Sendable {
+    var watts: [Double] = []
+    var done = false
 }

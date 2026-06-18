@@ -1,7 +1,7 @@
 //
 //  File:      DashboardView.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-16
+//  Updated:   2026-06-18
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Full-window dashboard. Header (chip, cores, SoC power, battery), then
 //             CPU + GPU side by side, combined Memory|Bandwidth and Network|Disk cards
@@ -40,8 +40,12 @@ struct DashboardView: View {
                               budget: snapshot.memoryBudget,
                               memoryRisk: monitor.memoryRisk,
                               cpuOffloadLikely: snapshot.aiCPUOffloadLikely,
-                              likelyEngine: snapshot.likelyAIEngine)
-                    .frame(height: 88)
+                              likelyEngine: snapshot.likelyAIEngine,
+                              isBenchmarking: monitor.isBenchmarking,
+                              benchmark: monitor.benchmarkForCurrentModel,
+                              benchmarkError: monitor.benchmarkError,
+                              onBenchmark: { Task { await monitor.runBenchmark() } })
+                    .frame(height: 106)
 
                 HStack(spacing: 6) {
                     CPUCard(cpu: snapshot.cpu, topology: monitor.topology, history: monitor.history.pCPU)
@@ -211,6 +215,10 @@ private struct AIRuntimeCard: View {
     let memoryRisk: MemoryBudget.Risk
     let cpuOffloadLikely: Bool
     let likelyEngine: String
+    let isBenchmarking: Bool
+    let benchmark: BenchmarkRecord?
+    let benchmarkError: String?
+    let onBenchmark: () -> Void
 
     private static let gb = 1_073_741_824.0
 
@@ -227,6 +235,41 @@ private struct AIRuntimeCard: View {
                 if modelPresent { engineLine }
                 modelLine
                 budgetLine
+                benchmarkLine
+            }
+        }
+    }
+
+    // On-demand speed benchmark — only when the runtime API is on with a loaded model
+    // (that's how we know the model name + have an endpoint to generate against).
+    @ViewBuilder private var benchmarkLine: some View {
+        if api.status == .ok, api.primaryModel != nil {
+            HStack(spacing: 6) {
+                if isBenchmarking {
+                    ProgressView().controlSize(.small).scaleEffect(0.7)
+                    Text("measuring tok/s…")
+                        .font(.system(size: 10, design: .monospaced)).foregroundStyle(Theme.dim)
+                } else if let b = benchmark {
+                    Image(systemName: "bolt.fill").font(.system(size: 9.5)).foregroundStyle(Theme.heat(0.3))
+                    Text(String(format: "%.1f tok/s", b.tokensPerSec))
+                        .font(.system(size: 10.5, weight: .medium, design: .monospaced)).foregroundStyle(Theme.text)
+                    Text(String(format: "· %.2f tok/J", b.tokensPerJoule))
+                        .font(.system(size: 10, design: .monospaced)).foregroundStyle(Theme.dim)
+                    Button("re-measure", action: onBenchmark)
+                        .font(.system(size: 10, design: .monospaced)).buttonStyle(.plain)
+                        .foregroundStyle(Theme.accent)
+                } else {
+                    Button(action: onBenchmark) {
+                        Label("Measure tok/s", systemImage: "bolt")
+                            .font(.system(size: 10.5, design: .monospaced))
+                    }
+                    .buttonStyle(.plain).foregroundStyle(Theme.accent)
+                }
+                Spacer(minLength: 0)
+            }
+            if let e = benchmarkError {
+                Text(e).font(.system(size: 9.5, design: .monospaced))
+                    .foregroundStyle(Theme.heat(0.7)).lineLimit(1)
             }
         }
     }

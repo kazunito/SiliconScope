@@ -1,7 +1,7 @@
 //
 //  File:      main.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-14
+//  Updated:   2026-06-18
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Verification CLI for SiliconScopeCore. Prints sudoless power + CPU samples
 //             so we can confirm the data layer works in a real SwiftPM build.
@@ -107,4 +107,24 @@ if CommandLine.arguments.contains("--ai") {
         print(d)
     }
     if let tps = result.tokensPerSec { print(String(format: "  tokens/sec: %.1f", tps)) }
+}
+
+// On-demand benchmark (one short generation). Run: sscope-cli --bench
+if CommandLine.arguments.contains("--bench") {
+    let kind = ai.primaryKind
+    let api = await RuntimeAPIClient().probe(
+        primaryKind: kind, ollamaEmbeddedPort: ai.ollamaEmbeddedPort,
+        ollamaPort: 11434, lmStudioPort: 1234)
+    if let kind, let model = api.loadedModels.first?.name {
+        let port = kind == .lmStudio ? 1234 : 11434
+        print("\nbenchmark: \(kind.displayName) · \(model) — generating…")
+        if let r = await BenchmarkClient().run(kind: kind, port: port, model: model) {
+            print(String(format: "  decode: %.1f tok/s  (%d tokens)", r.tokensPerSec, r.tokenCount))
+            if let p = r.promptTokensPerSec { print(String(format: "  prefill: %.0f tok/s", p)) }
+        } else {
+            print("  benchmark failed — is the runtime's local server reachable?")
+        }
+    } else {
+        print("\nbenchmark: no runtime with a loaded model (start the server / load a model)")
+    }
 }
