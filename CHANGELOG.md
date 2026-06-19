@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.7.0 — 2026-06-19
+
+Daily-driver basics.
+
+- **Launch at login** — opt-in in Settings (SMAppService; no helper bundle, no login-item plist).
+- **Alert notifications** — opt-in macOS notifications when the GPU thermal-throttles, memory
+  pressure goes critical, or the machine starts swapping. Edge-triggered (once per event) with
+  a 5-minute per-condition cooldown so a flapping signal can't spam.
+
 ## v1.6.0 — 2026-06-19
 
 Rapid-MLX support + a runtime-detection fix.

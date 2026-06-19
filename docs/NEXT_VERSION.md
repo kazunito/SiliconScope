@@ -4,7 +4,7 @@ v1.0.0 is a general Apple Silicon monitor. The next version specializes toward
 **AI-inference monitoring** on Apple Silicon — the niche neither terminal monitors
 nor Activity Monitor cover.
 
-## Shipped (v1.1.0 – v1.6.0)
+## Shipped (v1.1.0 – v1.7.0)
 
 - **AI Workload view (hero)** — a bottleneck classifier with a single verdict:
   *bandwidth-bound* / *compute-bound* / *thermal-throttled* / *memory-pressured*
@@ -35,6 +35,8 @@ nor Activity Monitor cover.
 - **Rapid-MLX support + versioned-Python fix (v1.6.0)** — detect the Rapid-MLX engine (🐇,
   OpenAI-compatible :8000) for model + benchmark; and read argv for `python3.12`-style
   interpreters so conda/Homebrew mlx_lm and Rapid-MLX servers are no longer missed.
+- **Daily-driver basics (v1.7.0)** — launch-at-login (SMAppService) + opt-in threshold
+  notifications (GPU thermal throttle / memory pressure / swapping; edge-triggered, cooldowned).
 
 ## v1.5 roadmap — from "AI monitor" to "local-AI operations"
 
