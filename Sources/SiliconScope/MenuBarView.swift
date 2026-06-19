@@ -41,6 +41,9 @@ struct MenuBarView: View {
             }
             HStack {
                 Button("Settings…") { openSettings() }
+                if UpdaterController.shared.canCheck {
+                    Button("Check for Updates…") { UpdaterController.shared.checkForUpdates() }
+                }
                 Spacer()
                 Button("Quit") { NSApplication.shared.terminate(nil) }
             }

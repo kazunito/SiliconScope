@@ -20,6 +20,10 @@ let package = Package(
         .executable(name: "sscope-cli", targets: ["sscope-cli"]),
         .executable(name: "SiliconScope", targets: ["SiliconScope"]),
     ],
+    dependencies: [
+        // Auto-update for the self-distributed (non-App-Store) app.
+        .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.6.0"),
+    ],
     targets: [
         // Private IOReport declarations exposed to Swift.
         .target(name: "CIOReport"),
@@ -44,7 +48,7 @@ let package = Package(
         // SwiftUI app (menu bar + full window). Runs via `xcrun swift run SiliconScope`.
         .executableTarget(
             name: "SiliconScope",
-            dependencies: ["SiliconScopeCore"],
+            dependencies: ["SiliconScopeCore", .product(name: "Sparkle", package: "Sparkle")],
             resources: [.process("Resources")],
             linkerSettings: [
                 .unsafeFlags(["-Xlinker", "-undefined", "-Xlinker", "dynamic_lookup"]),

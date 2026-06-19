@@ -25,6 +25,15 @@ NOTARY_PROFILE="WhisPlayInfo-notary"   # pre-existing local keychain profile (ke
 DIST="dist"
 APPDIR="$DIST/$APP.app"
 
+# --- Sparkle auto-update ---
+# EdDSA public key (private half lives in the login keychain; created via generate_keys).
+SU_PUBLIC_KEY="mhjyc+aHQkMYFZInv/15en9GVk/9eBEQN10QLOFwWJU="
+REPO="kennss/SiliconScope"
+# Appcast is served from the LATEST GitHub release as a stable URL that redirects per release.
+SU_FEED_URL="https://github.com/$REPO/releases/latest/download/appcast.xml"
+SPARKLE_FW_SRC=".build/artifacts/sparkle/Sparkle/Sparkle.xcframework/macos-arm64_x86_64/Sparkle.framework"
+GENERATE_APPCAST=".build/artifacts/sparkle/Sparkle/bin/generate_appcast"
+
 echo "▸ Building release binary…"
 xcrun swift build -c release --product "$APP"
 BIN=".build/release/$APP"
@@ -53,13 +62,33 @@ cat > "$APPDIR/Contents/Info.plist" <<PLIST
   <key>LSMinimumSystemVersion</key><string>14.0</string>
   <key>NSHighResolutionCapable</key><true/>
   <key>LSApplicationCategoryType</key><string>public.app-category.utilities</string>
+  <key>SUFeedURL</key><string>$SU_FEED_URL</string>
+  <key>SUPublicEDKey</key><string>$SU_PUBLIC_KEY</string>
+  <key>SUEnableAutomaticChecks</key><true/>
 </dict>
 </plist>
 PLIST
 
+echo "▸ Embedding Sparkle.framework…"
+mkdir -p "$APPDIR/Contents/Frameworks"
+cp -R "$SPARKLE_FW_SRC" "$APPDIR/Contents/Frameworks/"
+# The SPM binary links @rpath/Sparkle.framework; point rpath at the bundle's Frameworks.
+install_name_tool -add_rpath "@executable_path/../Frameworks" "$APPDIR/Contents/MacOS/$APP" 2>/dev/null || true
+
 echo "▸ Signing (Developer ID, hardened runtime)…"
-# The SPM resource bundle is a flat resource folder (no Info.plist / no code), so it
-# is sealed by the app signature — do NOT sign it separately.
+# Sparkle: sign nested helpers (deep -> shallow), then the framework, then the app last.
+SPARKLE_FW="$APPDIR/Contents/Frameworks/Sparkle.framework"
+SPV="$SPARKLE_FW/Versions/$(ls "$SPARKLE_FW/Versions" | grep -v Current | head -1)"
+for nested in \
+  "$SPV/XPCServices/Installer.xpc" \
+  "$SPV/XPCServices/Downloader.xpc" \
+  "$SPV/Autoupdate" \
+  "$SPV/Updater.app"; do
+  [ -e "$nested" ] && codesign --force --options runtime --timestamp --sign "$IDENTITY" "$nested"
+done
+codesign --force --options runtime --timestamp --sign "$IDENTITY" "$SPARKLE_FW"
+# The SPM resource bundle is a flat resource folder (no Info.plist / no code), so it is
+# sealed by the app signature — do NOT sign it separately. Sign the app last to seal all.
 codesign --force --options runtime --timestamp --sign "$IDENTITY" "$APPDIR"
 codesign --verify --strict --verbose=2 "$APPDIR"
 
@@ -82,6 +111,20 @@ echo "▸ Notarizing DMG…"
 xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait
 xcrun stapler staple "$DMG"
 
+echo "▸ Generating Sparkle appcast…"
+# generate_appcast signs the DMG with the keychain EdDSA key and writes appcast.xml whose
+# enclosure URL points at this release's GitHub asset. Upload BOTH the DMG and appcast.xml
+# to the v$VERSION GitHub release; SUFeedURL resolves to the latest release's appcast.xml.
+APPCAST_DIR="$DIST/appcast"; mkdir -p "$APPCAST_DIR"
+cp "$DMG" "$APPCAST_DIR/"
+if [ -x "$GENERATE_APPCAST" ]; then
+  "$GENERATE_APPCAST" --download-url-prefix "https://github.com/$REPO/releases/download/v$VERSION/" "$APPCAST_DIR"
+  cp "$APPCAST_DIR/appcast.xml" "$DIST/appcast.xml"
+  echo "✓ $DIST/appcast.xml"
+else
+  echo "⚠︎ generate_appcast not found ($GENERATE_APPCAST) — run 'xcrun swift build' first."
+fi
+
 echo ""
 echo "▸ Gatekeeper check:"
 spctl -a -vvv "$APPDIR" 2>&1 || true
@@ -89,3 +132,6 @@ echo ""
 echo "✓ $APPDIR  (signed, notarized, stapled)"
 echo "✓ $DMG"
 ls -lh "$DMG"
+echo ""
+echo "Next: upload BOTH to the v$VERSION GitHub release:"
+echo "  gh release create v$VERSION \"$DMG\" \"$DIST/appcast.xml\" --title \"v$VERSION\" --notes-file ..."

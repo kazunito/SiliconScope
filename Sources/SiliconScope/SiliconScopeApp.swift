@@ -40,6 +40,12 @@ struct SiliconScopeApp: App {
         }
         .windowResizability(.contentMinSize)
         .defaultSize(width: 700, height: 740)
+        .commands {
+            CommandGroup(after: .appInfo) {
+                Button("Check for Updates…") { UpdaterController.shared.checkForUpdates() }
+                    .disabled(!UpdaterController.shared.canCheck)
+            }
+        }
     }
 
     private var mainMenuBar: some Scene {
