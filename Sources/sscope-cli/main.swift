@@ -128,3 +128,24 @@ if CommandLine.arguments.contains("--bench") {
         print("\nbenchmark: no runtime with a loaded model (start the server / load a model)")
     }
 }
+
+// Sensor dump for verifying / contributing per-chip temperature key tables.
+// Run: sscope-cli --sensors   (paste the output into a sensor-key contribution issue)
+if CommandLine.arguments.contains("--sensors") {
+    let readout = TemperatureSampler().curatedReadout()
+    print("\n=== curated SMC keys — generation: \(readout.generation) ===")
+    if readout.entries.isEmpty {
+        print("  (no curated table for this generation — falls back to HID; see raw list below)")
+    }
+    var hit = 0
+    for e in readout.entries {
+        if let c = e.celsius { hit += 1; print(String(format: "  %-5@ %-10@ %5.1f C", e.key as NSString, e.name as NSString, c)) }
+        else { print(String(format: "  %-5@ %-10@     —  (not present)", e.key as NSString, e.name as NSString)) }
+    }
+    if !readout.entries.isEmpty { print("  → \(hit)/\(readout.entries.count) curated keys read back") }
+
+    let hid = HIDSensorReader.read().sorted { $0.name < $1.name }
+    print("\n=== raw HID sensors (\(hid.count)) — use these to build/fix a table ===")
+    for s in hid { print(String(format: "  %-26@ %5.1f C", s.name as NSString, s.celsius)) }
+    print("\nMac model: run `sysctl hw.model machdep.cpu.brand_string` and include it.")
+}

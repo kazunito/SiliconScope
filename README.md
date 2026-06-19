@@ -187,6 +187,13 @@ SiliconScope uses private (un-entitled) APIs (IOReport, SMC, HID), so it cannot 
 sandboxed/notarized for the App Store. Distribute directly. This is the same
 trade-off as NeoAsitop, macmon, mactop, and Stats.
 
+## Contributing
+
+PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). The most useful contribution right now:
+**verify the per-chip temperature keys.** The M1 table is hardware-validated; **M2–M5 are
+adapted but unverified**. On an M2/M3/M4/M5, run `xcrun swift run -q sscope-cli --sensors`
+(+ `sysctl hw.model machdep.cpu.brand_string`) and open an issue with the output.
+
 ## Acknowledgements
 
 - IOReport / SMC / HID sensor knowledge referenced from **NeoAsitop** (MIT) and

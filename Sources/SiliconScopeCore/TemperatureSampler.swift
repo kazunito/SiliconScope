@@ -95,6 +95,21 @@ public final class TemperatureSampler {
         return .other
     }
 
+    /// Diagnostic readout for verifying / contributing sensor key tables: the detected
+    /// generation plus every curated key with the value it reads back (nil = absent on this
+    /// Mac, i.e. wrong/missing for this model). Surfaced by `sscope-cli --sensors` so a
+    /// contributor on an unvalidated chip can confirm or correct the table.
+    public func curatedReadout()
+        -> (generation: String, entries: [(key: String, name: String, celsius: Double?)]) {
+        let gen = SensorCatalog.detectGeneration()
+        let entries = SensorCatalog.curated(for: gen).map { e -> (String, String, Double?) in
+            let v = smc?.readDouble(e.key)
+            let valid = (v.map { $0 > 5 && $0 < 130 } ?? false) ? v : nil
+            return (e.key, e.name, valid)
+        }
+        return (String(describing: gen), entries)
+    }
+
     /// Reads the curated SMC key table for the detected Apple Silicon generation, directly
     /// (not by scanning), yielding friendly per-unit names. Returns nil if the chip is
     /// unknown or none of the keys read back (then the caller falls back to HID / scan).
