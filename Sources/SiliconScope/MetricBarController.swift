@@ -94,7 +94,8 @@ final class MetricBarController: NSObject {
         Spec(id: "battery", key: "menubar.battery",
              glyph: { m, dark in
                 let b = m.snapshot.battery
-                return MenuBarGlyph.battery(percent: b.percent, charging: b.isCharging, dark: dark)
+                return MenuBarGlyph.battery(percent: b.percent, charging: b.isCharging,
+                                            plugged: b.isPluggedIn, dark: dark)
              },
              dropdown: { m in AnyView(BatteryMenuDropdown(monitor: m)) }),
     ]

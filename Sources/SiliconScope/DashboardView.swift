@@ -48,10 +48,12 @@ struct DashboardView: View {
                     .frame(height: 106)
 
                 HStack(spacing: 6) {
-                    CPUCard(cpu: snapshot.cpu, topology: monitor.topology, history: monitor.history.pCPU)
+                    CPUCard(cpu: snapshot.cpu, topology: monitor.topology,
+                            eHistory: monitor.history.eCPU, pHistory: monitor.history.pCPU)
                     AcceleratorCard(gpu: snapshot.gpu, power: snapshot.power, bandwidth: snapshot.bandwidth,
                                     anePeak: monitor.anePeakWatts, mediaPeak: monitor.mediaPeakGBs,
-                                    history: monitor.history.gpu)
+                                    gpuHistory: monitor.history.gpu, mediaHistory: monitor.history.media,
+                                    aneHistory: monitor.history.ane)
                 }
                 .frame(height: 140)
 
@@ -415,17 +417,25 @@ private struct AIRuntimeCard: View {
 private struct CPUCard: View {
     let cpu: CPUSample
     let topology: CPUTopology?
-    let history: [Double]
+    let eHistory: [Double]
+    let pHistory: [Double]
     @AppStorage("menubar.cpu") private var cpuMB = false
+
+    private let eColor = Color(nsColor: MetricPalette.eCPU)   // amber
+    private let pColor = Color(nsColor: MetricPalette.pCPU)   // blue
 
     var body: some View {
         Card(title: "CPU", menuBarPin: $cpuMB) {
             Bar(label: "E-cores", value: cpu.eUsage,
-                detail: String(format: "%.0f%%  %.0f MHz", cpu.eUsagePercent, cpu.eFreqMHz))
+                detail: String(format: "%.0f%%  %.0f MHz", cpu.eUsagePercent, cpu.eFreqMHz), color: eColor)
             Bar(label: "P-cores", value: cpu.pUsage,
-                detail: String(format: "%.0f%%  %.0f MHz", cpu.pUsagePercent, cpu.pFreqMHz))
-            Spacer(minLength: 4)
-            Sparkline(values: history, color: Theme.accent, height: 24)
+                detail: String(format: "%.0f%%  %.0f MHz", cpu.pUsagePercent, cpu.pFreqMHz), color: pColor)
+            Spacer(minLength: 2)
+            GraphCaption("E (amber) / P (blue) usage · 60s")
+            ZStack {
+                Sparkline(values: eHistory, color: eColor, height: 24, yDomain: 0...1)
+                Sparkline(values: pHistory, color: pColor, height: 24, yDomain: 0...1)
+            }
         }
     }
 }
@@ -436,20 +446,33 @@ private struct AcceleratorCard: View {
     let bandwidth: BandwidthSample
     let anePeak: Double
     let mediaPeak: Double
-    let history: [Double]
+    let gpuHistory: [Double]
+    let mediaHistory: [Double]
+    let aneHistory: [Double]
     @AppStorage("menubar.gpu") private var gpuMB = false
+
+    private let gpuColor = MetricPalette.gpuC       // green
+    private let mediaColor = MetricPalette.mediaC   // orange
+    private let aneColor = MetricPalette.aneC       // purple
 
     var body: some View {
         Card(title: "GPU / Media / Neural Engine", menuBarPin: $gpuMB) {
             Bar(label: "GPU", value: gpu.usage,
-                detail: String(format: "%.0f%%  %.1f W  %.0f MHz", gpu.usagePercent, power.gpuWatts, gpu.freqMHz))
+                detail: String(format: "%.0f%%  %.1f W  %.0f MHz", gpu.usagePercent, power.gpuWatts, gpu.freqMHz),
+                color: gpuColor)
             Bar(label: "Media", value: min(1, bandwidth.mediaGBs / max(mediaPeak, 0.5)),
-                detail: String(format: "%.1f GB/s", bandwidth.mediaGBs))
+                detail: String(format: "%.1f GB/s", bandwidth.mediaGBs), color: mediaColor)
             Bar(label: "ANE est.", value: min(1, power.aneWatts / max(anePeak, 0.1)),
-                detail: String(format: "%.1f W", power.aneWatts))
-            KV(key: "DRAM power", value: String(format: "%.1f W", power.dramWatts))
-            Spacer(minLength: 4)
-            Sparkline(values: history, color: Color(red: 0.62, green: 0.55, blue: 0.95), height: 24)
+                detail: String(format: "%.1f W", power.aneWatts), color: aneColor)
+            Spacer(minLength: 2)
+            GraphCaption("GPU (green) / Media (orange) / ANE (purple) · 60s")
+            ZStack {
+                Sparkline(values: gpuHistory, color: gpuColor, height: 24, yDomain: 0...1)
+                Sparkline(values: mediaHistory.map { min(1, $0 / max(mediaPeak, 0.5)) },
+                          color: mediaColor, height: 24, yDomain: 0...1)
+                Sparkline(values: aneHistory.map { min(1, $0 / max(anePeak, 0.1)) },
+                          color: aneColor, height: 24, yDomain: 0...1)
+            }
         }
     }
 }

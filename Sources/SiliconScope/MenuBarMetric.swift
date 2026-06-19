@@ -131,41 +131,69 @@ enum MenuBarGlyph {
         return img
     }
 
-    /// Battery icon (outline + proportional fill + terminal nub) followed by "NN%".
-    /// Fill is green while charging, red at/under 20%, otherwise the menu-bar ink.
-    static func battery(percent: Double, charging: Bool, dark: Bool) -> NSImage {
+    /// Battery icon (outline + proportional fill + terminal nub) followed by "NN%", with an
+    /// iStat-style state badge to the left: a bolt while charging, a plug while plugged in
+    /// (AC) but not charging, nothing on battery. Fill turns red at/under 20% on battery.
+    static func battery(percent: Double, charging: Bool, plugged: Bool, dark: Bool) -> NSImage {
         let ink = dark ? NSColor.white : NSColor.black
         let pct = max(0, min(100, percent))
         let font = NSFont.systemFont(ofSize: 9, weight: .medium)
         let attrs: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: ink.withAlphaComponent(0.95)]
         let label = String(format: "%.0f%%", pct) as NSString
         let textW = ceil(label.size(withAttributes: attrs).width)
-        let bodyW: CGFloat = 22, bodyH: CGFloat = 11, nub: CGFloat = 2, gap: CGFloat = 4
-        let width = ceil(bodyW + nub + gap + textW) + 2
+
+        // State badge (drawn to the left of the body).
+        let charge = NSColor(srgbRed: 0.36, green: 0.82, blue: 0.45, alpha: 1)
+        let badge: NSImage? = charging ? tintedSymbol("bolt.fill", color: charge, pointSize: 9)
+            : (plugged ? tintedSymbol("powerplug.fill", color: ink.withAlphaComponent(0.8), pointSize: 8) : nil)
+        let badgeW: CGFloat = badge.map { ceil($0.size.width) + 3 } ?? 0
+
+        // Upright battery: narrow body with the terminal nub on top, fill rising from bottom.
+        let bodyW: CGFloat = 9, bodyH: CGFloat = 13, nubW: CGFloat = 4, nubH: CGFloat = 1.6, gap: CGFloat = 4
+        let width = ceil(badgeW + bodyW + gap + textW) + 2
         let img = NSImage(size: NSSize(width: width, height: height), flipped: false) { _ in
-            let y = (height - bodyH) / 2
-            let body = NSRect(x: 0.75, y: y, width: bodyW, height: bodyH)
-            let outline = NSBezierPath(roundedRect: body, xRadius: 2.5, yRadius: 2.5)
+            if let badge {
+                badge.draw(at: NSPoint(x: 0, y: (height - badge.size.height) / 2),
+                           from: .zero, operation: .sourceOver, fraction: 1)
+            }
+            let bottom = (height - bodyH - nubH) / 2
+            let body = NSRect(x: badgeW + 0.5, y: bottom, width: bodyW, height: bodyH)
+            let outline = NSBezierPath(roundedRect: body, xRadius: 2, yRadius: 2)
             outline.lineWidth = 1
             ink.withAlphaComponent(0.55).setStroke(); outline.stroke()
-            // terminal nub
+            // terminal nub (centered on top)
             ink.withAlphaComponent(0.55).setFill()
-            NSBezierPath(roundedRect: NSRect(x: body.maxX + 0.5, y: y + bodyH / 2 - 2.5, width: nub, height: 5),
-                         xRadius: 1, yRadius: 1).fill()
-            // fill
-            let inner = body.insetBy(dx: 2, dy: 2)
-            let fillColor: NSColor = charging ? NSColor(srgbRed: 0.36, green: 0.82, blue: 0.45, alpha: 1)
-                : (pct <= 20 ? NSColor(srgbRed: 0.92, green: 0.36, blue: 0.34, alpha: 1) : ink.withAlphaComponent(0.85))
+            NSBezierPath(roundedRect: NSRect(x: body.midX - nubW / 2, y: body.maxY - 0.3, width: nubW, height: nubH),
+                         xRadius: 0.8, yRadius: 0.8).fill()
+            // fill rising from the bottom
+            let inner = body.insetBy(dx: 1.8, dy: 1.8)
+            let low = !plugged && pct <= 20
+            let fillColor: NSColor = charging ? charge
+                : (low ? NSColor(srgbRed: 0.92, green: 0.36, blue: 0.34, alpha: 1) : ink.withAlphaComponent(0.85))
             fillColor.setFill()
             NSBezierPath(roundedRect: NSRect(x: inner.minX, y: inner.minY,
-                                             width: max(1, inner.width * CGFloat(pct / 100)), height: inner.height),
-                         xRadius: 1.2, yRadius: 1.2).fill()
-            label.draw(at: NSPoint(x: body.maxX + nub + gap, y: (height - label.size(withAttributes: attrs).height) / 2),
+                                             width: inner.width, height: max(1, inner.height * CGFloat(pct / 100))),
+                         xRadius: 0.8, yRadius: 0.8).fill()
+            label.draw(at: NSPoint(x: body.maxX + gap, y: (height - label.size(withAttributes: attrs).height) / 2),
                        withAttributes: attrs)
             return true
         }
         img.isTemplate = false
         return img
+    }
+
+    /// Renders an SF Symbol into a solidly-tinted bitmap (template symbols only carry alpha).
+    private static func tintedSymbol(_ name: String, color: NSColor, pointSize: CGFloat) -> NSImage? {
+        let config = NSImage.SymbolConfiguration(pointSize: pointSize, weight: .bold)
+        guard let base = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
+            .withSymbolConfiguration(config) else { return nil }
+        let size = base.size
+        return NSImage(size: size, flipped: false) { rect in
+            base.draw(in: rect)
+            color.set()
+            rect.fill(using: .sourceAtop)
+            return true
+        }
     }
 }
 

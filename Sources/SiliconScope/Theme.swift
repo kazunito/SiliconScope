@@ -136,6 +136,8 @@ struct Bar: View {
     let label: String
     let value: Double
     let detail: String
+    /// Optional fixed fill color; defaults to the load-based heat ramp when nil.
+    var color: Color? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
@@ -151,7 +153,7 @@ struct Bar: View {
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     Capsule().fill(Color.white.opacity(0.06))
-                    Capsule().fill(Theme.heat(value))
+                    Capsule().fill(color ?? Theme.heat(value))
                         .frame(width: max(2, geo.size.width * min(1, max(0, value))))
                 }
             }
