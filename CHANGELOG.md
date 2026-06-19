@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.6.0 — 2026-06-19
+
+Rapid-MLX support + a runtime-detection fix.
+
+- **Rapid-MLX runtime** — detected like any other engine (🐇), with its loaded model read
+  from the OpenAI-compatible API (`:8000`) and the **"Measure tok/s"** benchmark working out
+  of the box. Validated: Qwen3.5-4B (MLX) ≈ 80 tok/s on an M1 Max.
+- **Fix — versioned Python interpreters.** The argv gate only matched `python` / `python3`,
+  so conda / Homebrew `python3.12` had its argv skipped — meaning MLX (`mlx_lm`) *and*
+  Rapid-MLX servers running under a versioned interpreter went undetected. Now prefix-matched.
+- Efficiency is shown in **tok/Wh** (tokens per watt-hour — the familiar battery unit),
+  the first release to carry the unit change made after v1.5.0.
+
 ## v1.5.0 — 2026-06-18
 
 On-demand benchmarking — measure how fast a model actually runs on *your* Mac.
