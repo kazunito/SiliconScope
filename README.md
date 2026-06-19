@@ -5,24 +5,33 @@
 [![License: MIT](https://img.shields.io/github/license/kennss/SiliconScope)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-macOS%2014%2B%20·%20Apple%20Silicon-111)
 
-A **sudoless Apple Silicon system monitor** with a native SwiftUI GUI — and
-first-class **ANE (Neural Engine)**, **Media Engine**, and **memory-bandwidth**
-tracking that terminal monitors and Activity Monitor don't surface.
+A **sudoless Apple Silicon system monitor** — a native SwiftUI dashboard **and** a full
+menu-bar suite — with first-class **ANE (Neural Engine)**, **Media Engine**, and
+**memory-bandwidth** tracking that Activity Monitor and terminal monitors don't surface.
 
-Born from wanting to *see* exactly how on-device AI and media workloads drive the
-Apple Silicon accelerators — hence the focus on ANE / Media / bandwidth.
+Born from wanting to *see* how on-device AI and media workloads drive the Apple Silicon
+accelerators — and grown into a daily-driver monitor that can stand in for iStat Menus.
 
-![SiliconScope catching a GPU thermal throttle under a local-LLM load](docs/img/screenshot.png)
+![SiliconScope dashboard under a local-LLM load](docs/img/dashboard.png)
 
-*A sustained on-device LLM (MLX-Swift) pinning the GPU — SiliconScope catches the thermal throttle (banner + the menu-bar glyph blinks red), shows the per-engine trends, and attributes it honestly as `in-app / unmanaged` (no managed runtime serving a model).*
+*Under a local LLM (Ollama · qwen2.5-7B, 100% GPU): SiliconScope reads it as **bandwidth-bound** at 55% of the M1 Max's 400 GB/s ceiling, detects the runtime + model, and shows every engine live — E/P-core and GPU/Media/ANE overlaid trends, per-core temperatures, power, and bandwidth.*
 
-![SiliconScope dashboard and menu-bar cockpit](docs/img/screenshot-2.png)
+### Menu bar — every metric, iStat-style
 
-*The full dashboard plus the menu-bar cockpit: a live 6-bar glyph (CPU / GPU / ANE / Media / memory / bandwidth) and six color-matched per-engine trend graphs — each on a fixed axis so a small signal reads small.*
+Pin any card to its own menu-bar item — **CPU · GPU · Memory · Network · SSD · Sensors · Battery** — each with a live glyph and a rich dropdown. All sudoless.
+
+![The per-metric menu-bar suite](docs/img/menubar.png)
+
+<p>
+  <img src="docs/img/menubar-sensors.png" width="300" alt="Per-core temperatures">
+  <img src="docs/img/menubar-battery.png" width="300" alt="Battery health and power">
+</p>
+
+*Left: per-unit temperatures — real **E-Core / P-Core / GPU / Memory** sensors (curated SMC keys per chip generation, M1–M5; HID fallback elsewhere). Right: battery health, cycle count, condition, the SoC power breakdown, and the energy-hungry apps.*
 
 ![Measuring a local model's speed and efficiency](docs/img/benchmark.png)
 
-*On-demand benchmark (v1.5.0): "Measure tok/s" runs one short generation and reports the model's decode speed and energy efficiency — **tokens/sec · tokens/Wh** — stored per model. Here: gemma 26B (MoE) at ~59 tok/s · 4608 tok/Wh on an M1 Max.*
+*On-demand benchmark: "Measure tok/s" runs one short generation and reports the model's decode speed and energy efficiency — **tokens/sec · tokens/Wh** — stored per model.*
 
 > 📊 **Measured tok/s on your Mac?** [Post it in Discussions](https://github.com/kennss/SiliconScope/discussions/5) — a crowd-sourced per-chip table helps others pick the right hardware.
 
@@ -35,7 +44,8 @@ Apple Silicon accelerators — hence the focus on ANE / Media / bandwidth.
 3. Launch it
 
 Signed with a Developer ID and **notarized by Apple** — it opens with no Gatekeeper
-prompt. Requires **macOS 14+ on Apple Silicon**.
+prompt. Requires **macOS 14+ on Apple Silicon**. It **updates itself** from here on
+(Sparkle) — this is the last DMG you download by hand.
 
 Prefer to build it yourself? See [Build & run](#build--run).
 
@@ -50,11 +60,16 @@ Prefer to build it yourself? See [Build & run](#build--run).
 - **Memory bandwidth** — CPU / GPU / Media / total GB/s (the local-LLM bottleneck signal)
 - **Memory** — Wired / Active / Compressed / Free stacked bar + macOS **memory-pressure** alerts
 - **Network** ↑/↓ and **Disk** read/write + free space, with live graphs
-- **Temperatures** — grouped CPU / GPU / Memory / Battery (SMC), fan RPM, thermal pressure,
-  and **GPU throttle detection** (clock held below its rolling peak under pressure)
-- **Power** — per-domain CPU / GPU / ANE / DRAM / SoC, plus battery %
+- **Per-unit temperatures** — real **E-Core / P-Core / GPU / Memory** sensors via curated
+  per-generation SMC keys (M1–M5; HID fallback on others), fan RPM, thermal pressure, and
+  **GPU throttle detection** (clock held below its rolling peak under pressure)
+- **Battery** — charge state, **health %, cycle count, condition** (AppleSmartBattery)
+- **Power** — per-domain CPU / GPU / ANE / DRAM / SoC, plus battery
 - **Processes** — sort, filter, kill (in-card scroll)
-- **No `sudo` required.** Full dashboard **and** menu-bar mode (with a compact GPU readout).
+- **Per-metric menu-bar items** — pin CPU / GPU / Memory / Network / SSD / Sensors / Battery
+  each to its own menu-bar glyph + dropdown (plus the combined "SS" cockpit glyph)
+- **Auto-update** — built-in Sparkle updater; "Check for Updates…" in the menu
+- **No `sudo` required.**
 
 ## Build & run
 
@@ -79,8 +94,10 @@ open dist/SiliconScope.app          # launch the local app bundle
 | CPU usage | `host_processor_info` ticks (matches Activity Monitor) |
 | CPU/GPU frequency | IOReport `CPU Stats` / `GPU Stats` × IORegistry DVFS table |
 | Memory / swap / pressure | `host_statistics64`, `sysctl` |
-| Temperatures, fans | **SMC** via IOKit |
-| Network / Disk / Battery | `getifaddrs`, IOBlockStorageDriver, IOPowerSources |
+| Temperatures (per-unit) | curated per-generation **SMC** FourCC keys + **HID** (`IOHIDEventSystem`) fallback |
+| Fans, thermal pressure | **SMC** via IOKit |
+| Network / Disk | `getifaddrs` / SystemConfiguration, mounted-volume capacities |
+| Battery (charge + health/cycles/condition) | IOPowerSources + **AppleSmartBattery** (IORegistry) |
 | Processes | `libproc` |
 
 Verified IOReport channel map: [`docs/ioreport-channels.md`](docs/ioreport-channels.md).
@@ -94,9 +111,11 @@ trade-off as NeoAsitop, macmon, mactop, and Stats.
 
 ## Acknowledgements
 
-- IOReport / SMC / sensor knowledge referenced from **NeoAsitop** (MIT) and
-  **SocPowerBuddy**; sensor naming informed by **Stats**. The data layer here is
-  written from scratch — declarations/facts referenced, no code copied.
+- IOReport / SMC / HID sensor knowledge referenced from **NeoAsitop** (MIT) and
+  **SocPowerBuddy**; the per-generation SMC temperature key→name tables are adapted from
+  **[Stats](https://github.com/exelban/stats)** (MIT). The data layer is written from
+  scratch — declarations/facts referenced, no code copied.
+- Auto-update by **[Sparkle](https://sparkle-project.org)**.
 - Design language inspired by **btop**.
 
 ## License

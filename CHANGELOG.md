@@ -1,5 +1,40 @@
 # Changelog
 
+## v2.0.0 — 2026-06-20
+
+SiliconScope grows from an AI/SoC dashboard into a **full menu-bar system monitor** — a
+daily driver that can stand in for iStat Menus, still 100% sudoless.
+
+### Menu bar — every metric, its own item
+- **Per-metric menu-bar items**: pin **CPU / GPU / Memory / Network / SSD / Sensors / Battery**
+  each to its own menu-bar glyph + rich dropdown (alongside the combined "SS" cockpit glyph).
+  Toggled from each dashboard card; implemented with AppKit `NSStatusItem` + `NSPopover`.
+- **iStat-style glyphs**: fixed-width readouts that don't jiggle the menu bar; CPU shows E/P
+  bars, GPU shows GPU/Media/ANE bars; decimal (Finder) units so disk matches iStat.
+- **iStat-style dropdowns**: per-volume Disks (+ network disks), interfaces with IPv4, a
+  Memory stacked bar with swap + top-by-memory, and per-engine 60s trends.
+
+### Per-unit temperatures (curated)
+- Reads **real per-unit sensors** — **E-Core / P-Core / GPU / Memory** — via curated
+  per-generation SMC FourCC key tables (**M1–M5**, adapted from Stats, MIT), read directly.
+  Falls back to the HID sensor set (`IOHIDEventSystem`) on chips without a table, then an SMC
+  scan on Intel. (Curated tables validated on M1 Max; other generations are best-effort + HID.)
+
+### Battery
+- **Health %, cycle count, condition** read from AppleSmartBattery (IORegistry), plus a
+  dropdown with the SoC power breakdown and the energy-hungry apps.
+- **Stateful upright battery glyph**: a bolt while charging, a plug while on AC but not
+  charging, red fill at/under 20% on battery.
+
+### Dashboard
+- CPU and GPU cards now show **overlaid multi-series trends** (E+P, and GPU/Media/ANE) with
+  colors shared across glyph, dropdown, and dashboard. The redundant DRAM-power line is gone.
+
+### Auto-update
+- Built-in **Sparkle** updater (EdDSA-signed, GitHub-Releases appcast). "Check for Updates…"
+  in the app menu, the menu-bar dropdown, and Settings (with an automatic-check toggle).
+  This is the last DMG you download by hand.
+
 ## v1.8.0 — 2026-06-19
 
 iStat-style per-metric menu-bar items — promote any card to its own menu-bar readout.
