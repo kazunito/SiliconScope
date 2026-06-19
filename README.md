@@ -35,6 +35,24 @@ Pin any card to its own menu-bar item — **CPU · GPU · Memory · Network · S
 
 > 📊 **Measured tok/s on your Mac?** [Post it in Discussions](https://github.com/kennss/SiliconScope/discussions/5) — a crowd-sourced per-chip table helps others pick the right hardware.
 
+## Why I built it
+
+I built SiliconScope while developing **Spectalo**, an on-device AI video player. To see how
+it was actually driving the chip, I ended up running two monitors at once — and neither one
+fit:
+
+- **asitop / NeoAsitop** had the chip-level numbers, but the TUI was rough to look at and thin
+  on detail.
+- **btop** was gorgeous and dense, yet blind to exactly what I needed — **ANE (Neural Engine),
+  the Media Engine, and memory bandwidth.**
+
+Keeping both open side by side was painful, and a waste of screen space. I started to fork
+NeoAsitop and btop to patch the gaps — then decided to do it properly instead: **one native,
+good-looking GUI** that surfaces the Apple-Silicon-specific signals and that a normal person,
+not just a terminal dweller, can actually read.
+
+So I built it.
+
 ## Install
 
 **[⬇ Download the latest DMG](https://github.com/kennss/SiliconScope/releases/latest)**, then:
