@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.1.1 — 2026-06-21
+
+Fix: per-metric menu-bar glyphs picked their ink from the app's light/dark **mode** instead
+of the menu bar's actual background — so the text was invisible on a dark menu bar while the
+app was in Light Mode (a dark wallpaper, or a fullscreen app). Ink now follows each status
+item's own appearance, so it matches the system clock/battery in every case. Thanks to the
+community bug report. 🙏
+
 ## v2.1.0 — 2026-06-20
 
 Memory deep-dive (iStat/Activity-Monitor parity) + project hardening. First release delivered

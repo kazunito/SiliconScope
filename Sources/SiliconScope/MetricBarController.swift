@@ -103,11 +103,17 @@ final class MetricBarController: NSObject {
     /// Called each monitor tick: reconcile items with toggles, refresh glyphs.
     func sync(monitor: SiliconScopeMonitor) {
         self.monitor = monitor
-        let dark = NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
         for spec in Self.specs {
             if UserDefaults.standard.bool(forKey: spec.key) {
                 if entries[spec.id] == nil { entries[spec.id] = makeEntry(spec) }
-                entries[spec.id]?.item.button?.image = spec.glyph(monitor, dark)
+                if let button = entries[spec.id]?.item.button {
+                    // Decide ink from the STATUS BUTTON's appearance, not the app's. The button
+                    // adopts the menu bar's real light/dark background (wallpaper + fullscreen),
+                    // so black ink no longer vanishes on a dark menu bar while the app is in
+                    // Light Mode (reported: text invisible except over a light wallpaper).
+                    let dark = button.effectiveAppearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua
+                    button.image = spec.glyph(monitor, dark)
+                }
             } else if let e = entries[spec.id] {
                 e.popover.performClose(nil)
                 NSStatusBar.system.removeStatusItem(e.item)
