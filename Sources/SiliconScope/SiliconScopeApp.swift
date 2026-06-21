@@ -42,7 +42,7 @@ struct SiliconScopeApp: App {
         .defaultSize(width: 700, height: 740)
         .commands {
             CommandGroup(after: .appInfo) {
-                Button("Check for Updates…") { UpdaterController.shared.checkForUpdates() }
+                Button(L("Check for Updates…")) { UpdaterController.shared.checkForUpdates() }
                     .disabled(!UpdaterController.shared.canCheck)
             }
         }

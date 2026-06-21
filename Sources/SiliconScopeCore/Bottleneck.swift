@@ -25,12 +25,12 @@ public enum Bottleneck: String, Sendable {
     /// Short UI label.
     public var label: String {
         switch self {
-        case .idle:             return "Idle"
-        case .gpuActive:        return "GPU active"
-        case .bandwidthBound:   return "Bandwidth-bound"
-        case .computeBound:     return "Compute-bound"
-        case .thermalThrottled: return "Thermal-throttled"
-        case .memoryPressured:  return "Memory-pressured"
+        case .idle:             return L("Idle")
+        case .gpuActive:        return L("GPU active")
+        case .bandwidthBound:   return L("Bandwidth-bound")
+        case .computeBound:     return L("Compute-bound")
+        case .thermalThrottled: return L("Thermal-throttled")
+        case .memoryPressured:  return L("Memory-pressured")
         }
     }
 
@@ -39,12 +39,12 @@ public enum Bottleneck: String, Sendable {
     /// stay honest for any GPU workload.)
     public var detail: String {
         switch self {
-        case .idle:             return "No significant GPU workload"
-        case .gpuActive:        return "GPU busy — no single bottleneck"
-        case .bandwidthBound:   return "Memory bandwidth is the limiter"
-        case .computeBound:     return "GPU compute is the limiter"
-        case .thermalThrottled: return "Clock held down by heat — sustained performance limited"
-        case .memoryPressured:  return "Unified memory full — swapping limits throughput"
+        case .idle:             return L("No significant GPU workload")
+        case .gpuActive:        return L("GPU busy — no single bottleneck")
+        case .bandwidthBound:   return L("Memory bandwidth is the limiter")
+        case .computeBound:     return L("GPU compute is the limiter")
+        case .thermalThrottled: return L("Clock held down by heat — sustained performance limited")
+        case .memoryPressured:  return L("Unified memory full — swapping limits throughput")
         }
     }
 

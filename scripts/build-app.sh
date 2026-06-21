@@ -18,6 +18,9 @@ DIST="${DIST:-dist}"
 APPDIR="$DIST/$APP.app"
 ICON="Sources/$APP/Resources/AppIcon.icns"
 
+echo "Generating localized .strings from String Catalog..."
+python3 scripts/gen-strings.py
+
 echo "Building $APP ($CONFIG)..."
 xcrun swift build -c "$CONFIG" --product "$APP"
 
@@ -41,6 +44,9 @@ cat > "$APPDIR/Contents/Info.plist" <<PLIST
 <plist version="1.0">
 <dict>
   <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
+  <key>CFBundleDevelopmentRegion</key><string>en</string>
+  <key>CFBundleLocalizations</key>
+  <array><string>en</string><string>ja</string></array>
   <key>CFBundleName</key><string>$APP</string>
   <key>CFBundleDisplayName</key><string>$APP</string>
   <key>CFBundleIdentifier</key><string>$BUNDLE_ID</string>

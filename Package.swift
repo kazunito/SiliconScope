@@ -14,6 +14,7 @@ import PackageDescription
 
 let package = Package(
     name: "SiliconScope",
+    defaultLocalization: "en",
     platforms: [.macOS(.v14)],
     products: [
         .library(name: "SiliconScopeCore", targets: ["SiliconScopeCore"]),
@@ -31,7 +32,8 @@ let package = Package(
         // Sudoless data layer. Must NOT import SwiftUI.
         .target(
             name: "SiliconScopeCore",
-            dependencies: ["CIOReport"]
+            dependencies: ["CIOReport"],
+            resources: [.process("Resources")]
         ),
 
         // Terminal verification tool for the data layer.

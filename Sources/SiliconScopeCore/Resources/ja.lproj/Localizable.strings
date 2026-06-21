@@ -1,0 +1,37 @@
+/* Generated from Localization/CoreLocalizable.xcstrings by scripts/gen-strings.py — do not edit. */
+
+"%@ (idle)" = "%@（アイドル）";
+"%@ idle · GPU: other app" = "%@ アイドル · GPU: 別アプリ";
+"ANE (CoreML)" = "ANE（CoreML）";
+"Bandwidth-bound" = "帯域律速";
+"Charged" = "満充電";
+"Charging" = "充電中";
+"Clock held down by heat — sustained performance limited" = "発熱でクロックが抑制 — 持続性能が制限されています";
+"Compute-bound" = "演算律速";
+"GPU active" = "GPU 稼働中";
+"GPU active — incl. video" = "GPU 稼働中 — 動画含む";
+"GPU active — type unknown" = "GPU 稼働中 — 種別不明";
+"GPU busy — no single bottleneck" = "GPU 稼働中 — 単一のボトルネックなし";
+"GPU compute is the limiter" = "GPU 演算が律速要因です";
+"Idle" = "アイドル";
+"LLM (GPU/Metal)" = "LLM（GPU/Metal）";
+"LLM (likely)" = "LLM（推定）";
+"Memory bandwidth is the limiter" = "メモリ帯域が律速要因です";
+"Memory pressure: critical" = "メモリプレッシャー：危機的";
+"Memory pressure: elevated" = "メモリプレッシャー：上昇";
+"Memory-pressured" = "メモリ逼迫";
+"No Battery" = "バッテリーなし";
+"No significant GPU workload" = "目立った GPU 負荷なし";
+"Not Charging" = "充電していません";
+"On Battery" = "バッテリー駆動";
+"Thermal pressure — serious" = "発熱プレッシャー — 深刻";
+"Thermal throttling — critical" = "発熱スロットリング — 危機的";
+"Thermal-throttled" = "発熱スロットリング";
+"Unified memory full — swapping limits throughput" = "ユニファイドメモリが満杯 — スワップがスループットを制限";
+"critical" = "危機的";
+"fair" = "やや高";
+"in-app / unmanaged" = "アプリ内 / 非管理";
+"nominal" = "正常";
+"none" = "なし";
+"serious" = "深刻";
+"unknown" = "不明";

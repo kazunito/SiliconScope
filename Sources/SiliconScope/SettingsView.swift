@@ -27,45 +27,45 @@ struct SettingsView: View {
     var body: some View {
         Form {
             Section {
-                Picker("Refresh interval", selection: $refreshInterval) {
+                Picker(L("Refresh interval"), selection: $refreshInterval) {
                     Text("0.5 s").tag(0.5)
                     Text("1 s").tag(1.0)
                     Text("2 s").tag(2.0)
                     Text("3 s").tag(3.0)
                 }
-                Picker("Temperature unit", selection: $fahrenheit) {
-                    Text("Celsius (°C)").tag(false)
-                    Text("Fahrenheit (°F)").tag(true)
+                Picker(L("Temperature unit"), selection: $fahrenheit) {
+                    Text(L("Celsius (°C)")).tag(false)
+                    Text(L("Fahrenheit (°F)")).tag(true)
                 }
-                Toggle("Compact GPU mode (menu bar)", isOn: $compactGPU)
+                Toggle(L("Compact GPU mode (menu bar)"), isOn: $compactGPU)
             }
 
             Section {
-                Toggle("Launch at login", isOn: $launchAtLogin)
+                Toggle(L("Launch at login"), isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, on in LoginItem.setEnabled(on) }
-                Toggle("Alert notifications", isOn: $notificationsEnabled)
+                Toggle(L("Alert notifications"), isOn: $notificationsEnabled)
                     .onChange(of: notificationsEnabled) { _, on in if on { Notifier.requestAuthorization() } }
                 if UpdaterController.shared.canCheck {
-                    Toggle("Automatically check for updates", isOn: $autoUpdate)
+                    Toggle(L("Automatically check for updates"), isOn: $autoUpdate)
                         .onChange(of: autoUpdate) { _, on in UpdaterController.shared.automaticallyChecks = on }
-                    Button("Check for Updates…") { UpdaterController.shared.checkForUpdates() }
+                    Button(L("Check for Updates…")) { UpdaterController.shared.checkForUpdates() }
                 }
             } header: {
-                Text("Startup & alerts")
+                Text(L("Startup & alerts"))
             } footer: {
-                Text("Notify on GPU thermal throttle, memory pressure, or swapping (once per event).")
+                Text(L("Notify on GPU thermal throttle, memory pressure, or swapping (once per event)."))
             }
 
             Section {
-                Toggle("Connect to local AI runtimes", isOn: $aiRuntimeAPIEnabled)
+                Toggle(L("Connect to local AI runtimes"), isOn: $aiRuntimeAPIEnabled)
                 if aiRuntimeAPIEnabled {
-                    TextField("Ollama port", value: $ollamaPort, format: .number.grouping(.never))
-                    TextField("LM Studio port", value: $lmStudioPort, format: .number.grouping(.never))
+                    TextField(L("Ollama port"), value: $ollamaPort, format: .number.grouping(.never))
+                    TextField(L("LM Studio port"), value: $lmStudioPort, format: .number.grouping(.never))
                 }
             } header: {
-                Text("Local AI runtime API (opt-in)")
+                Text(L("Local AI runtime API (opt-in)"))
             } footer: {
-                Text("Reads the loaded model, processor split, and tokens/sec from AI runtimes on 127.0.0.1. Nothing leaves your Mac.")
+                Text(L("Reads the loaded model, processor split, and tokens/sec from AI runtimes on 127.0.0.1. Nothing leaves your Mac."))
             }
         }
         .formStyle(.grouped)

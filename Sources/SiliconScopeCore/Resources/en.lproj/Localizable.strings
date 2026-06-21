@@ -1,0 +1,37 @@
+/* Generated from Localization/CoreLocalizable.xcstrings by scripts/gen-strings.py — do not edit. */
+
+"%@ (idle)" = "%@ (idle)";
+"%@ idle · GPU: other app" = "%@ idle · GPU: other app";
+"ANE (CoreML)" = "ANE (CoreML)";
+"Bandwidth-bound" = "Bandwidth-bound";
+"Charged" = "Charged";
+"Charging" = "Charging";
+"Clock held down by heat — sustained performance limited" = "Clock held down by heat — sustained performance limited";
+"Compute-bound" = "Compute-bound";
+"GPU active" = "GPU active";
+"GPU active — incl. video" = "GPU active — incl. video";
+"GPU active — type unknown" = "GPU active — type unknown";
+"GPU busy — no single bottleneck" = "GPU busy — no single bottleneck";
+"GPU compute is the limiter" = "GPU compute is the limiter";
+"Idle" = "Idle";
+"LLM (GPU/Metal)" = "LLM (GPU/Metal)";
+"LLM (likely)" = "LLM (likely)";
+"Memory bandwidth is the limiter" = "Memory bandwidth is the limiter";
+"Memory pressure: critical" = "Memory pressure: critical";
+"Memory pressure: elevated" = "Memory pressure: elevated";
+"Memory-pressured" = "Memory-pressured";
+"No Battery" = "No Battery";
+"No significant GPU workload" = "No significant GPU workload";
+"Not Charging" = "Not Charging";
+"On Battery" = "On Battery";
+"Thermal pressure — serious" = "Thermal pressure — serious";
+"Thermal throttling — critical" = "Thermal throttling — critical";
+"Thermal-throttled" = "Thermal-throttled";
+"Unified memory full — swapping limits throughput" = "Unified memory full — swapping limits throughput";
+"critical" = "critical";
+"fair" = "fair";
+"in-app / unmanaged" = "in-app / unmanaged";
+"nominal" = "nominal";
+"none" = "none";
+"serious" = "serious";
+"unknown" = "unknown";

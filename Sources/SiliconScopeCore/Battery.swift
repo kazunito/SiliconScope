@@ -30,11 +30,11 @@ public struct BatteryInfo: Sendable, Equatable {
 
     /// One-word charge state for display ("Charging" / "Not Charging" / "On Battery").
     public var stateLabel: String {
-        if !hasBattery { return "No Battery" }
-        if isCharged { return "Charged" }
-        if isCharging { return "Charging" }
-        if isPluggedIn { return "Not Charging" }
-        return "On Battery"
+        if !hasBattery { return L("No Battery") }
+        if isCharged { return L("Charged") }
+        if isCharging { return L("Charging") }
+        if isPluggedIn { return L("Not Charging") }
+        return L("On Battery")
     }
 }
 

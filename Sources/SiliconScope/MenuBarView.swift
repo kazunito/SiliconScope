@@ -36,16 +36,16 @@ struct MenuBarView: View {
                 openWindow(id: "siliconscope-main")
                 NSApplication.shared.activate(ignoringOtherApps: true)
             } label: {
-                Label("Open Dashboard", systemImage: "macwindow")
+                Label(L("Open Dashboard"), systemImage: "macwindow")
                     .frame(maxWidth: .infinity)
             }
             HStack {
-                Button("Settings…") { openSettings() }
+                Button(L("Settings…")) { openSettings() }
                 if UpdaterController.shared.canCheck {
-                    Button("Check for Updates…") { UpdaterController.shared.checkForUpdates() }
+                    Button(L("Check for Updates…")) { UpdaterController.shared.checkForUpdates() }
                 }
                 Spacer()
-                Button("Quit") { NSApplication.shared.terminate(nil) }
+                Button(L("Quit")) { NSApplication.shared.terminate(nil) }
             }
             .font(.system(size: 12))
         }
@@ -74,7 +74,7 @@ struct MenuBarView: View {
                 Image(systemName: "flame.fill")
                     .font(.system(size: 11))
                     .foregroundStyle(Theme.heat(1))
-                    .help("GPU thermal throttling")
+                    .help(L("GPU thermal throttling"))
             }
         }
     }
@@ -96,22 +96,22 @@ struct MenuBarView: View {
             .font(.system(size: 13, weight: .bold, design: .monospaced))
             .foregroundStyle(Theme.accent)
 
-        KV(key: "Workload", value: monitor.bottleneck.label, valueColor: monitor.bottleneck.color)
+        KV(key: L("Workload"), value: monitor.bottleneck.label, valueColor: monitor.bottleneck.color)
 
         Divider()
         KV(key: "GPU", value: String(format: "%.0f%% · %.1f W", snapshot.gpu.usagePercent, snapshot.power.gpuWatts))
         KV(key: "ANE", value: String(format: "%.1f W", snapshot.power.aneWatts))
-        KV(key: "Media", value: String(format: "%.1f GB/s", snapshot.bandwidth.mediaGBs))
+        KV(key: L("Media"), value: String(format: "%.1f GB/s", snapshot.bandwidth.mediaGBs))
         KV(key: "Mem BW", value: String(format: "%.0f GB/s", snapshot.bandwidth.totalGBs))
-        KV(key: "SoC power", value: String(format: "%.1f W", snapshot.power.socWatts))
-        KV(key: "CPU temp", value: formatTemperature(snapshot.temperature.cpuCelsius, fahrenheit: fahrenheit))
+        KV(key: L("SoC power"), value: String(format: "%.1f W", snapshot.power.socWatts))
+        KV(key: L("CPU temp"), value: formatTemperature(snapshot.temperature.cpuCelsius, fahrenheit: fahrenheit))
         if snapshot.temperature.hasBattery {
-            KV(key: "Battery", value: formatTemperature(snapshot.temperature.batteryCelsius, fahrenheit: fahrenheit))
+            KV(key: L("Battery"), value: formatTemperature(snapshot.temperature.batteryCelsius, fahrenheit: fahrenheit))
         }
 
         Divider()
-        KV(key: "AI runtime", value: snapshot.aiRuntimeLabel)
-        KV(key: "Fits now", value: snapshot.memoryBudget.fitsNow.first?.label ?? "—")
+        KV(key: L("AI runtime"), value: snapshot.aiRuntimeLabel)
+        KV(key: L("Fits now"), value: snapshot.memoryBudget.fitsNow.first?.label ?? "—")
 
         Divider()
         metricGraphs(snapshot)
@@ -127,7 +127,7 @@ struct MenuBarView: View {
     @ViewBuilder
     private func metricGraphs(_ s: SystemSnapshot) -> some View {
         let c = MenuBarIcon.barColors.map(Color.init(nsColor:))
-        Text("TRENDS")
+        Text(L("TRENDS"))
             .font(.system(size: 9, weight: .semibold, design: .monospaced))
             .foregroundStyle(Theme.faint)
         graphRow("CPU", c[0], monitor.history.pCPU, String(format: "%.0f%%", s.cpu.pUsagePercent),
@@ -163,7 +163,7 @@ struct MenuBarView: View {
     @ViewBuilder
     private func topProcesses(_ s: SystemSnapshot) -> some View {
         let top = s.processes.sorted { $0.cpuPercent > $1.cpuPercent }.prefix(3)
-        Text("TOP PROCESSES")
+        Text(L("TOP PROCESSES"))
             .font(.system(size: 9, weight: .semibold, design: .monospaced))
             .foregroundStyle(Theme.faint)
         if top.isEmpty {

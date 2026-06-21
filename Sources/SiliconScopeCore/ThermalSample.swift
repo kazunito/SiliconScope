@@ -14,6 +14,17 @@ import Foundation
 public struct ThermalSample: Sendable, Equatable {
     public enum Pressure: String, Sendable {
         case nominal, fair, serious, critical, unknown
+
+        /// Localized, human-readable name for display (rawValue stays English for logic/keys).
+        public var displayName: String {
+            switch self {
+            case .nominal:  return L("nominal")
+            case .fair:     return L("fair")
+            case .serious:  return L("serious")
+            case .critical: return L("critical")
+            case .unknown:  return L("unknown")
+            }
+        }
     }
 
     public var pressure: Pressure = .nominal

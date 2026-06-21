@@ -42,13 +42,13 @@ public struct SystemSnapshot: Sendable {
     /// model, or a multi-GB resident model in a detected runtime); ANE power implies ML;
     /// Media-engine traffic implies video. Otherwise we say the type is unknown.
     public var likelyAIEngine: String {
-        if runtimeAPI.isReachable, !runtimeAPI.loadedModels.isEmpty { return "LLM (GPU/Metal)" }
-        if aiRuntime.primaryMemoryBytes > (2 << 30) { return "LLM (likely)" }
-        if power.aneWatts > 1.0 { return "ANE (CoreML)" }
+        if runtimeAPI.isReachable, !runtimeAPI.loadedModels.isEmpty { return L("LLM (GPU/Metal)") }
+        if aiRuntime.primaryMemoryBytes > (2 << 30) { return L("LLM (likely)") }
+        if power.aneWatts > 1.0 { return L("ANE (CoreML)") }
         let gpuBusy = gpu.usage > 0.25 || power.gpuWatts > 3.0 || bandwidth.gpuGBs > 20
         guard gpuBusy else { return "idle" }
-        if bandwidth.mediaGBs > 0.5 { return "GPU active — incl. video" }
-        return "GPU active — type unknown"
+        if bandwidth.mediaGBs > 0.5 { return L("GPU active — incl. video") }
+        return L("GPU active — type unknown")
     }
 
     /// True when a detected runtime actually holds a model — an API-reported loaded model,
@@ -71,9 +71,9 @@ public struct SystemSnapshot: Sendable {
         if let kind = aiRuntime.primaryKind {
             if runtimeAPI.isReachable, let m = runtimeAPI.primaryModel { return "\(kind.displayName) · \(m.name)" }
             if aiRuntime.primaryMemoryBytes > (1 << 30) { return kind.displayName }
-            return gpuComputeBusy ? "\(kind.displayName) idle · GPU: other app" : "\(kind.displayName) (idle)"
+            return gpuComputeBusy ? L("\(kind.displayName) idle · GPU: other app") : L("\(kind.displayName) (idle)")
         }
-        return gpuComputeBusy ? "in-app / unmanaged" : "none"
+        return gpuComputeBusy ? L("in-app / unmanaged") : L("none")
     }
 
     public struct Warning: Sendable, Identifiable, Equatable {
@@ -93,13 +93,13 @@ public struct SystemSnapshot: Sendable {
     public var warnings: [Warning] {
         var result: [Warning] = []
         switch thermal.pressure {
-        case .critical: result.append(.init(level: .critical, message: "Thermal throttling — critical"))
-        case .serious:  result.append(.init(level: .warning, message: "Thermal pressure — serious"))
+        case .critical: result.append(.init(level: .critical, message: L("Thermal throttling — critical")))
+        case .serious:  result.append(.init(level: .warning, message: L("Thermal pressure — serious")))
         default: break
         }
         switch memory.pressure {
-        case .critical: result.append(.init(level: .critical, message: "Memory pressure: critical"))
-        case .warning:  result.append(.init(level: .warning, message: "Memory pressure: elevated"))
+        case .critical: result.append(.init(level: .critical, message: L("Memory pressure: critical")))
+        case .warning:  result.append(.init(level: .warning, message: L("Memory pressure: elevated")))
         case .normal:   break
         }
         // Note: a predictive "swapping now" warning is rate-based and lives on the monitor

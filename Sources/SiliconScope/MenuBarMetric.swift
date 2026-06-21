@@ -363,18 +363,18 @@ struct CPUMenuDropdown: View {
         let p = Color(nsColor: MetricPalette.pCPU)
         VStack(alignment: .leading, spacing: 7) {
             MenuSectionHeader("CPU")
-            coreRow("E-cores", s.cpu.eUsage, s.cpu.eUsagePercent, s.cpu.eFreqMHz, e)
-            coreRow("P-cores", s.cpu.pUsage, s.cpu.pUsagePercent, s.cpu.pFreqMHz, p)
-            GraphCaption("E (amber) / P (blue) usage · 60s")
+            coreRow(L("E-cores"), s.cpu.eUsage, s.cpu.eUsagePercent, s.cpu.eFreqMHz, e)
+            coreRow(L("P-cores"), s.cpu.pUsage, s.cpu.pUsagePercent, s.cpu.pFreqMHz, p)
+            GraphCaption(L("E (amber) / P (blue) usage · 60s"))
             ZStack {   // E (amber) + P (blue) usage history, overlaid
                 Sparkline(values: monitor.history.eCPU, color: e, height: 32, yDomain: 0...1)
                 Sparkline(values: monitor.history.pCPU, color: p, height: 32, yDomain: 0...1)
             }
-            kv("Temperature", formatTemperature(s.temperature.cpuCelsius, fahrenheit: fahrenheit))
-            kv("Load avg", SystemInfo.loadAverageString())
-            kv("Uptime", SystemInfo.uptimeString())
+            kv(L("Temperature"), formatTemperature(s.temperature.cpuCelsius, fahrenheit: fahrenheit))
+            kv(L("Load avg"), SystemInfo.loadAverageString())
+            kv(L("Uptime"), SystemInfo.uptimeString())
             Divider()
-            MenuSectionHeader("Top Processes")
+            MenuSectionHeader(L("Top Processes"))
             ForEach(Array(s.processes.sorted { $0.cpuPercent > $1.cpuPercent }.prefix(5))) { proc in
                 HStack(spacing: 6) {
                     Text(proc.name).font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.text)
@@ -387,7 +387,7 @@ struct CPUMenuDropdown: View {
             }
             Divider()
             Button { openMainDashboard() } label: {
-                Label("Open Dashboard", systemImage: "macwindow").frame(maxWidth: .infinity)
+                Label(L("Open Dashboard"), systemImage: "macwindow").frame(maxWidth: .infinity)
             }
         }
         .padding(12).frame(width: 260).background(Theme.bg).foregroundStyle(Theme.text)
@@ -433,14 +433,14 @@ struct MenuBarPin: View {
                 .foregroundStyle(isOn ? Theme.accent : Theme.faint)
         }
         .buttonStyle(.plain)
-        .help(isOn ? "Showing in the menu bar — click to hide" : "Show this in the menu bar")
+        .help(isOn ? L("Showing in the menu bar — click to hide") : L("Show this in the menu bar"))
     }
 }
 
 struct OpenDashboardButton: View {
     var body: some View {
         Button { openMainDashboard() } label: {
-            Label("Open Dashboard", systemImage: "macwindow").frame(maxWidth: .infinity)
+            Label(L("Open Dashboard"), systemImage: "macwindow").frame(maxWidth: .infinity)
         }
     }
 }
@@ -452,18 +452,18 @@ struct GPUMenuDropdown: View {
     var body: some View {
         let s = monitor.snapshot
         VStack(alignment: .leading, spacing: 7) {
-            MenuSectionHeader("GPU / Media / Neural")
+            MenuSectionHeader(L("GPU / Media / Neural"))
             MenuMeterRow(label: "GPU",
                          value: String(format: "%.0f%%  %.1f W  %.0f MHz", s.gpu.usagePercent, s.power.gpuWatts, s.gpu.freqMHz),
                          fraction: s.gpu.usage, color: MetricPalette.gpuC)
-            MenuMeterRow(label: "Media",
+            MenuMeterRow(label: L("Media"),
                          value: String(format: "%.1f GB/s", s.bandwidth.mediaGBs),
                          fraction: min(1, s.bandwidth.mediaGBs / max(monitor.mediaPeakGBs, 0.5)), color: MetricPalette.mediaC)
-            MenuMeterRow(label: "ANE est.",
+            MenuMeterRow(label: L("ANE est."),
                          value: String(format: "%.1f W", s.power.aneWatts),
                          fraction: min(1, s.power.aneWatts / max(monitor.anePeakWatts, 0.1)), color: MetricPalette.aneC)
-            MenuKV(label: "DRAM power", value: String(format: "%.1f W", s.power.dramWatts))
-            GraphCaption("GPU (green) / Media (orange) / ANE (purple) · 60s")
+            MenuKV(label: L("DRAM power"), value: String(format: "%.1f W", s.power.dramWatts))
+            GraphCaption(L("GPU (green) / Media (orange) / ANE (purple) · 60s"))
             ZStack {   // all three normalized to 0...1 (each vs its tracked peak)
                 Sparkline(values: monitor.history.gpu, color: MetricPalette.gpuC, height: 30, yDomain: 0...1)
                 Sparkline(values: monitor.history.media.map { min(1, $0 / max(monitor.mediaPeakGBs, 0.5)) },
@@ -493,7 +493,7 @@ struct MEMMenuDropdown: View {
             case .critical: Color(red: 0.88, green: 0.37, blue: 0.37)   // red
         }
         VStack(alignment: .leading, spacing: 6) {
-            MenuSectionHeader("Memory")
+            MenuSectionHeader(L("Memory"))
             HStack {
                 Text(String(format: "%.1f / %.0f GB", m.usedGB, m.totalGB))
                     .font(.system(size: 12, weight: .medium, design: .monospaced)).foregroundStyle(Theme.text)
@@ -503,36 +503,36 @@ struct MEMMenuDropdown: View {
             }
             MenuStackedBar(segments: [(m.wiredFraction, wired), (m.activeFraction, active),
                                       (m.compressedFraction, compressed), (m.freeFraction, freeC)])
-            MenuLegendRow(color: wired, label: "Wired", value: memSize(m.wiredBytes))
-            MenuLegendRow(color: active, label: "Active", value: memSize(m.activeBytes))
-            MenuLegendRow(color: compressed, label: "Compressed", value: memSize(m.compressedBytes))
-            MenuLegendRow(color: freeC, label: "Free", value: memSize(m.freeBytes))
+            MenuLegendRow(color: wired, label: L("Wired"), value: memSize(m.wiredBytes))
+            MenuLegendRow(color: active, label: L("Active"), value: memSize(m.activeBytes))
+            MenuLegendRow(color: compressed, label: L("Compressed"), value: memSize(m.compressedBytes))
+            MenuLegendRow(color: freeC, label: L("Free"), value: memSize(m.freeBytes))
 
             Divider()
-            MenuSectionHeader("Pressure")
+            MenuSectionHeader(L("Pressure"))
             MenuStackedBar(segments: [(m.pressurePercent / 100, pressureColor)])
-            MenuKV(label: "Pressure", value: String(format: "%.0f%%", m.pressurePercent), color: pressureColor)
-            MenuKV(label: "App Memory", value: memSize(m.appMemoryBytes))
-            MenuKV(label: "Cached Files", value: memSize(m.cachedFilesBytes))
+            MenuKV(label: L("Pressure"), value: String(format: "%.0f%%", m.pressurePercent), color: pressureColor)
+            MenuKV(label: L("App Memory"), value: memSize(m.appMemoryBytes))
+            MenuKV(label: L("Cached Files"), value: memSize(m.cachedFilesBytes))
 
             if m.swapTotalBytes > 0 {
                 Divider()
-                MenuSectionHeader("Swap")
+                MenuSectionHeader(L("Swap"))
                 MenuStackedBar(segments: [(Double(m.swapUsedBytes) / Double(m.swapTotalBytes), wired)])
                 Text(String(format: "%.2f GB of %.2f GB", m.swapUsedGB, Double(m.swapTotalBytes) / 1_073_741_824))
                     .font(.system(size: 10.5, design: .monospaced)).foregroundStyle(Theme.dim)
             }
 
             Divider()
-            MenuSectionHeader("Pages / sec")
-            MenuKV(label: "Page-ins", value: pagesRate(monitor.memoryPageInRate))
-            MenuKV(label: "Page-outs", value: pagesRate(monitor.memoryPageOutRate))
-            MenuKV(label: "Swap-ins", value: pagesRate(monitor.memorySwapInRate))
-            MenuKV(label: "Swap-outs", value: pagesRate(monitor.memorySwapOutRate),
+            MenuSectionHeader(L("Pages / sec"))
+            MenuKV(label: L("Page-ins"), value: pagesRate(monitor.memoryPageInRate))
+            MenuKV(label: L("Page-outs"), value: pagesRate(monitor.memoryPageOutRate))
+            MenuKV(label: L("Swap-ins"), value: pagesRate(monitor.memorySwapInRate))
+            MenuKV(label: L("Swap-outs"), value: pagesRate(monitor.memorySwapOutRate),
                    color: monitor.memorySwapOutRate > 0 ? Theme.heat(1) : Theme.text)
 
             Divider()
-            MenuSectionHeader("Top by Memory")
+            MenuSectionHeader(L("Top by Memory"))
             let topMem = Dictionary(grouping: monitor.snapshot.processes, by: \.name)
                 .map { (name: $0.key, bytes: $0.value.reduce(UInt64(0)) { $0 + $1.memoryBytes }) }
                 .sorted { $0.bytes > $1.bytes }
@@ -562,7 +562,7 @@ struct NETMenuDropdown: View {
         let connected = ifaces.filter { $0.isConnected }
         let notConnected = ifaces.filter { !$0.isConnected }
         VStack(alignment: .leading, spacing: 6) {
-            MenuSectionHeader("Network")
+            MenuSectionHeader(L("Network"))
             ForEach(connected) { i in
                 HStack(spacing: 6) {
                     Image(systemName: ifaceIcon(i)).font(.system(size: 11)).foregroundStyle(Theme.accent)
@@ -573,24 +573,24 @@ struct NETMenuDropdown: View {
                         }
                     }
                     Spacer(minLength: 0)
-                    Text("Connected").font(.system(size: 9.5, design: .monospaced)).foregroundStyle(green)
+                    Text(L("Connected")).font(.system(size: 9.5, design: .monospaced)).foregroundStyle(green)
                 }
             }
             Divider()
-            MenuKV(label: "↓ Download", value: formatRate(n.downloadBytesPerSec), color: MetricPalette.downC)
+            MenuKV(label: L("↓ Download"), value: formatRate(n.downloadBytesPerSec), color: MetricPalette.downC)
             Sparkline(values: monitor.history.netDown, color: MetricPalette.downC, height: 22)
-            MenuKV(label: "↑ Upload", value: formatRate(n.uploadBytesPerSec), color: MetricPalette.upC)
+            MenuKV(label: L("↑ Upload"), value: formatRate(n.uploadBytesPerSec), color: MetricPalette.upC)
             Sparkline(values: monitor.history.netUp, color: MetricPalette.upC, height: 22)
             HStack {
-                Text("Peak ↓ \(formatRate(monitor.history.netDown.max() ?? 0))")
+                Text(L("Peak ↓ \(formatRate(monitor.history.netDown.max() ?? 0))"))
                     .font(.system(size: 9.5, design: .monospaced)).foregroundStyle(Theme.faint)
                 Spacer()
-                Text("Peak ↑ \(formatRate(monitor.history.netUp.max() ?? 0))")
+                Text(L("Peak ↑ \(formatRate(monitor.history.netUp.max() ?? 0))"))
                     .font(.system(size: 9.5, design: .monospaced)).foregroundStyle(Theme.faint)
             }
             if !notConnected.isEmpty {
                 Divider()
-                MenuSectionHeader("Not Connected")
+                MenuSectionHeader(L("Not Connected"))
                 ForEach(notConnected) { i in
                     Text(i.name).font(.system(size: 10.5, design: .monospaced))
                         .foregroundStyle(Theme.dim).lineLimit(1).frame(maxWidth: .infinity, alignment: .leading)
@@ -619,18 +619,18 @@ struct SSDMenuDropdown: View {
         let local = vols.filter { $0.isLocal }
         let net = vols.filter { !$0.isLocal }
         VStack(alignment: .leading, spacing: 6) {
-            MenuSectionHeader("Disks")
+            MenuSectionHeader(L("Disks"))
             ForEach(local) { v in volumeRow(v) }
             if !net.isEmpty {
                 Divider()
-                MenuSectionHeader("Network Disks")
+                MenuSectionHeader(L("Network Disks"))
                 ForEach(net) { v in volumeRow(v) }
             }
             Divider()
-            MenuSectionHeader("Activity")
-            MenuKV(label: "Read", value: formatRate(d.readBytesPerSec), color: MetricPalette.downC)
+            MenuSectionHeader(L("Activity"))
+            MenuKV(label: L("Read"), value: formatRate(d.readBytesPerSec), color: MetricPalette.downC)
             Sparkline(values: monitor.history.diskRead, color: MetricPalette.downC, height: 22)
-            MenuKV(label: "Write", value: formatRate(d.writeBytesPerSec), color: MetricPalette.upC)
+            MenuKV(label: L("Write"), value: formatRate(d.writeBytesPerSec), color: MetricPalette.upC)
             Sparkline(values: monitor.history.diskWrite, color: MetricPalette.upC, height: 22)
             Divider()
             OpenDashboardButton()
@@ -646,7 +646,7 @@ struct SSDMenuDropdown: View {
                 Text(v.name).font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.text)
                     .lineLimit(1).truncationMode(.middle)
                 Spacer(minLength: 0)
-                Text("\(iStatBytes(UInt64(max(0, v.freeBytes)))) free")
+                Text(L("\(iStatBytes(UInt64(max(0, v.freeBytes)))) free"))
                     .font(.system(size: 10, design: .monospaced)).foregroundStyle(Theme.dim)
             }
             GeometryReader { geo in
@@ -670,13 +670,13 @@ struct SensorsMenuDropdown: View {
         let temp = s.temperature
         let thermal = s.thermal
         VStack(alignment: .leading, spacing: 7) {
-            MenuSectionHeader("Sensors")
+            MenuSectionHeader(L("Sensors"))
 
             if temp.groups.isEmpty {
-                Text("no sensors available")
+                Text(L("no sensors available"))
                     .font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
             } else {
-                MenuSectionHeader("Temperatures")
+                MenuSectionHeader(L("Temperatures"))
                 ScrollView {
                     VStack(alignment: .leading, spacing: 5) {
                         ForEach(temp.groups) { group in
@@ -685,7 +685,7 @@ struct SensorsMenuDropdown: View {
                                     .font(.system(size: 9, weight: .bold, design: .monospaced))
                                     .tracking(0.5).foregroundStyle(Theme.faint)
                                 Spacer()
-                                Text("avg \(formatTemperature(group.average, fahrenheit: fahrenheit)) · max \(formatTemperature(group.maximum, fahrenheit: fahrenheit))")
+                                Text(L("avg \(formatTemperature(group.average, fahrenheit: fahrenheit)) · max \(formatTemperature(group.maximum, fahrenheit: fahrenheit))"))
                                     .font(.system(size: 9, design: .monospaced)).foregroundStyle(Theme.faint)
                             }
                             ForEach(group.sensors) { sensor in
@@ -699,9 +699,9 @@ struct SensorsMenuDropdown: View {
 
             Divider()
             HStack {
-                MenuSectionHeader("Fans")
+                MenuSectionHeader(L("Fans"))
                 if thermal.hasFans {
-                    Text(thermal.pressure.rawValue.capitalized)
+                    Text(thermal.pressure.displayName)
                         .font(.system(size: 9.5, design: .monospaced)).foregroundStyle(Theme.faint)
                 }
             }
@@ -710,7 +710,7 @@ struct SensorsMenuDropdown: View {
                     SensorFanRow(label: fanLabel(idx, count: thermal.fanRPMs.count), rpm: rpm)
                 }
             } else {
-                Text("Fanless").font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
+                Text(L("Fanless")).font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
             }
 
             Divider()
@@ -720,8 +720,8 @@ struct SensorsMenuDropdown: View {
     }
 
     private func fanLabel(_ idx: Int, count: Int) -> String {
-        if count == 2 { return idx == 0 ? "Left Fan" : "Right Fan" }
-        return "Fan \(idx + 1)"
+        if count == 2 { return idx == 0 ? L("Left Fan") : L("Right Fan") }
+        return L("Fan \(idx + 1)")
     }
 }
 
@@ -776,7 +776,7 @@ struct BatteryMenuDropdown: View {
         let chargeColor: Color = b.isCharging ? MetricPalette.gpuC
             : (b.percent <= 20 ? Theme.heat(1) : Theme.text)
         VStack(alignment: .leading, spacing: 7) {
-            MenuSectionHeader("Battery")
+            MenuSectionHeader(L("Battery"))
 
             if b.hasBattery {
                 HStack {
@@ -793,17 +793,17 @@ struct BatteryMenuDropdown: View {
                 }.frame(height: 7)
 
                 Divider()
-                MenuKV(label: "Health", value: b.healthPercent > 0 ? "\(Int(b.healthPercent.rounded()))%" : "—")
-                MenuKV(label: "Cycles", value: "\(b.cycleCount)")
-                MenuKV(label: "Condition", value: b.condition.isEmpty ? "—" : b.condition,
+                MenuKV(label: L("Health"), value: b.healthPercent > 0 ? "\(Int(b.healthPercent.rounded()))%" : "—")
+                MenuKV(label: L("Cycles"), value: "\(b.cycleCount)")
+                MenuKV(label: L("Condition"), value: b.condition.isEmpty ? "—" : b.condition,
                        color: b.condition == "Normal" ? Theme.text : Theme.heat(1))
             } else {
-                Text("No battery (desktop Mac)")
+                Text(L("No battery (desktop Mac)"))
                     .font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
             }
 
             Divider()
-            MenuSectionHeader("Power")
+            MenuSectionHeader(L("Power"))
             let pmax = 50.0
             MenuMeterRow(label: "CPU", value: wattStr(s.power.cpuWatts),
                          fraction: s.power.cpuWatts / pmax, color: Color(nsColor: MetricPalette.pCPU))
@@ -818,7 +818,7 @@ struct BatteryMenuDropdown: View {
                              fraction: s.power.dramWatts / pmax, color: MetricPalette.downC)
             }
             HStack {
-                Text("Total (SoC)").font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
+                Text(L("Total (SoC)")).font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
                 Spacer()
                 Text(wattStr(s.power.socWatts))
                     .font(.system(size: 11, weight: .semibold, design: .monospaced)).foregroundStyle(Theme.text)
@@ -827,7 +827,7 @@ struct BatteryMenuDropdown: View {
             let energy = s.processes.sorted { $0.cpuPercent > $1.cpuPercent }.prefix(3)
             if !energy.isEmpty {
                 Divider()
-                MenuSectionHeader("Apps Using Energy")
+                MenuSectionHeader(L("Apps Using Energy"))
                 ForEach(Array(energy)) { proc in
                     HStack(spacing: 6) {
                         Text(proc.name).font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.text)

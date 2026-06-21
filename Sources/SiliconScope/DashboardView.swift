@@ -86,7 +86,7 @@ struct DashboardView: View {
         if monitor.gpuThrottling {
             let level: SystemSnapshot.Warning.Level = s.thermal.pressure == .critical ? .critical : .warning
             warnings.append(.init(level: level,
-                                  message: String(format: "GPU throttling — clock %.0f MHz (-%.0f%% vs peak)",
+                                  message: String(format: L("GPU throttling — clock %.0f MHz (-%.0f%% vs peak)"),
                                                    s.gpu.freqMHz, monitor.gpuClockDropFraction * 100)))
         }
         return warnings
@@ -106,7 +106,7 @@ private struct HeaderView: View {
             Text("SiliconScope").font(.system(size: 14, weight: .bold, design: .monospaced))
             if let t = topology {
                 Text(t.chipName).font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
-                Text("\(t.eCoreCount + t.pCoreCount) cores · \(t.eCoreCount)E+\(t.pCoreCount)P")
+                Text(L("\(t.eCoreCount + t.pCoreCount) cores · \(t.eCoreCount)E+\(t.pCoreCount)P"))
                     .font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.faint)
             }
             Spacer()
@@ -170,7 +170,7 @@ private struct AIWorkloadCard: View {
     private var shortChip: String { chipName.replacingOccurrences(of: "Apple ", with: "") }
 
     var body: some View {
-        Card(title: "AI Workload") {
+        Card(title: L("AI Workload")) {
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 8) {
                     Circle().fill(bottleneck.color).frame(width: 9, height: 9)
@@ -183,7 +183,7 @@ private struct AIWorkloadCard: View {
                         .lineLimit(1)
                     Spacer(minLength: 0)
                 }
-                Bar(label: "Mem BW % of ceiling",
+                Bar(label: L("Mem BW % of ceiling"),
                     value: bwFraction,
                     detail: String(format: "%.0f%% · %.0f / %.0f GB/s · %@",
                                    bwFraction * 100, bandwidth.totalGBs, ceilingGBs, shortChip))
@@ -196,7 +196,7 @@ private struct AIWorkloadCard: View {
                     if bottleneck != .idle {
                         Text("·").font(.system(size: 10.5)).foregroundStyle(Theme.faint)
                         Text(bottleneck == .thermalThrottled
-                             ? String(format: "GPU clock -%.0f%% vs peak", clockDropFraction * 100)
+                             ? String(format: L("GPU clock -%.0f%% vs peak"), clockDropFraction * 100)
                              : engineHint)
                             .font(.system(size: 10.5, design: .monospaced))
                             .foregroundStyle(Theme.dim)
@@ -233,7 +233,7 @@ private struct AIRuntimeCard: View {
     }
 
     var body: some View {
-        Card(title: "AI Runtime") {
+        Card(title: L("AI Runtime")) {
             VStack(alignment: .leading, spacing: 4) {
                 header
                 if modelPresent { engineLine }
@@ -251,7 +251,7 @@ private struct AIRuntimeCard: View {
             HStack(spacing: 6) {
                 if isBenchmarking {
                     ProgressView().controlSize(.small).scaleEffect(0.7)
-                    Text("measuring tok/s…")
+                    Text(L("measuring tok/s…"))
                         .font(.system(size: 10, design: .monospaced)).foregroundStyle(Theme.dim)
                 } else if let b = benchmark {
                     Image(systemName: "bolt.fill").font(.system(size: 9.5)).foregroundStyle(Theme.heat(0.3))
@@ -259,12 +259,12 @@ private struct AIRuntimeCard: View {
                         .font(.system(size: 10.5, weight: .medium, design: .monospaced)).foregroundStyle(Theme.text)
                     Text(String(format: "· %.0f tok/Wh", b.tokensPerWattHour))
                         .font(.system(size: 10, design: .monospaced)).foregroundStyle(Theme.dim)
-                    Button("re-measure", action: onBenchmark)
+                    Button(L("re-measure"), action: onBenchmark)
                         .font(.system(size: 10, design: .monospaced)).buttonStyle(.plain)
                         .foregroundStyle(Theme.accent)
                 } else {
                     Button(action: onBenchmark) {
-                        Label("Measure tok/s", systemImage: "bolt")
+                        Label(L("Measure tok/s"), systemImage: "bolt")
                             .font(.system(size: 10.5, design: .monospaced))
                     }
                     .buttonStyle(.plain).foregroundStyle(Theme.accent)
@@ -296,7 +296,7 @@ private struct AIRuntimeCard: View {
         } else {
             HStack(spacing: 8) {
                 Image(systemName: "brain").font(.system(size: 11)).foregroundStyle(Theme.faint)
-                Text("No local AI runtime detected")
+                Text(L("No local AI runtime detected"))
                     .font(.system(size: 12, design: .monospaced)).foregroundStyle(Theme.dim)
                 Spacer(minLength: 0)
             }
@@ -309,18 +309,18 @@ private struct AIRuntimeCard: View {
     @ViewBuilder private var engineLine: some View {
         if api.isReachable, let split = api.primaryModel?.processorLabel {
             HStack(spacing: 6) {
-                Text("Offload").font(.system(size: 10.5, design: .monospaced)).foregroundStyle(Theme.dim)
+                Text(L("Offload")).font(.system(size: 10.5, design: .monospaced)).foregroundStyle(Theme.dim)
                 Text(split).font(.system(size: 10.5, weight: .medium, design: .monospaced))
                     .foregroundStyle(Theme.text)
                 Spacer(minLength: 0)
             }
         } else {
             HStack(spacing: 6) {
-                Text("Engine").font(.system(size: 10.5, design: .monospaced)).foregroundStyle(Theme.dim)
+                Text(L("Engine")).font(.system(size: 10.5, design: .monospaced)).foregroundStyle(Theme.dim)
                 Text(likelyEngine).font(.system(size: 10.5, weight: .medium, design: .monospaced))
                     .foregroundStyle(Theme.text)
                 if cpuOffloadLikely {
-                    Text("· likely CPU offload (est.)")
+                    Text(L("· likely CPU offload (est.)"))
                         .font(.system(size: 10.5, design: .monospaced)).foregroundStyle(Theme.heat(0.7))
                 }
                 Spacer(minLength: 0)
@@ -349,12 +349,12 @@ private struct AIRuntimeCard: View {
             switch api.status {
             case .ok:
                 runtimeNote(likelyEngine.hasPrefix("GPU active")
-                    ? "runtime idle — GPU load is from another app (in-app / unmanaged)"
-                    : "runtime running — no model loaded")
-            case .runningNoServer:  runtimeNote("runtime running — start its local server for model + tok/s")
-            case .apiNotApplicable: runtimeNote("CLI runtime — no local API")
-            case .unreachable:      runtimeNote("runtime API unreachable")
-            case .disabled:         runtimeNote("Enable “Connect to local AI runtimes” in Settings for model + tok/s")
+                    ? L("runtime idle — GPU load is from another app (in-app / unmanaged)")
+                    : L("runtime running — no model loaded"))
+            case .runningNoServer:  runtimeNote(L("runtime running — start its local server for model + tok/s"))
+            case .apiNotApplicable: runtimeNote(L("CLI runtime — no local API"))
+            case .unreachable:      runtimeNote(L("runtime API unreachable"))
+            case .disabled:         runtimeNote(L("Enable “Connect to local AI runtimes” in Settings for model + tok/s"))
             }
         }
     }
@@ -378,7 +378,7 @@ private struct AIRuntimeCard: View {
 
     private var budgetLine: some View {
         HStack(spacing: 8) {
-            Text("Model budget").font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
+            Text(L("Model budget")).font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
             Text(budgetText)
                 .font(.system(size: 11, weight: .medium, design: .monospaced))
                 .foregroundStyle(Theme.text)
@@ -400,9 +400,9 @@ private struct AIRuntimeCard: View {
         let hasResidentModel = budget.loadableBytes > budget.headroomNowBytes + (1 << 30)
         if hasResidentModel, let load = budget.fitsLoadable.first {
             let loadB = String(format: "%.0fB", load.maxParamsBillions)
-            return "+\(nowB) alongside · ~\(loadB) if you unload \(residentModelName) (Q4_K_M)"
+            return L("+\(nowB) alongside · ~\(loadB) if you unload \(residentModelName) (Q4_K_M)")
         }
-        return "largest model ~\(nowB) (Q4_K_M)"
+        return L("largest model ~\(nowB) (Q4_K_M)")
     }
 
     private var residentModelName: String {
@@ -426,12 +426,12 @@ private struct CPUCard: View {
 
     var body: some View {
         Card(title: "CPU", menuBarPin: $cpuMB) {
-            Bar(label: "E-cores", value: cpu.eUsage,
+            Bar(label: L("E-cores"), value: cpu.eUsage,
                 detail: String(format: "%.0f%%  %.0f MHz", cpu.eUsagePercent, cpu.eFreqMHz), color: eColor)
-            Bar(label: "P-cores", value: cpu.pUsage,
+            Bar(label: L("P-cores"), value: cpu.pUsage,
                 detail: String(format: "%.0f%%  %.0f MHz", cpu.pUsagePercent, cpu.pFreqMHz), color: pColor)
             Spacer(minLength: 2)
-            GraphCaption("E (amber) / P (blue) usage · 60s")
+            GraphCaption(L("E (amber) / P (blue) usage · 60s"))
             ZStack {
                 Sparkline(values: eHistory, color: eColor, height: 24, yDomain: 0...1)
                 Sparkline(values: pHistory, color: pColor, height: 24, yDomain: 0...1)
@@ -456,16 +456,16 @@ private struct AcceleratorCard: View {
     private let aneColor = MetricPalette.aneC       // purple
 
     var body: some View {
-        Card(title: "GPU / Media / Neural Engine", menuBarPin: $gpuMB) {
+        Card(title: L("GPU / Media / Neural Engine"), menuBarPin: $gpuMB) {
             Bar(label: "GPU", value: gpu.usage,
                 detail: String(format: "%.0f%%  %.1f W  %.0f MHz", gpu.usagePercent, power.gpuWatts, gpu.freqMHz),
                 color: gpuColor)
-            Bar(label: "Media", value: min(1, bandwidth.mediaGBs / max(mediaPeak, 0.5)),
+            Bar(label: L("Media"), value: min(1, bandwidth.mediaGBs / max(mediaPeak, 0.5)),
                 detail: String(format: "%.1f GB/s", bandwidth.mediaGBs), color: mediaColor)
-            Bar(label: "ANE est.", value: min(1, power.aneWatts / max(anePeak, 0.1)),
+            Bar(label: L("ANE est."), value: min(1, power.aneWatts / max(anePeak, 0.1)),
                 detail: String(format: "%.1f W", power.aneWatts), color: aneColor)
             Spacer(minLength: 2)
-            GraphCaption("GPU (green) / Media (orange) / ANE (purple) · 60s")
+            GraphCaption(L("GPU (green) / Media (orange) / ANE (purple) · 60s"))
             ZStack {
                 Sparkline(values: gpuHistory, color: gpuColor, height: 24, yDomain: 0...1)
                 Sparkline(values: mediaHistory.map { min(1, $0 / max(mediaPeak, 0.5)) },
@@ -501,7 +501,7 @@ private struct MemoryBandwidthCard: View {
     }
 
     var body: some View {
-        Card(title: "Memory & Bandwidth") {
+        Card(title: L("Memory & Bandwidth")) {
             HStack(alignment: .top, spacing: 10) {
                 memorySection.frame(maxWidth: .infinity, alignment: .leading)
                 Divider().overlay(Theme.border)
@@ -512,7 +512,7 @@ private struct MemoryBandwidthCard: View {
 
     private var memorySection: some View {
         VStack(alignment: .leading, spacing: 3) {
-            SubLabel("Memory", menuBarPin: $memMB)
+            SubLabel(L("Memory"), menuBarPin: $memMB)
             HStack {
                 Text(String(format: "%.1f / %.0f GB", memory.usedGB, memory.totalGB))
                     .font(.system(size: 12, weight: .medium, design: .monospaced))
@@ -526,12 +526,12 @@ private struct MemoryBandwidthCard: View {
                 (memory.compressedFraction, compressedColor),
                 (memory.freeFraction, freeColor),
             ])
-            LegendRow(color: wiredColor, key: "Wired", value: String(format: "%.1f GB", memory.wiredGB))
-            LegendRow(color: activeColor, key: "Active", value: String(format: "%.1f GB", memory.activeGB))
-            LegendRow(color: compressedColor, key: "Compressed", value: String(format: "%.1f GB", memory.compressedGB))
-            LegendRow(color: freeColor, key: "Free", value: String(format: "%.1f GB", memory.freeGB))
+            LegendRow(color: wiredColor, key: L("Wired"), value: String(format: "%.1f GB", memory.wiredGB))
+            LegendRow(color: activeColor, key: L("Active"), value: String(format: "%.1f GB", memory.activeGB))
+            LegendRow(color: compressedColor, key: L("Compressed"), value: String(format: "%.1f GB", memory.compressedGB))
+            LegendRow(color: freeColor, key: L("Free"), value: String(format: "%.1f GB", memory.freeGB))
             HStack {
-                Text("Pressure").font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
+                Text(L("Pressure")).font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
                 Spacer()
                 Text(String(format: "%.0f%%", memory.pressurePercent))
                     .font(.system(size: 11, weight: .medium, design: .monospaced)).foregroundStyle(pressureColor)
@@ -543,9 +543,9 @@ private struct MemoryBandwidthCard: View {
                         .frame(width: max(2, geo.size.width * min(1, memory.pressurePercent / 100)))
                 }
             }.frame(height: 4)
-            KV(key: "App Memory", value: String(format: "%.1f GB", memory.appMemoryGB))
-            KV(key: "Cached", value: String(format: "%.1f GB", memory.cachedFilesGB))
-            KV(key: "Swap", value: String(format: "%.1f GB", memory.swapUsedGB))
+            KV(key: L("App Memory"), value: String(format: "%.1f GB", memory.appMemoryGB))
+            KV(key: L("Cached"), value: String(format: "%.1f GB", memory.cachedFilesGB))
+            KV(key: L("Swap"), value: String(format: "%.1f GB", memory.swapUsedGB))
             Spacer(minLength: 4)
             Sparkline(values: memHistory, color: activeColor, height: 22)
         }
@@ -553,13 +553,13 @@ private struct MemoryBandwidthCard: View {
 
     private var bandwidthSection: some View {
         VStack(alignment: .leading, spacing: 3) {
-            SubLabel("Bandwidth")
-            Bar(label: "Total", value: min(1, bandwidth.totalGBs / max(bandwidthPeak, 1)),
+            SubLabel(L("Bandwidth"))
+            Bar(label: L("Total"), value: min(1, bandwidth.totalGBs / max(bandwidthPeak, 1)),
                 detail: String(format: "%.0f GB/s", bandwidth.totalGBs))
             KV(key: "CPU", value: String(format: "%.0f GB/s", bandwidth.cpuGBs))
             KV(key: "GPU", value: String(format: "%.0f GB/s", bandwidth.gpuGBs))
-            KV(key: "Media", value: String(format: "%.0f GB/s", bandwidth.mediaGBs))
-            KV(key: "Other", value: String(format: "%.0f GB/s", bandwidth.otherGBs))
+            KV(key: L("Media"), value: String(format: "%.0f GB/s", bandwidth.mediaGBs))
+            KV(key: L("Other"), value: String(format: "%.0f GB/s", bandwidth.otherGBs))
             Spacer(minLength: 4)
             Sparkline(values: bwHistory, color: Color(red: 0.42, green: 0.66, blue: 0.95), height: 22)
         }
@@ -582,7 +582,7 @@ private struct NetworkDiskCard: View {
     private let upColor = Color(red: 0.95, green: 0.62, blue: 0.30)
 
     var body: some View {
-        Card(title: "Network & Disk") {
+        Card(title: L("Network & Disk")) {
             HStack(alignment: .top, spacing: 10) {
                 networkSection.frame(maxWidth: .infinity, alignment: .leading)
                 Divider().overlay(Theme.border)
@@ -593,9 +593,9 @@ private struct NetworkDiskCard: View {
 
     private var networkSection: some View {
         VStack(alignment: .leading, spacing: 3) {
-            SubLabel("Network", menuBarPin: $netMB)
-            KV(key: "↓ Download", value: formatRate(network.downloadBytesPerSec), valueColor: downColor)
-            KV(key: "↑ Upload", value: formatRate(network.uploadBytesPerSec), valueColor: upColor)
+            SubLabel(L("Network"), menuBarPin: $netMB)
+            KV(key: L("↓ Download"), value: formatRate(network.downloadBytesPerSec), valueColor: downColor)
+            KV(key: L("↑ Upload"), value: formatRate(network.uploadBytesPerSec), valueColor: upColor)
             Spacer(minLength: 4)
             Sparkline(values: downHistory, color: downColor, height: 22)
             Sparkline(values: upHistory, color: upColor, height: 22)
@@ -604,11 +604,11 @@ private struct NetworkDiskCard: View {
 
     private var diskSection: some View {
         VStack(alignment: .leading, spacing: 3) {
-            SubLabel("Disk", menuBarPin: $ssdMB)
-            KV(key: "Read", value: formatRate(disk.readBytesPerSec), valueColor: downColor)
-            KV(key: "Write", value: formatRate(disk.writeBytesPerSec), valueColor: upColor)
-            Bar(label: "Used", value: disk.usedFraction,
-                detail: "free \(formatBytes(disk.freeBytes)) / \(formatBytes(disk.totalBytes))")
+            SubLabel(L("Disk"), menuBarPin: $ssdMB)
+            KV(key: L("Read"), value: formatRate(disk.readBytesPerSec), valueColor: downColor)
+            KV(key: L("Write"), value: formatRate(disk.writeBytesPerSec), valueColor: upColor)
+            Bar(label: L("Used"), value: disk.usedFraction,
+                detail: L("free \(formatBytes(disk.freeBytes)) / \(formatBytes(disk.totalBytes))"))
             Spacer(minLength: 4)
             Sparkline(values: readHistory, color: downColor, height: 22)
             Sparkline(values: writeHistory, color: upColor, height: 22)
@@ -649,26 +649,26 @@ private struct SensorsCard: View {
     }
 
     var body: some View {
-        Card(title: "Sensors", menuBarPin: $sensorsMB) {
+        Card(title: L("Sensors"), menuBarPin: $sensorsMB) {
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 16) {
                     HStack(spacing: 6) {
-                        Text("Pressure").font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
-                        Text(thermal.pressure.rawValue)
+                        Text(L("Pressure")).font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
+                        Text(thermal.pressure.displayName)
                             .font(.system(size: 11, weight: .medium, design: .monospaced)).foregroundStyle(pressureColor)
                     }
                     HStack(spacing: 6) {
-                        Text("Fans").font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
+                        Text(L("Fans")).font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
                         Text(thermal.hasFans
                             ? thermal.fanRPMs.map { String(format: "%.0f", $0) }.joined(separator: " / ") + " rpm"
-                            : "fanless")
+                            : L("fanless"))
                             .font(.system(size: 11, weight: .medium, design: .monospaced)).foregroundStyle(Theme.text)
                     }
                     Spacer()
                 }
                 Divider().overlay(Theme.border)
                 if temperature.groups.isEmpty {
-                    Text("no sensors available")
+                    Text(L("no sensors available"))
                         .font(.system(size: 11, design: .monospaced)).foregroundStyle(Theme.dim)
                     Spacer(minLength: 0)
                 } else {
@@ -713,7 +713,7 @@ private struct SensorGroupRow: View {
                     .font(.system(size: 11.5, weight: .medium, design: .monospaced)).foregroundStyle(Theme.text)
                 Text("(\(group.count))").font(.system(size: 10, design: .monospaced)).foregroundStyle(Theme.faint)
                 Spacer()
-                Text("avg \(formatTemperature(group.average, fahrenheit: fahrenheit)) · max \(formatTemperature(group.maximum, fahrenheit: fahrenheit))")
+                Text(L("avg \(formatTemperature(group.average, fahrenheit: fahrenheit)) · max \(formatTemperature(group.maximum, fahrenheit: fahrenheit))"))
                     .font(.system(size: 10.5, design: .monospaced))
                     .foregroundStyle(Theme.heat(min(1, group.maximum / 100)))
             }
@@ -747,11 +747,11 @@ private struct ProcessCard: View {
     }
 
     var body: some View {
-        Card(title: "Processes") {
+        Card(title: L("Processes")) {
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 6) {
                     Image(systemName: "magnifyingglass").font(.system(size: 10)).foregroundStyle(Theme.faint)
-                    TextField("Filter by name", text: $filter)
+                    TextField(L("Filter by name"), text: $filter)
                         .textFieldStyle(.plain).font(.system(size: 11, design: .monospaced))
                     if !filter.isEmpty {
                         Button { filter = "" } label: { Image(systemName: "xmark.circle.fill") }
@@ -763,9 +763,9 @@ private struct ProcessCard: View {
 
                 HStack {
                     Text("PID").frame(width: 56, alignment: .leading)
-                    header("CPU%", .cpu).frame(width: 60, alignment: .trailing)
-                    header("MEMORY", .memory).frame(width: 84, alignment: .trailing)
-                    header("NAME", .name).frame(maxWidth: .infinity, alignment: .leading)
+                    header(L("CPU%"), .cpu).frame(width: 60, alignment: .trailing)
+                    header(L("MEMORY"), .memory).frame(width: 84, alignment: .trailing)
+                    header(L("NAME"), .name).frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .font(.system(size: 9, weight: .semibold, design: .monospaced))
 
@@ -784,8 +784,8 @@ private struct ProcessCard: View {
                             .font(.system(size: 11, design: .monospaced))
                             .contentShape(Rectangle())
                             .contextMenu {
-                                Button("Quit \(process.name)") { pendingKill = process; pendingForce = false }
-                                Button("Force Quit \(process.name)", role: .destructive) {
+                                Button(L("Quit \(process.name)")) { pendingKill = process; pendingForce = false }
+                                Button(L("Force Quit \(process.name)"), role: .destructive) {
                                     pendingKill = process; pendingForce = true
                                 }
                             }
@@ -796,18 +796,22 @@ private struct ProcessCard: View {
             }
         }
         .confirmationDialog(
-            pendingKill.map { "\(pendingForce ? "Force quit" : "Quit") \($0.name)  (pid \($0.pid))?" } ?? "",
+            pendingKill.map { p in
+                pendingForce
+                    ? L("Force Quit \(p.name)  (pid \(p.pid))?")
+                    : L("Quit \(p.name)  (pid \(p.pid))?")
+            } ?? "",
             isPresented: Binding(get: { pendingKill != nil }, set: { if !$0 { pendingKill = nil } }),
             titleVisibility: .visible
         ) {
-            Button(pendingForce ? "Force Quit" : "Quit", role: .destructive) {
+            Button(pendingForce ? L("Force Quit") : L("Quit"), role: .destructive) {
                 if let process = pendingKill {
                     if pendingForce { ProcessControl.forceKill(pid: process.pid) }
                     else { ProcessControl.terminate(pid: process.pid) }
                 }
                 pendingKill = nil
             }
-            Button("Cancel", role: .cancel) { pendingKill = nil }
+            Button(L("Cancel"), role: .cancel) { pendingKill = nil }
         }
     }
 

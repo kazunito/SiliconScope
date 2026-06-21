@@ -1,0 +1,181 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ (idle)" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@（アイドル）" } }
+      }
+    },
+    "%@ idle · GPU: other app" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@ アイドル · GPU: 別アプリ" } }
+      }
+    },
+    "ANE (CoreML)" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ANE（CoreML）" } }
+      }
+    },
+    "Bandwidth-bound" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "帯域律速" } }
+      }
+    },
+    "Charged" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "満充電" } }
+      }
+    },
+    "Charging" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "充電中" } }
+      }
+    },
+    "Clock held down by heat — sustained performance limited" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "発熱でクロックが抑制 — 持続性能が制限されています" } }
+      }
+    },
+    "Compute-bound" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "演算律速" } }
+      }
+    },
+    "fair" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "やや高" } }
+      }
+    },
+    "GPU active" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU 稼働中" } }
+      }
+    },
+    "GPU active — incl. video" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU 稼働中 — 動画含む" } }
+      }
+    },
+    "GPU active — type unknown" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU 稼働中 — 種別不明" } }
+      }
+    },
+    "GPU busy — no single bottleneck" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU 稼働中 — 単一のボトルネックなし" } }
+      }
+    },
+    "GPU compute is the limiter" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU 演算が律速要因です" } }
+      }
+    },
+    "Idle" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アイドル" } }
+      }
+    },
+    "in-app / unmanaged" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アプリ内 / 非管理" } }
+      }
+    },
+    "critical" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "危機的" } }
+      }
+    },
+    "LLM (GPU/Metal)" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "LLM（GPU/Metal）" } }
+      }
+    },
+    "LLM (likely)" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "LLM（推定）" } }
+      }
+    },
+    "Memory bandwidth is the limiter" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモリ帯域が律速要因です" } }
+      }
+    },
+    "Memory pressure: critical" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモリプレッシャー：危機的" } }
+      }
+    },
+    "Memory pressure: elevated" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモリプレッシャー：上昇" } }
+      }
+    },
+    "Memory-pressured" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモリ逼迫" } }
+      }
+    },
+    "No Battery" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "バッテリーなし" } }
+      }
+    },
+    "No significant GPU workload" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "目立った GPU 負荷なし" } }
+      }
+    },
+    "nominal" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "正常" } }
+      }
+    },
+    "none" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "なし" } }
+      }
+    },
+    "Not Charging" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "充電していません" } }
+      }
+    },
+    "On Battery" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "バッテリー駆動" } }
+      }
+    },
+    "serious" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "深刻" } }
+      }
+    },
+    "Thermal pressure — serious" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "発熱プレッシャー — 深刻" } }
+      }
+    },
+    "Thermal throttling — critical" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "発熱スロットリング — 危機的" } }
+      }
+    },
+    "Thermal-throttled" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "発熱スロットリング" } }
+      }
+    },
+    "Unified memory full — swapping limits throughput" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ユニファイドメモリが満杯 — スワップがスループットを制限" } }
+      }
+    },
+    "unknown" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "不明" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

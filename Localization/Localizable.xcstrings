@@ -1,0 +1,691 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "+%@ alongside · ~%@ if you unload %@ (Q4_K_M)" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "+%1$@ 併用可 · %3$@ をアンロードすれば ~%2$@ (Q4_K_M)" } }
+      }
+    },
+    "↑ Upload" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "↑ アップロード" } }
+      }
+    },
+    "↓ Download" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "↓ ダウンロード" } }
+      }
+    },
+    "· likely CPU offload (est.)" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "· CPU オフロードの可能性（推定）" } }
+      }
+    },
+    "%@ free" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@ 空き" } }
+      }
+    },
+    "%lld cores · %lldE+%lldP" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%lld コア · %lldE+%lldP" } }
+      }
+    },
+    "Active" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アクティブ" } }
+      }
+    },
+    "Activity" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アクティビティ" } }
+      }
+    },
+    "AI runtime" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "AIランタイム" } }
+      }
+    },
+    "AI Runtime" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "AI ランタイム" } }
+      }
+    },
+    "AI Workload" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "AI ワークロード" } }
+      }
+    },
+    "Alert notifications" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アラート通知" } }
+      }
+    },
+    "ANE est." : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ANE 推定" } }
+      }
+    },
+    "App Memory" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アプリメモリ" } }
+      }
+    },
+    "Apps Using Energy" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "電力を使用中のアプリ" } }
+      }
+    },
+    "avg %@ · max %@" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "平均 %@ · 最大 %@" } }
+      }
+    },
+    "Automatically check for updates" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アップデートを自動的に確認" } }
+      }
+    },
+    "Bandwidth" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "帯域" } }
+      }
+    },
+    "Battery" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "バッテリー" } }
+      }
+    },
+    "Benchmark failed — is %@'s local server reachable?" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ベンチマーク失敗 — %@ のローカルサーバーに到達できますか？" } }
+      }
+    },
+    "Cached" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "キャッシュ" } }
+      }
+    },
+    "Cached Files" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "キャッシュファイル" } }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "キャンセル" } }
+      }
+    },
+    "Celsius (°C)" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "摂氏 (°C)" } }
+      }
+    },
+    "Check for Updates…" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アップデートを確認…" } }
+      }
+    },
+    "CLI runtime — no local API" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CLI ランタイム — ローカル API なし" } }
+      }
+    },
+    "Compact GPU mode (menu bar)" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "コンパクトGPU表示（メニューバー）" } }
+      }
+    },
+    "Compressed" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "圧縮済み" } }
+      }
+    },
+    "Condition" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "状態" } }
+      }
+    },
+    "Connect to local AI runtimes" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ローカルAIランタイムに接続" } }
+      }
+    },
+    "Connected" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "接続済み" } }
+      }
+    },
+    "CPU temp" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU 温度" } }
+      }
+    },
+    "Cycles" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "サイクル数" } }
+      }
+    },
+    "Disk" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ディスク" } }
+      }
+    },
+    "Disks" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ディスク" } }
+      }
+    },
+    "DRAM power" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "DRAM 電力" } }
+      }
+    },
+    "E (amber) / P (blue) usage · 60s" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "E（橙）/ P（青）使用率 · 60秒" } }
+      }
+    },
+    "E-cores" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "E コア" } }
+      }
+    },
+    "Enable “Connect to local AI runtimes” and load a model first" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "先に設定で「ローカルAIランタイムに接続」を有効化し、モデルを読み込んでください" } }
+      }
+    },
+    "Enable “Connect to local AI runtimes” in Settings for model + tok/s" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "モデルと tok/s を表示するには設定で「ローカルAIランタイムに接続」を有効化" } }
+      }
+    },
+    "Engine" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "エンジン" } }
+      }
+    },
+    "Fahrenheit (°F)" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "華氏 (°F)" } }
+      }
+    },
+    "Fan %lld" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ファン %lld" } }
+      }
+    },
+    "Fanless" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ファンレス" } }
+      }
+    },
+    "fanless" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ファンレス" } }
+      }
+    },
+    "Fans" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ファン" } }
+      }
+    },
+    "Filter by name" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "名前で絞り込み" } }
+      }
+    },
+    "Fits now" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "現在収まる" } }
+      }
+    },
+    "Force Quit" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "強制終了" } }
+      }
+    },
+    "Force Quit %@" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@ を強制終了" } }
+      }
+    },
+    "Force Quit %@  (pid %d)?" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@ を強制終了しますか？  (pid %d)" } }
+      }
+    },
+    "Free" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "空き" } }
+      }
+    },
+    "free %@ / %@" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "空き %@ / %@" } }
+      }
+    },
+    "Free up memory to avoid swapping." : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "スワップを避けるためメモリを解放してください。" } }
+      }
+    },
+    "GPU (green) / Media (orange) / ANE (purple) · 60s" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU（緑）/ メディア（橙）/ ANE（紫）· 60秒" } }
+      }
+    },
+    "GPU / Media / Neural" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU / メディア / ニューラル" } }
+      }
+    },
+    "GPU / Media / Neural Engine" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU / メディア / Neural Engine" } }
+      }
+    },
+    "GPU clock -%.0f%% vs peak" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU クロック ピーク比 -%.0f%%" } }
+      }
+    },
+    "GPU clock held %.0f%% below peak by heat — sustained performance limited." : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "発熱により GPU クロックがピークより %.0f%% 低く抑えられています — 持続性能が制限されています。" } }
+      }
+    },
+    "GPU thermal throttle" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU 発熱スロットリング" } }
+      }
+    },
+    "GPU thermal throttling" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU 発熱スロットリング" } }
+      }
+    },
+    "GPU throttling — clock %.0f MHz (-%.0f%% vs peak)" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU スロットリング — クロック %.0f MHz（ピーク比 -%.0f%%）" } }
+      }
+    },
+    "Health" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "健全度" } }
+      }
+    },
+    "Launch at login" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ログイン時に起動" } }
+      }
+    },
+    "largest model ~%@ (Q4_K_M)" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最大モデル ~%@ (Q4_K_M)" } }
+      }
+    },
+    "Left Fan" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "左ファン" } }
+      }
+    },
+    "LM Studio port" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "LM Studio ポート" } }
+      }
+    },
+    "Load avg" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ロードアベレージ" } }
+      }
+    },
+    "Local AI runtime API (opt-in)" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ローカルAIランタイムAPI（オプトイン）" } }
+      }
+    },
+    "Measure tok/s" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "tok/s を計測" } }
+      }
+    },
+    "measuring tok/s…" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "tok/s 計測中…" } }
+      }
+    },
+    "Media" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メディア" } }
+      }
+    },
+    "Mem BW % of ceiling" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモリ帯域 上限に対する割合" } }
+      }
+    },
+    "Memory" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモリ" } }
+      }
+    },
+    "Memory & Bandwidth" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモリと帯域" } }
+      }
+    },
+    "MEMORY" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモリ" } }
+      }
+    },
+    "Memory pressure: critical" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモリプレッシャー：危機的" } }
+      }
+    },
+    "Memory swapping" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモリスワップ発生" } }
+      }
+    },
+    "Model budget" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "モデル予算" } }
+      }
+    },
+    "NAME" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "名前" } }
+      }
+    },
+    "Network" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ネットワーク" } }
+      }
+    },
+    "Network & Disk" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ネットワークとディスク" } }
+      }
+    },
+    "Network Disks" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ネットワークディスク" } }
+      }
+    },
+    "No battery (desktop Mac)" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "バッテリーなし（デスクトップ Mac）" } }
+      }
+    },
+    "No local AI runtime detected" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ローカルAIランタイムが検出されません" } }
+      }
+    },
+    "no sensors available" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "利用可能なセンサーなし" } }
+      }
+    },
+    "Not Connected" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "未接続" } }
+      }
+    },
+    "Notify on GPU thermal throttle, memory pressure, or swapping (once per event)." : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPUの発熱スロットリング、メモリ逼迫、スワップ発生時に通知します（イベントごとに1回）。" } }
+      }
+    },
+    "Offload" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "オフロード" } }
+      }
+    },
+    "Ollama port" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Ollama ポート" } }
+      }
+    },
+    "Open Dashboard" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ダッシュボードを開く" } }
+      }
+    },
+    "Other" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "その他" } }
+      }
+    },
+    "P-cores" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "P コア" } }
+      }
+    },
+    "Page-ins" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ページイン" } }
+      }
+    },
+    "Page-outs" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ページアウト" } }
+      }
+    },
+    "Pages / sec" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ページ / 秒" } }
+      }
+    },
+    "Peak ↑ %@" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ピーク ↑ %@" } }
+      }
+    },
+    "Peak ↓ %@" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ピーク ↓ %@" } }
+      }
+    },
+    "Power" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "電力" } }
+      }
+    },
+    "Pressure" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "プレッシャー" } }
+      }
+    },
+    "Processes" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "プロセス" } }
+      }
+    },
+    "Quit" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "終了" } }
+      }
+    },
+    "Quit %@" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@ を終了" } }
+      }
+    },
+    "Quit %@  (pid %d)?" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@ を終了しますか？  (pid %d)" } }
+      }
+    },
+    "Read" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "読み込み" } }
+      }
+    },
+    "re-measure" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "再計測" } }
+      }
+    },
+    "Reads the loaded model, processor split, and tokens/sec from AI runtimes on 127.0.0.1. Nothing leaves your Mac." : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "127.0.0.1 上のAIランタイムから、読み込み済みモデル・プロセッサ配分・トークン/秒を読み取ります。データがMacの外に出ることはありません。" } }
+      }
+    },
+    "Refresh interval" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "更新間隔" } }
+      }
+    },
+    "Right Fan" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "右ファン" } }
+      }
+    },
+    "runtime API unreachable" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ランタイム API に到達できません" } }
+      }
+    },
+    "runtime idle — GPU load is from another app (in-app / unmanaged)" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ランタイム待機中 — GPU 負荷は別アプリ由来（アプリ内 / 非管理）" } }
+      }
+    },
+    "runtime running — no model loaded" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ランタイム稼働中 — モデル未読み込み" } }
+      }
+    },
+    "runtime running — start its local server for model + tok/s" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ランタイム稼働中 — モデルと tok/s のためローカルサーバーを起動" } }
+      }
+    },
+    "Sensors" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "センサー" } }
+      }
+    },
+    "Settings…" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "設定…" } }
+      }
+    },
+    "Show this in the menu bar" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メニューバーに表示" } }
+      }
+    },
+    "Showing in the menu bar — click to hide" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メニューバーに表示中 — クリックで非表示" } }
+      }
+    },
+    "SoC power" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "SoC 電力" } }
+      }
+    },
+    "Startup & alerts" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "起動とアラート" } }
+      }
+    },
+    "Swap" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "スワップ" } }
+      }
+    },
+    "Swap-ins" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "スワップイン" } }
+      }
+    },
+    "Swap-outs" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "スワップアウト" } }
+      }
+    },
+    "Temperature" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "温度" } }
+      }
+    },
+    "Temperature unit" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "温度の単位" } }
+      }
+    },
+    "Temperatures" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "各部温度" } }
+      }
+    },
+    "Top by Memory" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモリ使用上位" } }
+      }
+    },
+    "Top Processes" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "上位プロセス" } }
+      }
+    },
+    "TOP PROCESSES" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "上位プロセス" } }
+      }
+    },
+    "Total" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "合計" } }
+      }
+    },
+    "Total (SoC)" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "合計（SoC）" } }
+      }
+    },
+    "TRENDS" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "トレンド" } }
+      }
+    },
+    "Unified memory is full — swapping is limiting throughput." : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ユニファイドメモリが満杯 — スワップがスループットを制限しています。" } }
+      }
+    },
+    "Uptime" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "稼働時間" } }
+      }
+    },
+    "Used" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "使用中" } }
+      }
+    },
+    "Wired" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ワイヤード" } }
+      }
+    },
+    "Workload" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ワークロード" } }
+      }
+    },
+    "Write" : {
+      "localizations" : {
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "書き込み" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

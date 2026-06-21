@@ -290,10 +290,10 @@ final class SiliconScopeMonitor {
     func runBenchmark() async {
         guard !isBenchmarking else { return }
         guard let kind = snapshot.aiRuntime.primaryKind else {
-            benchmarkError = "No local AI runtime detected"; return
+            benchmarkError = L("No local AI runtime detected"); return
         }
         guard let model = snapshot.runtimeAPI.primaryModel?.name, !model.isEmpty else {
-            benchmarkError = "Enable “Connect to local AI runtimes” and load a model first"; return
+            benchmarkError = L("Enable “Connect to local AI runtimes” and load a model first"); return
         }
         let port = benchmarkPort(for: kind)
         let chip = topology?.chipName ?? "Apple Silicon"
@@ -321,7 +321,7 @@ final class SiliconScopeMonitor {
         powerProbe.cancel()
 
         guard let result else {
-            benchmarkError = "Benchmark failed — is \(kind.displayName)'s local server reachable?"
+            benchmarkError = L("Benchmark failed — is \(kind.displayName)'s local server reachable?")
             return
         }
         let avgW = box.watts.isEmpty ? snapshot.power.socWatts : box.watts.reduce(0, +) / Double(box.watts.count)
@@ -371,15 +371,15 @@ final class SiliconScopeMonitor {
         }
         var active: [(key: String, title: String, body: String)] = []
         if gpuThrottling {
-            active.append(("throttle", "GPU thermal throttle",
-                String(format: "GPU clock held %.0f%% below peak by heat — sustained performance limited.",
+            active.append(("throttle", L("GPU thermal throttle"),
+                String(format: L("GPU clock held %.0f%% below peak by heat — sustained performance limited."),
                        gpuClockDropFraction * 100)))
         }
         if memoryRisk == .swapping {
-            active.append(("swap", "Memory swapping",
-                "Unified memory is full — swapping is limiting throughput."))
+            active.append(("swap", L("Memory swapping"),
+                L("Unified memory is full — swapping is limiting throughput.")))
         } else if snapshot.memory.pressure == .critical {
-            active.append(("mempressure", "Memory pressure: critical", "Free up memory to avoid swapping."))
+            active.append(("mempressure", L("Memory pressure: critical"), L("Free up memory to avoid swapping.")))
         }
         let now = Date()
         for a in active where !notifiedConditions.contains(a.key) {
