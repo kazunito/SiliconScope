@@ -46,8 +46,14 @@ struct MenuBarView: View {
                 .buttonStyle(PopoverButtonStyle(prominent: true))
 
                 HStack(spacing: 7) {
-                    Button("Settings") { openSettings() }
-                        .buttonStyle(PopoverButtonStyle())
+                    Button("Settings") {
+                        openSettings()
+                        // Bring the app forward so Settings opens in front of (and focused
+                        // over) whatever app the user clicked from — otherwise it appears
+                        // behind, inactive (grey) until a Cmd+Tab. Mirrors "Open Dashboard".
+                        NSApplication.shared.activate(ignoringOtherApps: true)
+                    }
+                    .buttonStyle(PopoverButtonStyle())
                     Button("Quit") { NSApplication.shared.terminate(nil) }
                         .buttonStyle(PopoverButtonStyle())
                 }
