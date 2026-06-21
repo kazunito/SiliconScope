@@ -32,6 +32,7 @@ export const STRINGS = {
       items: [
         { img: '/img/cpu.png', label: 'CPU — E/P cores, frequency, temp, top processes' },
         { img: '/img/memory.png', label: 'Memory — pressure, app/cached, swap, page rates' },
+        { img: '/img/menubar-gpu.png', label: 'GPU / Media / Neural — GPU, GPU memory, ANE, Media + 4-line trend' },
         { img: '/img/menubar-sensors.png', label: 'Sensors — per-unit temperatures & fans' },
         { img: '/img/menubar-battery.png', label: 'Battery — health, cycles, power draw' },
       ],
@@ -68,6 +69,7 @@ export const STRINGS = {
       items: [
         { img: '/img/cpu.png', label: 'CPU — E/P 코어, 주파수, 온도, 상위 프로세스' },
         { img: '/img/memory.png', label: '메모리 — 압력, App/캐시, 스왑, 페이지 속도' },
+        { img: '/img/menubar-gpu.png', label: 'GPU / 미디어 / 뉴럴 — GPU, GPU 메모리, ANE, 미디어 + 4선 추세' },
         { img: '/img/menubar-sensors.png', label: '센서 — 유닛별 온도와 팬' },
         { img: '/img/menubar-battery.png', label: '배터리 — 건강도, 사이클, 전력' },
       ],

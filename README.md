@@ -15,7 +15,7 @@ accelerators — and grown into a daily-driver monitor that can stand in for iSt
 
 ![SiliconScope dashboard under a local-LLM load](docs/img/dashboard.png)
 
-*Under a local LLM (Ollama · qwen2.5-7B, 100% GPU): SiliconScope reads it as **bandwidth-bound** at 55% of the M1 Max's 400 GB/s ceiling, detects the runtime + model, and shows every engine live — E/P-core and GPU/Media/ANE overlaid trends, per-core temperatures, power, and bandwidth.*
+*Under a local LLM (LM Studio · Llama-3.1-8B, 100% GPU): SiliconScope flags **thermal throttling** (GPU clock held −20% vs peak), measures the workload against the M1 Max's 400 GB/s ceiling, detects the runtime + model, and shows every engine live — GPU / GPU-memory / ANE / Media and E/P-core overlaid trends, per-core temperatures, power, and bandwidth.*
 
 ### Menu bar — every metric, iStat-style
 
@@ -23,12 +23,13 @@ Pin any card to its own menu-bar item — **CPU · GPU · Memory · Network · S
 
 ![The per-metric menu-bar suite](docs/img/menubar.png)
 
-<p>
-  <img src="docs/img/menubar-sensors.png" width="300" alt="Per-core temperatures">
-  <img src="docs/img/menubar-battery.png" width="300" alt="Battery health and power">
+<p align="center">
+  <img src="docs/img/menubar-gpu.png" width="250" alt="GPU / Media / Neural dropdown">
+  <img src="docs/img/menubar-sensors.png" width="250" alt="Per-core temperatures">
+  <img src="docs/img/menubar-battery.png" width="250" alt="Battery health and power">
 </p>
 
-*Left: per-unit temperatures — real **E-Core / P-Core / GPU / Memory** sensors (curated SMC keys per chip generation, M1–M5; HID fallback elsewhere). Right: battery health, cycle count, condition, the SoC power breakdown, and the energy-hungry apps.*
+*Left: **GPU / Media / Neural** — GPU, GPU memory, ANE and Media as live meters plus a four-line 60-second trend. Center: per-unit temperatures — real **E-Core / P-Core / GPU / Memory** sensors (curated SMC keys per chip generation, M1–M5; HID fallback elsewhere). Right: battery health, cycle count, condition, the SoC power breakdown, and the energy-hungry apps.*
 
 ![Measuring a local model's speed and efficiency](docs/img/benchmark.png)
 
