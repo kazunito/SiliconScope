@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.1.3 — 2026-06-21
+
+Discoverability: a **Menu bar items** section in Settings lets you toggle CPU / GPU / Memory /
+Network / SSD / Sensors / Battery as individual menu-bar items — the same controls as the ⬚
+pin on each dashboard card, now easy to find (the per-card pin stayed too subtle to discover).
+
+## v2.1.2 — 2026-06-21
+
+Added the **M5 generation** to the memory-bandwidth ceiling table — M5 153 / M5 Pro 307 /
+M5 Max 614 GB/s — so M5 Macs show an accurate "% of ceiling" gauge instead of falling back to
+the observed peak. (M5 Max's binned 32-core-GPU variant shares the same CPU config, so it uses
+the full 614 with the observed-peak fallback covering the gap.) M1–M4 values verified unchanged.
+
 ## v2.1.1 — 2026-06-21
 
 Fix: per-metric menu-bar glyphs picked their ink from the app's light/dark **mode** instead
