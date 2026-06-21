@@ -64,7 +64,7 @@ public final class TemperatureSampler {
             groups.append(group)
             switch category {
             case .cpu:     result.cpuCelsius = group.average; result.cpuMaxCelsius = group.maximum
-            case .gpu:     result.gpuCelsius = group.average
+            case .gpu:     result.gpuCelsius = group.maximum
             case .battery: result.batteryCelsius = group.average
             default:       break
             }
@@ -133,7 +133,7 @@ public final class TemperatureSampler {
             groups.append(group)
             switch category {
             case .cpu:     result.cpuCelsius = group.average; result.cpuMaxCelsius = group.maximum
-            case .gpu:     result.gpuCelsius = group.average
+            case .gpu:     result.gpuCelsius = group.maximum
             case .battery: result.batteryCelsius = group.average
             default:       break
             }
@@ -158,7 +158,7 @@ public final class TemperatureSampler {
             groups.append(group)
             switch category {
             case .cpu:     result.cpuCelsius = group.average; result.cpuMaxCelsius = group.maximum
-            case .gpu:     result.gpuCelsius = group.average
+            case .gpu:     result.gpuCelsius = group.maximum
             case .battery: result.batteryCelsius = group.average
             default:       break
             }
