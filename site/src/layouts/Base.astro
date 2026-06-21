@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-interface Props { lang: 'en' | 'ko'; title: string; description: string; }
+interface Props { lang: 'en' | 'ko' | 'ja'; title: string; description: string; }
 const { lang, title, description } = Astro.props;
 const site = 'https://siliconscope.calidalab.ai';
 ---
@@ -11,7 +11,7 @@ const site = 'https://siliconscope.calidalab.ai';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={lang === 'ko' ? `${site}/ko/` : `${site}/`} />
+    <link rel="canonical" href={lang === 'ko' ? `${site}/ko/` : lang === 'ja' ? `${site}/ja/` : `${site}/`} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />

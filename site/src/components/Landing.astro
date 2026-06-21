@@ -3,12 +3,17 @@ import { STRINGS, REPO, RELEASES_LATEST, SPECTALO, type Lang } from '../i18n';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = STRINGS[lang];
-const alt = lang === 'ko' ? { href: '/', label: 'EN' } : { href: '/ko/', label: '한국어' };
-const self = lang === 'ko' ? 'KO' : 'EN';
+const LOCALES: { code: Lang; href: string; label: string; short: string }[] = [
+  { code: 'en', href: '/',    label: 'EN',     short: 'EN' },
+  { code: 'ko', href: '/ko/', label: '한국어', short: 'KO' },
+  { code: 'ja', href: '/ja/', label: '日本語', short: 'JA' },
+];
+const self = LOCALES.find((l) => l.code === lang)!;
+const others = LOCALES.filter((l) => l.code !== lang);
 ---
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href={lang === 'ko' ? '/ko/' : '/'}>
+    <a class="brand" href={self.href}>
       <img class="brand-icon" src="/icon.png" alt="" width="28" height="28" />
       Silicon<span class="dot">Scope</span>
     </a>
@@ -18,7 +23,7 @@ const self = lang === 'ko' ? 'KO' : 'EN';
         <a href="#privacy">{t.nav.privacy}</a>
         <a href="#download">{t.nav.download}</a>
       </span>
-      <span class="lang"><a class="active">{self}</a> · <a href={alt.href}>{alt.label}</a></span>
+      <span class="lang"><a class="active">{self.short}</a>{others.map((o) => (<Fragment> · <a href={o.href}>{o.label}</a></Fragment>))}</span>
     </nav>
   </div>
 </header>
@@ -88,7 +93,7 @@ const self = lang === 'ko' ? 'KO' : 'EN';
     <span class="foot-links">
       <a href={REPO}>GitHub</a>
       <a href={SPECTALO}>{t.footer.other}</a>
-      <a href={alt.href}>{alt.label}</a>
+      {others.map((o) => (<a href={o.href}>{o.label}</a>))}
       <span>© 2026 Calida Lab</span>
     </span>
   </div>
