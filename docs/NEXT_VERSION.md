@@ -4,6 +4,14 @@ v1.0.0 is a general Apple Silicon monitor. The next version specializes toward
 **AI-inference monitoring** on Apple Silicon — the niche neither terminal monitors
 nor Activity Monitor cover.
 
+## TODO — next patch
+
+- [ ] **Remove the "Compact GPU mode (menu bar)" setting** (legacy v1.x). It swapped the SS
+  combined dropdown for a one-line GPU readout — now redundant with the per-metric GPU
+  menu-bar item + rich dropdown, and confusing (even the dev forgot what it did). Delete the
+  `compactGPUMode` @AppStorage, the Settings toggle, and the `compactGPURow` branch in
+  MenuBarView (always use the full readout).
+
 ## Shipped (v1.1.0 – v1.7.0)
 
 - **AI Workload view (hero)** — a bottleneck classifier with a single verdict:
