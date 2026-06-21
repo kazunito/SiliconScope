@@ -62,8 +62,27 @@ cat > "$APPDIR/Contents/Info.plist" <<PLIST
 </plist>
 PLIST
 
+echo "Embedding Sparkle.framework..."
+# The SPM executable links @rpath/Sparkle.framework, so the framework must be bundled
+# even though Sparkle stays inert without SUFeedURL/SUPublicEDKey (no auto-update here).
+SPARKLE_FW_SRC=".build/artifacts/sparkle/Sparkle/Sparkle.xcframework/macos-arm64_x86_64/Sparkle.framework"
+mkdir -p "$APPDIR/Contents/Frameworks"
+cp -R "$SPARKLE_FW_SRC" "$APPDIR/Contents/Frameworks/"
+install_name_tool -add_rpath "@executable_path/../Frameworks" "$APPDIR/Contents/MacOS/$APP" 2>/dev/null || true
+
 echo "Ad-hoc signing..."
-codesign --force --sign - --timestamp=none "$APPDIR"
+# Sparkle: sign nested helpers (deep -> shallow), then the framework, then the app last.
+SPARKLE_FW="$APPDIR/Contents/Frameworks/Sparkle.framework"
+SPV="$SPARKLE_FW/Versions/$(ls "$SPARKLE_FW/Versions" | grep -v Current | head -1)"
+for nested in \
+  "$SPV/XPCServices/Installer.xpc" \
+  "$SPV/XPCServices/Downloader.xpc" \
+  "$SPV/Autoupdate" \
+  "$SPV/Updater.app"; do
+  [ -e "$nested" ] && codesign --force --sign - "$nested"
+done
+codesign --force --sign - "$SPARKLE_FW"
+codesign --force --sign - "$APPDIR"
 codesign --verify --strict --verbose=2 "$APPDIR"
 
 echo "Built $APPDIR"
