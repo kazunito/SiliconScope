@@ -1,5 +1,6 @@
 /* Generated from Localization/Localizable.xcstrings by scripts/gen-strings.py — do not edit. */
 
+"%.1f GB in use" = "%.1f GB in use";
 "%@ free" = "%@ free";
 "%lld cores · %lldE+%lldP" = "%lld cores · %lldE+%lldP";
 "+%@ alongside · ~%@ if you unload %@ (Q4_K_M)" = "+%@ alongside · ~%@ if you unload %@ (Q4_K_M)";
@@ -48,11 +49,13 @@
 "Force Quit %@  (pid %d)?" = "Force Quit %@  (pid %d)?";
 "Free" = "Free";
 "Free up memory to avoid swapping." = "Free up memory to avoid swapping.";
+"GPU (green) / GPU mem (cyan) / ANE (purple) / Media (orange) · 60s" = "GPU (green) / GPU mem (cyan) / ANE (purple) / Media (orange) · 60s";
 "GPU (green) / Media (orange) / ANE (purple) · 60s" = "GPU (green) / Media (orange) / ANE (purple) · 60s";
 "GPU / Media / Neural" = "GPU / Media / Neural";
 "GPU / Media / Neural Engine" = "GPU / Media / Neural Engine";
 "GPU clock -%.0f%% vs peak" = "GPU clock -%.0f%% vs peak";
 "GPU clock held %.0f%% below peak by heat — sustained performance limited." = "GPU clock held %.0f%% below peak by heat — sustained performance limited.";
+"GPU memory" = "GPU memory";
 "GPU thermal throttle" = "GPU thermal throttle";
 "GPU thermal throttling" = "GPU thermal throttling";
 "GPU throttling — clock %.0f MHz (-%.0f%% vs peak)" = "GPU throttling — clock %.0f MHz (-%.0f%% vs peak)";

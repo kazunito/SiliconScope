@@ -1,5 +1,6 @@
 /* Generated from Localization/Localizable.xcstrings by scripts/gen-strings.py — do not edit. */
 
+"%.1f GB in use" = "%.1f GB 使用中";
 "%@ free" = "%@ 空き";
 "%lld cores · %lldE+%lldP" = "%lld コア · %lldE+%lldP";
 "+%@ alongside · ~%@ if you unload %@ (Q4_K_M)" = "+%1$@ 併用可 · %3$@ をアンロードすれば ~%2$@ (Q4_K_M)";
@@ -48,11 +49,13 @@
 "Force Quit %@  (pid %d)?" = "%@ を強制終了しますか？  (pid %d)";
 "Free" = "空き";
 "Free up memory to avoid swapping." = "スワップを避けるためメモリを解放してください。";
+"GPU (green) / GPU mem (cyan) / ANE (purple) / Media (orange) · 60s" = "GPU(緑) / GPU メモリ(シアン) / ANE(紫) / Media(オレンジ) · 60秒";
 "GPU (green) / Media (orange) / ANE (purple) · 60s" = "GPU（緑）/ メディア（橙）/ ANE（紫）· 60秒";
 "GPU / Media / Neural" = "GPU / メディア / ニューラル";
 "GPU / Media / Neural Engine" = "GPU / メディア / Neural Engine";
 "GPU clock -%.0f%% vs peak" = "GPU クロック ピーク比 -%.0f%%";
 "GPU clock held %.0f%% below peak by heat — sustained performance limited." = "発熱により GPU クロックがピークより %.0f%% 低く抑えられています — 持続性能が制限されています。";
+"GPU memory" = "GPU メモリ";
 "GPU thermal throttle" = "GPU 発熱スロットリング";
 "GPU thermal throttling" = "GPU 発熱スロットリング";
 "GPU throttling — clock %.0f MHz (-%.0f%% vs peak)" = "GPU スロットリング — クロック %.0f MHz（ピーク比 -%.0f%%）";

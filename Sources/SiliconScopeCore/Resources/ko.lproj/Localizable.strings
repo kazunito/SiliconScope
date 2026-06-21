@@ -1,0 +1,37 @@
+/* Generated from Localization/CoreLocalizable.xcstrings by scripts/gen-strings.py — do not edit. */
+
+"%@ (idle)" = "%@ (유휴)";
+"%@ idle · GPU: other app" = "%@ 유휴 · GPU: 다른 앱";
+"ANE (CoreML)" = "ANE (CoreML)";
+"Bandwidth-bound" = "대역폭 제한";
+"Charged" = "충전 완료";
+"Charging" = "충전 중";
+"Clock held down by heat — sustained performance limited" = "발열로 클럭 억제 — 지속 성능 제한";
+"Compute-bound" = "연산 제한";
+"GPU active" = "GPU 활성";
+"GPU active — incl. video" = "GPU 활성 — 비디오 포함";
+"GPU active — type unknown" = "GPU 활성 — 유형 불명";
+"GPU busy — no single bottleneck" = "GPU 사용 중 — 단일 병목 없음";
+"GPU compute is the limiter" = "GPU 연산이 병목입니다";
+"Idle" = "유휴";
+"LLM (GPU/Metal)" = "LLM (GPU/Metal)";
+"LLM (likely)" = "LLM (추정)";
+"Memory bandwidth is the limiter" = "메모리 대역폭이 병목입니다";
+"Memory pressure: critical" = "메모리 압력: 위험";
+"Memory pressure: elevated" = "메모리 압력: 상승";
+"Memory-pressured" = "메모리 압박";
+"No Battery" = "배터리 없음";
+"No significant GPU workload" = "뚜렷한 GPU 부하 없음";
+"Not Charging" = "충전 안 함";
+"On Battery" = "배터리 구동";
+"Thermal pressure — serious" = "발열 압력 — 심각";
+"Thermal throttling — critical" = "발열 스로틀링 — 위험";
+"Thermal-throttled" = "발열 스로틀링";
+"Unified memory full — swapping limits throughput" = "통합 메모리 가득 참 — 스와핑이 처리량 제한";
+"critical" = "위험";
+"fair" = "다소 높음";
+"in-app / unmanaged" = "앱 내 / 비관리";
+"nominal" = "정상";
+"none" = "없음";
+"serious" = "심각";
+"unknown" = "불명";

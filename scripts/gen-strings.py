@@ -17,7 +17,7 @@ import os
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LANGS = ["en", "ja"]
+LANGS = ["en", "ja", "ko"]
 
 # (catalog path, target Resources dir) pairs.
 CATALOGS = [

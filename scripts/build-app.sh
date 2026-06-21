@@ -46,7 +46,7 @@ cat > "$APPDIR/Contents/Info.plist" <<PLIST
   <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
   <key>CFBundleDevelopmentRegion</key><string>en</string>
   <key>CFBundleLocalizations</key>
-  <array><string>en</string><string>ja</string></array>
+  <array><string>en</string><string>ja</string><string>ko</string></array>
   <key>CFBundleName</key><string>$APP</string>
   <key>CFBundleDisplayName</key><string>$APP</string>
   <key>CFBundleIdentifier</key><string>$BUNDLE_ID</string>

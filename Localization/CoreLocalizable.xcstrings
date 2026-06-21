@@ -1,181 +1,566 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "%@ (idle)" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@（アイドル）" } }
+  "sourceLanguage": "en",
+  "strings": {
+    "%@ (idle)": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@（アイドル）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ (유휴)"
+          }
+        }
       }
     },
-    "%@ idle · GPU: other app" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@ アイドル · GPU: 別アプリ" } }
+    "%@ idle · GPU: other app": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ アイドル · GPU: 別アプリ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 유휴 · GPU: 다른 앱"
+          }
+        }
       }
     },
-    "ANE (CoreML)" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ANE（CoreML）" } }
+    "ANE (CoreML)": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ANE（CoreML）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ANE (CoreML)"
+          }
+        }
       }
     },
-    "Bandwidth-bound" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "帯域律速" } }
+    "Bandwidth-bound": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "帯域律速"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "대역폭 제한"
+          }
+        }
       }
     },
-    "Charged" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "満充電" } }
+    "Charged": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "満充電"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "충전 완료"
+          }
+        }
       }
     },
-    "Charging" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "充電中" } }
+    "Charging": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "充電中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "충전 중"
+          }
+        }
       }
     },
-    "Clock held down by heat — sustained performance limited" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "発熱でクロックが抑制 — 持続性能が制限されています" } }
+    "Clock held down by heat — sustained performance limited": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "発熱でクロックが抑制 — 持続性能が制限されています"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "발열로 클럭 억제 — 지속 성능 제한"
+          }
+        }
       }
     },
-    "Compute-bound" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "演算律速" } }
+    "Compute-bound": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "演算律速"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "연산 제한"
+          }
+        }
       }
     },
-    "fair" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "やや高" } }
+    "fair": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "やや高"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다소 높음"
+          }
+        }
       }
     },
-    "GPU active" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU 稼働中" } }
+    "GPU active": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 稼働中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 활성"
+          }
+        }
       }
     },
-    "GPU active — incl. video" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU 稼働中 — 動画含む" } }
+    "GPU active — incl. video": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 稼働中 — 動画含む"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 활성 — 비디오 포함"
+          }
+        }
       }
     },
-    "GPU active — type unknown" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU 稼働中 — 種別不明" } }
+    "GPU active — type unknown": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 稼働中 — 種別不明"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 활성 — 유형 불명"
+          }
+        }
       }
     },
-    "GPU busy — no single bottleneck" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU 稼働中 — 単一のボトルネックなし" } }
+    "GPU busy — no single bottleneck": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 稼働中 — 単一のボトルネックなし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 사용 중 — 단일 병목 없음"
+          }
+        }
       }
     },
-    "GPU compute is the limiter" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GPU 演算が律速要因です" } }
+    "GPU compute is the limiter": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 演算が律速要因です"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 연산이 병목입니다"
+          }
+        }
       }
     },
-    "Idle" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アイドル" } }
+    "Idle": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アイドル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "유휴"
+          }
+        }
       }
     },
-    "in-app / unmanaged" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アプリ内 / 非管理" } }
+    "in-app / unmanaged": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アプリ内 / 非管理"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "앱 내 / 비관리"
+          }
+        }
       }
     },
-    "critical" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "危機的" } }
+    "critical": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "危機的"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "위험"
+          }
+        }
       }
     },
-    "LLM (GPU/Metal)" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "LLM（GPU/Metal）" } }
+    "LLM (GPU/Metal)": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LLM（GPU/Metal）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LLM (GPU/Metal)"
+          }
+        }
       }
     },
-    "LLM (likely)" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "LLM（推定）" } }
+    "LLM (likely)": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LLM（推定）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LLM (추정)"
+          }
+        }
       }
     },
-    "Memory bandwidth is the limiter" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモリ帯域が律速要因です" } }
+    "Memory bandwidth is the limiter": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メモリ帯域が律速要因です"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메모리 대역폭이 병목입니다"
+          }
+        }
       }
     },
-    "Memory pressure: critical" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモリプレッシャー：危機的" } }
+    "Memory pressure: critical": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メモリプレッシャー：危機的"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메모리 압력: 위험"
+          }
+        }
       }
     },
-    "Memory pressure: elevated" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモリプレッシャー：上昇" } }
+    "Memory pressure: elevated": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メモリプレッシャー：上昇"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메모리 압력: 상승"
+          }
+        }
       }
     },
-    "Memory-pressured" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メモリ逼迫" } }
+    "Memory-pressured": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メモリ逼迫"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메모리 압박"
+          }
+        }
       }
     },
-    "No Battery" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "バッテリーなし" } }
+    "No Battery": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バッテリーなし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "배터리 없음"
+          }
+        }
       }
     },
-    "No significant GPU workload" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "目立った GPU 負荷なし" } }
+    "No significant GPU workload": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目立った GPU 負荷なし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "뚜렷한 GPU 부하 없음"
+          }
+        }
       }
     },
-    "nominal" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "正常" } }
+    "nominal": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正常"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "정상"
+          }
+        }
       }
     },
-    "none" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "なし" } }
+    "none": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "なし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "없음"
+          }
+        }
       }
     },
-    "Not Charging" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "充電していません" } }
+    "Not Charging": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "充電していません"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "충전 안 함"
+          }
+        }
       }
     },
-    "On Battery" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "バッテリー駆動" } }
+    "On Battery": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バッテリー駆動"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "배터리 구동"
+          }
+        }
       }
     },
-    "serious" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "深刻" } }
+    "serious": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "深刻"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "심각"
+          }
+        }
       }
     },
-    "Thermal pressure — serious" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "発熱プレッシャー — 深刻" } }
+    "Thermal pressure — serious": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "発熱プレッシャー — 深刻"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "발열 압력 — 심각"
+          }
+        }
       }
     },
-    "Thermal throttling — critical" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "発熱スロットリング — 危機的" } }
+    "Thermal throttling — critical": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "発熱スロットリング — 危機的"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "발열 스로틀링 — 위험"
+          }
+        }
       }
     },
-    "Thermal-throttled" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "発熱スロットリング" } }
+    "Thermal-throttled": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "発熱スロットリング"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "발열 스로틀링"
+          }
+        }
       }
     },
-    "Unified memory full — swapping limits throughput" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ユニファイドメモリが満杯 — スワップがスループットを制限" } }
+    "Unified memory full — swapping limits throughput": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ユニファイドメモリが満杯 — スワップがスループットを制限"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "통합 메모리 가득 참 — 스와핑이 처리량 제한"
+          }
+        }
       }
     },
-    "unknown" : {
-      "localizations" : {
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "不明" } }
+    "unknown": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不明"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "불명"
+          }
+        }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }
