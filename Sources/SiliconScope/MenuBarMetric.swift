@@ -203,12 +203,14 @@ enum MetricPalette {
     static let eCPU  = NSColor(srgbRed: 0.95, green: 0.70, blue: 0.30, alpha: 1)  // E-cores amber
     static let pCPU  = NSColor(srgbRed: 0.36, green: 0.62, blue: 0.98, alpha: 1)  // P-cores blue
     static let gpu   = NSColor(srgbRed: 0.40, green: 0.82, blue: 0.55, alpha: 1)  // green
+    static let gpuMem = NSColor(srgbRed: 0.28, green: 0.74, blue: 0.95, alpha: 1) // GPU memory — sky cyan
     static let media = NSColor(srgbRed: 0.98, green: 0.62, blue: 0.30, alpha: 1)  // orange
     static let ane   = NSColor(srgbRed: 0.74, green: 0.53, blue: 0.99, alpha: 1)  // purple
     static let down  = NSColor(srgbRed: 0.34, green: 0.74, blue: 0.62, alpha: 1)  // teal
     static let up    = NSColor(srgbRed: 0.98, green: 0.62, blue: 0.30, alpha: 1)  // orange
     // SwiftUI mirrors for dropdown views.
     static var gpuC: Color { Color(nsColor: gpu) }
+    static var gpuMemC: Color { Color(nsColor: gpuMem) }
     static var mediaC: Color { Color(nsColor: media) }
     static var aneC: Color { Color(nsColor: ane) }
     static var downC: Color { Color(nsColor: down) }
@@ -361,7 +363,7 @@ struct CPUMenuDropdown: View {
         let s = monitor.snapshot
         let e = Color(nsColor: MetricPalette.eCPU)
         let p = Color(nsColor: MetricPalette.pCPU)
-        VStack(alignment: .leading, spacing: 7) {
+        VStack(alignment: .leading, spacing: 3) {
             MenuSectionHeader("CPU")
             coreRow(L("E-cores"), s.cpu.eUsage, s.cpu.eUsagePercent, s.cpu.eFreqMHz, e)
             coreRow(L("P-cores"), s.cpu.pUsage, s.cpu.pUsagePercent, s.cpu.pFreqMHz, p)
@@ -390,7 +392,7 @@ struct CPUMenuDropdown: View {
                 Label(L("Open Dashboard"), systemImage: "macwindow").frame(maxWidth: .infinity)
             }
         }
-        .padding(12).frame(width: 260).background(Theme.bg).foregroundStyle(Theme.text)
+        .padding(.horizontal, 12).padding(.vertical, 9).frame(width: 260).background(Theme.bg).foregroundStyle(Theme.text)
     }
 
     private func coreRow(_ label: String, _ v: Double, _ pct: Double, _ mhz: Double, _ color: Color) -> some View {
@@ -451,30 +453,33 @@ struct GPUMenuDropdown: View {
     let monitor: SiliconScopeMonitor
     var body: some View {
         let s = monitor.snapshot
-        VStack(alignment: .leading, spacing: 7) {
+        VStack(alignment: .leading, spacing: 3) {
             MenuSectionHeader(L("GPU / Media / Neural"))
             MenuMeterRow(label: "GPU",
                          value: String(format: "%.0f%%  %.1f W  %.0f MHz", s.gpu.usagePercent, s.power.gpuWatts, s.gpu.freqMHz),
                          fraction: s.gpu.usage, color: MetricPalette.gpuC)
-            MenuMeterRow(label: L("Media"),
-                         value: String(format: "%.1f GB/s", s.bandwidth.mediaGBs),
-                         fraction: min(1, s.bandwidth.mediaGBs / max(monitor.mediaPeakGBs, 0.5)), color: MetricPalette.mediaC)
+            MenuMeterRow(label: L("GPU memory"),
+                         value: String(format: L("%.1f GB in use"), s.gpu.inUseMemoryGB),
+                         fraction: s.gpu.inUseMemoryFraction, color: MetricPalette.gpuMemC)
             MenuMeterRow(label: L("ANE est."),
                          value: String(format: "%.1f W", s.power.aneWatts),
                          fraction: min(1, s.power.aneWatts / max(monitor.anePeakWatts, 0.1)), color: MetricPalette.aneC)
-            MenuKV(label: L("DRAM power"), value: String(format: "%.1f W", s.power.dramWatts))
-            GraphCaption(L("GPU (green) / Media (orange) / ANE (purple) · 60s"))
-            ZStack {   // all three normalized to 0...1 (each vs its tracked peak)
+            MenuMeterRow(label: L("Media"),
+                         value: String(format: "%.1f GB/s", s.bandwidth.mediaGBs),
+                         fraction: min(1, s.bandwidth.mediaGBs / max(monitor.mediaPeakGBs, 0.5)), color: MetricPalette.mediaC)
+            GraphCaption(L("GPU (green) / GPU mem (cyan) / ANE (purple) / Media (orange) · 60s"))
+            ZStack {   // all four normalized to 0...1 (each vs its tracked peak)
                 Sparkline(values: monitor.history.gpu, color: MetricPalette.gpuC, height: 30, yDomain: 0...1)
-                Sparkline(values: monitor.history.media.map { min(1, $0 / max(monitor.mediaPeakGBs, 0.5)) },
-                          color: MetricPalette.mediaC, height: 30, yDomain: 0...1)
+                Sparkline(values: monitor.history.gpuMem, color: MetricPalette.gpuMemC, height: 30, yDomain: 0...1)
                 Sparkline(values: monitor.history.ane.map { min(1, $0 / max(monitor.anePeakWatts, 0.1)) },
                           color: MetricPalette.aneC, height: 30, yDomain: 0...1)
+                Sparkline(values: monitor.history.media.map { min(1, $0 / max(monitor.mediaPeakGBs, 0.5)) },
+                          color: MetricPalette.mediaC, height: 30, yDomain: 0...1)
             }
             Divider()
             OpenDashboardButton()
         }
-        .padding(12).frame(width: 260).background(Theme.bg).foregroundStyle(Theme.text)
+        .padding(.horizontal, 12).padding(.vertical, 9).frame(width: 260).background(Theme.bg).foregroundStyle(Theme.text)
     }
 }
 
@@ -492,7 +497,7 @@ struct MEMMenuDropdown: View {
             case .warning:  Color(red: 0.87, green: 0.66, blue: 0.28)   // amber
             case .critical: Color(red: 0.88, green: 0.37, blue: 0.37)   // red
         }
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 3) {
             MenuSectionHeader(L("Memory"))
             HStack {
                 Text(String(format: "%.1f / %.0f GB", m.usedGB, m.totalGB))
@@ -549,7 +554,7 @@ struct MEMMenuDropdown: View {
             Divider()
             OpenDashboardButton()
         }
-        .padding(12).frame(width: 260).background(Theme.bg).foregroundStyle(Theme.text)
+        .padding(.horizontal, 12).padding(.vertical, 9).frame(width: 260).background(Theme.bg).foregroundStyle(Theme.text)
     }
 }
 
@@ -561,7 +566,7 @@ struct NETMenuDropdown: View {
         let ifaces = InterfaceSampler.sample()
         let connected = ifaces.filter { $0.isConnected }
         let notConnected = ifaces.filter { !$0.isConnected }
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 3) {
             MenuSectionHeader(L("Network"))
             ForEach(connected) { i in
                 HStack(spacing: 6) {
@@ -599,7 +604,7 @@ struct NETMenuDropdown: View {
             Divider()
             OpenDashboardButton()
         }
-        .padding(12).frame(width: 260).background(Theme.bg).foregroundStyle(Theme.text)
+        .padding(.horizontal, 12).padding(.vertical, 9).frame(width: 260).background(Theme.bg).foregroundStyle(Theme.text)
     }
 
     private func ifaceIcon(_ i: InterfaceInfo) -> String {
@@ -618,7 +623,7 @@ struct SSDMenuDropdown: View {
         let vols = VolumeSampler.sample()
         let local = vols.filter { $0.isLocal }
         let net = vols.filter { !$0.isLocal }
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 3) {
             MenuSectionHeader(L("Disks"))
             ForEach(local) { v in volumeRow(v) }
             if !net.isEmpty {
@@ -635,7 +640,7 @@ struct SSDMenuDropdown: View {
             Divider()
             OpenDashboardButton()
         }
-        .padding(12).frame(width: 260).background(Theme.bg).foregroundStyle(Theme.text)
+        .padding(.horizontal, 12).padding(.vertical, 9).frame(width: 260).background(Theme.bg).foregroundStyle(Theme.text)
     }
 
     private func volumeRow(_ v: VolumeInfo) -> some View {
@@ -669,7 +674,7 @@ struct SensorsMenuDropdown: View {
         let s = monitor.snapshot
         let temp = s.temperature
         let thermal = s.thermal
-        VStack(alignment: .leading, spacing: 7) {
+        VStack(alignment: .leading, spacing: 3) {
             MenuSectionHeader(L("Sensors"))
 
             if temp.groups.isEmpty {
@@ -716,7 +721,7 @@ struct SensorsMenuDropdown: View {
             Divider()
             OpenDashboardButton()
         }
-        .padding(12).frame(width: 260).background(Theme.bg).foregroundStyle(Theme.text)
+        .padding(.horizontal, 12).padding(.vertical, 9).frame(width: 260).background(Theme.bg).foregroundStyle(Theme.text)
     }
 
     private func fanLabel(_ idx: Int, count: Int) -> String {
@@ -775,7 +780,7 @@ struct BatteryMenuDropdown: View {
         let b = s.battery
         let chargeColor: Color = b.isCharging ? MetricPalette.gpuC
             : (b.percent <= 20 ? Theme.heat(1) : Theme.text)
-        VStack(alignment: .leading, spacing: 7) {
+        VStack(alignment: .leading, spacing: 3) {
             MenuSectionHeader(L("Battery"))
 
             if b.hasBattery {
@@ -842,6 +847,6 @@ struct BatteryMenuDropdown: View {
             Divider()
             OpenDashboardButton()
         }
-        .padding(12).frame(width: 260).background(Theme.bg).foregroundStyle(Theme.text)
+        .padding(.horizontal, 12).padding(.vertical, 9).frame(width: 260).background(Theme.bg).foregroundStyle(Theme.text)
     }
 }
