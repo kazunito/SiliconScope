@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.3.0 — 2026-06-22
+
+**Connected-peripheral battery in the Battery dropdown.** Open the Battery menu-bar item and a new
+**Peripherals** section (right under the main battery) shows the battery of connected accessories —
+Apple Magic Mouse / Trackpad / Keyboard (via IORegistry) and AirPods with a Left / Right / Case
+breakdown (via system_profiler). Only devices that report a real value are listed (no blank rows),
+low (≤20%) shown in red, all sudoless and sampled on a light cadence. (Bluetooth Logitech devices
+like the MX Master expose battery only over a proprietary GATT path macOS doesn't surface, so
+they're omitted rather than shown empty.)
+
+Sensors: **M4 Pro/Max GPU 1/2** — adds the `Tg1U` / `Tg1k` keys those dies use, confirmed from an
+M4 Max sensor dump (#6). Also a new contributor diagnostic, `sscope-cli --sensors-all`, which lists
+every present SMC temperature key (flagging ones not yet in the curated table) to help map sensors
+on chips SiliconScope doesn't fully cover yet.
+
 ## v2.2.3 — 2026-06-22
 
 Sensors: **a fuller temperature panel on partially-mapped chips (e.g. M4 Max).** When a die
