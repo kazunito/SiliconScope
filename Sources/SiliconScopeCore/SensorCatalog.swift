@@ -90,7 +90,9 @@ public enum SensorCatalog {
         cpu([("Te05", "E-Core 1"), ("Te0S", "E-Core 2"), ("Te09", "E-Core 3"), ("Te0H", "E-Core 4"),
              ("Tp01", "P-Core 1"), ("Tp05", "P-Core 2"), ("Tp09", "P-Core 3"), ("Tp0D", "P-Core 4"),
              ("Tp0V", "P-Core 5"), ("Tp0Y", "P-Core 6"), ("Tp0b", "P-Core 7"), ("Tp0e", "P-Core 8")]) +
-        gpu([("Tg0K", "GPU 3"), ("Tg0L", "GPU 4"), ("Tg0d", "GPU 5"),
+        gpu([("Tg0G", "GPU 1"), ("Tg0H", "GPU 2"),                    // base M4
+             ("Tg1U", "GPU 1"), ("Tg1k", "GPU 2"),                    // M4 Pro/Max/Ultra (mutually exclusive w/ base)
+             ("Tg0K", "GPU 3"), ("Tg0L", "GPU 4"), ("Tg0d", "GPU 5"),
              ("Tg0e", "GPU 6"), ("Tg0j", "GPU 7"), ("Tg0k", "GPU 8")]) +
         mem([("Tm0p", "Memory 1"), ("Tm1p", "Memory 2"), ("Tm2p", "Memory 3")])
 
