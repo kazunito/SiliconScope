@@ -3,17 +3,17 @@
 //  Created:   2026-06-22
 //  Updated:   2026-06-22
 //  Developer: Kennt Kim / Calida Lab
-//  Overview:  Sudoless battery levels for connected input peripherals (Apple Magic Mouse /
-//             Trackpad / Keyboard and other HID devices that expose `BatteryPercent`). Scans
-//             the IORegistry for any entry carrying a `BatteryPercent` property, the way iStat
-//             Menus surfaces accessory batteries in its battery dropdown.
-//  Notes:     Apple Bluetooth HID devices put `BatteryPercent` (0–100) on the top device node
-//             (e.g. AppleBluetoothHIDKeyboard, BNBTrackpadDevice) along with DeviceAddress,
-//             Product (often empty), PrimaryUsage/Page and VendorID. Device kind is inferred
-//             from HID usage + IOKit class name. Logitech (MX Master etc.) and most third-party
-//             keyboards do NOT expose this — they need HID++ / BLE handling (see NEXT_VERSION).
-//             AirPods report via `system_profiler` instead, not here. No charging state yet
-//             (BatteryStatusFlags semantics unverified — omitted rather than shown wrong).
+//  Overview:  Sudoless battery levels for connected peripherals, the way iStat Menus surfaces
+//             accessory batteries in its battery dropdown. Two sources, merged:
+//               1) IORegistry `BatteryPercent` — Apple Magic Mouse/Trackpad/Keyboard and any HID
+//                  device that exposes it. Fast, no subprocess; read every call.
+//               2) `system_profiler SPBluetoothDataType` — AirPods (Left/Right/Case) and other
+//                  Bluetooth devices whose battery only macOS aggregates. Spawns a process
+//                  (~1–2 s) so it is cached (~60 s TTL); battery moves slowly.
+//  Notes:     Logitech (MX Master etc.) expose battery only over HID++ — a separate tier (see
+//             NEXT_VERSION). No charging state yet (BatteryStatusFlags semantics unverified).
+//             system_profiler refresh blocks briefly when cold — call sample() off the main
+//             thread (the app samples on a background cadence). Use one sampler per thread.
 //
 import Foundation
 import IOKit
@@ -37,32 +37,63 @@ public enum PeripheralKind: String, Sendable {
 public struct PeripheralBattery: Sendable, Equatable, Identifiable {
     public var name: String
     public var kind: PeripheralKind
-    public var percent: Int           // 0–100
-    public var address: String        // Bluetooth address, e.g. "3c-a6-f6-c3-33-f6"
+    public var percent: Int            // 0–100 (headline; for buds = lower of L/R)
+    public var address: String         // Bluetooth address, e.g. "3c-a6-f6-c3-33-f6"
+    public var leftPercent: Int?       // multi-cell devices (AirPods) only
+    public var rightPercent: Int?
+    public var casePercent: Int?
 
     public var id: String { address.isEmpty ? name : address }
 
-    public init(name: String, kind: PeripheralKind, percent: Int, address: String) {
+    /// Per-cell breakdown for display, e.g. "L 9% · R 99% · Case 21%" (nil for single-cell).
+    public var detail: String? {
+        var parts: [String] = []
+        if let l = leftPercent  { parts.append("L \(l)%") }
+        if let r = rightPercent { parts.append("R \(r)%") }
+        if let c = casePercent  { parts.append("Case \(c)%") }
+        return parts.isEmpty ? nil : parts.joined(separator: " · ")
+    }
+
+    public init(name: String, kind: PeripheralKind, percent: Int, address: String,
+                leftPercent: Int? = nil, rightPercent: Int? = nil, casePercent: Int? = nil) {
         self.name = name
         self.kind = kind
         self.percent = percent
         self.address = address
+        self.leftPercent = leftPercent
+        self.rightPercent = rightPercent
+        self.casePercent = casePercent
     }
 }
 
 public final class PeripheralBatterySampler {
+    private var btCache: [PeripheralBattery] = []
+    private var btCacheTime: Date = .distantPast
+    private let btTTL: TimeInterval = 60   // system_profiler is slow; battery changes slowly
+
     public init() {}
 
-    /// Connected peripherals exposing a battery level, sorted by name. Sudoless. Battery moves
-    /// slowly — call this on a slow cadence (e.g. ~30–60 s), not every UI tick.
+    /// All connected peripherals with a battery level, sorted by name. Sudoless. Merges the
+    /// fast IORegistry scan with a cached system_profiler read (AirPods etc.), deduped by address.
     public func sample() -> [PeripheralBattery] {
+        var devices = ioRegistryDevices()
+        let seen = Set(devices.map { Self.normalizedAddress($0.address) }.filter { !$0.isEmpty })
+        for d in bluetoothAudioDevices() where !seen.contains(Self.normalizedAddress(d.address)) {
+            devices.append(d)
+        }
+        return devices.sorted { $0.name < $1.name }
+    }
+
+    // MARK: - Source 1: IORegistry BatteryPercent (Apple HID)
+
+    private func ioRegistryDevices() -> [PeripheralBattery] {
         var iterator: io_iterator_t = 0
         guard IORegistryCreateIterator(kIOMainPortDefault, kIOServicePlane,
                                        IOOptionBits(kIORegistryIterateRecursively),
                                        &iterator) == KERN_SUCCESS else { return [] }
         defer { IOObjectRelease(iterator) }
 
-        var byKey: [String: PeripheralBattery] = [:]   // dedup by address/name
+        var byKey: [String: PeripheralBattery] = [:]
         var entry = IOIteratorNext(iterator)
         while entry != 0 {
             defer { IOObjectRelease(entry); entry = IOIteratorNext(iterator) }
@@ -85,11 +116,91 @@ public final class PeripheralBatterySampler {
                 byKey[key] = PeripheralBattery(name: name, kind: kind, percent: percent, address: address)
             }
         }
-        return byKey.values.sorted { $0.name < $1.name }
+        return Array(byKey.values)
     }
 
-    /// Classifies a device by HID usage (Generic Desktop page) with an IOKit-class / Product
-    /// fallback (trackpads use a vendor usage page, so the class name is what catches them).
+    // MARK: - Source 2: system_profiler (AirPods L/R/Case, cached)
+
+    private func bluetoothAudioDevices() -> [PeripheralBattery] {
+        if Date().timeIntervalSince(btCacheTime) < btTTL { return btCache }
+        btCacheTime = Date()
+        btCache = Self.parseBluetoothBatteries(Self.runSystemProfiler())
+        return btCache
+    }
+
+    private static func runSystemProfiler() -> String {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/sbin/system_profiler")
+        process.arguments = ["SPBluetoothDataType"]
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = FileHandle.nullDevice
+        do { try process.run() } catch { return "" }
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        process.waitUntilExit()
+        return String(decoding: data, as: UTF8.self)
+    }
+
+    /// Parses `system_profiler SPBluetoothDataType` text into the connected devices that report a
+    /// battery (single `Battery Level`, or `Left`/`Right`/`Case` for buds). Pure → unit-tested.
+    /// Device-name lines are identified by indentation under "Connected:", so nested sub-headers
+    /// (Services:, etc.) don't get mistaken for devices.
+    static func parseBluetoothBatteries(_ text: String) -> [PeripheralBattery] {
+        var result: [PeripheralBattery] = []
+        var inConnected = false
+        var deviceIndent = -1
+        var name: String?
+        var address = "", minorType = ""
+        var single: Int?, left: Int?, right: Int?, casePct: Int?
+
+        func flush() {
+            defer { name = nil; address = ""; minorType = ""; single = nil; left = nil; right = nil; casePct = nil }
+            guard let n = name, single != nil || left != nil || right != nil || casePct != nil else { return }
+            let pct = single ?? [left, right].compactMap { $0 }.min() ?? casePct ?? 0
+            result.append(PeripheralBattery(
+                name: n, kind: kind(usage: 0, usagePage: 0, className: minorType, product: n),
+                percent: pct, address: address,
+                leftPercent: left, rightPercent: right, casePercent: casePct))
+        }
+
+        for raw in text.split(separator: "\n", omittingEmptySubsequences: false) {
+            let line = String(raw)
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            if trimmed.isEmpty { continue }
+            let indent = line.prefix { $0 == " " }.count
+
+            if trimmed == "Connected:" { inConnected = true; deviceIndent = -1; continue }
+            if trimmed == "Not Connected:" { flush(); inConnected = false; continue }
+            guard inConnected else { continue }
+
+            let isHeader = trimmed.hasSuffix(":") && !trimmed.dropLast().contains(":")
+            if isHeader, deviceIndent == -1 { deviceIndent = indent }
+            if isHeader, indent == deviceIndent { flush(); name = String(trimmed.dropLast()); continue }
+            if deviceIndent != -1, indent < deviceIndent { flush(); inConnected = false; continue }
+
+            if let v = batteryValue(trimmed, "Left Battery Level")  { left = v }
+            else if let v = batteryValue(trimmed, "Right Battery Level") { right = v }
+            else if let v = batteryValue(trimmed, "Case Battery Level")  { casePct = v }
+            else if let v = batteryValue(trimmed, "Battery Level")       { single = v }
+            else if trimmed.hasPrefix("Address:")    { address = String(trimmed.dropFirst("Address:".count)).trimmingCharacters(in: .whitespaces) }
+            else if trimmed.hasPrefix("Minor Type:") { minorType = String(trimmed.dropFirst("Minor Type:".count)).trimmingCharacters(in: .whitespaces) }
+        }
+        flush()
+        return result
+    }
+
+    /// Extracts the integer percent from a "<label>: NN%" line, or nil if the label doesn't match.
+    static func batteryValue(_ line: String, _ label: String) -> Int? {
+        guard line.hasPrefix(label) else { return nil }
+        let rest = line.dropFirst(label.count).drop { $0 == " " || $0 == ":" }
+        let digits = rest.prefix { $0.isNumber }
+        return digits.isEmpty ? nil : Int(digits)
+    }
+
+    // MARK: - Classification
+
+    /// Classifies a device by HID usage (Generic Desktop page) with an IOKit-class / Product /
+    /// minor-type fallback (trackpads use a vendor usage page, so the name is what catches them).
     static func kind(usage: Int, usagePage: Int, className: String, product: String) -> PeripheralKind {
         let c = className.lowercased(), p = product.lowercased()
         if c.contains("trackpad") || p.contains("trackpad") { return .trackpad }
@@ -104,5 +215,11 @@ public final class PeripheralBatterySampler {
     private static func className(of entry: io_registry_entry_t) -> String {
         guard let cf = IOObjectCopyClass(entry)?.takeRetainedValue() else { return "" }
         return cf as String
+    }
+
+    /// Lowercased hex-only form of a BT address for cross-source dedup
+    /// ("3C:A6:..." and "3c-a6-..." → "3ca6...").
+    static func normalizedAddress(_ address: String) -> String {
+        address.lowercased().filter { $0.isHexDigit }
     }
 }

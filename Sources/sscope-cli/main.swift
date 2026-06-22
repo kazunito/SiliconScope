@@ -182,12 +182,13 @@ if CommandLine.arguments.contains("--sensors-all") {
 // IORegistry BatteryPercent). Run: sscope-cli --peripherals
 if CommandLine.arguments.contains("--peripherals") {
     let devices = PeripheralBatterySampler().sample()
-    print("\n=== peripheral battery (\(devices.count)) — sudoless IORegistry ===")
+    print("\n=== peripheral battery (\(devices.count)) — sudoless (IORegistry + system_profiler) ===")
     if devices.isEmpty {
-        print("  (none — no connected device exposes BatteryPercent; Logitech/AirPods need other paths)")
+        print("  (none — no connected device reports battery; Logitech needs HID++ — see NEXT_VERSION)")
     }
     for d in devices {
-        print(String(format: "  %-22@ %-9@ %3d%%  [%@]",
-                     d.name as NSString, d.kind.rawValue as NSString, d.percent, d.address as NSString))
+        let extra = d.detail.map { "  (\($0))" } ?? ""
+        print(String(format: "  %-22@ %-9@ %3d%%%@",
+                     d.name as NSString, d.kind.rawValue as NSString, d.percent, extra as NSString))
     }
 }
