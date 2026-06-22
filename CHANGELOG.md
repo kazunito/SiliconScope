@@ -1,5 +1,44 @@
 # Changelog
 
+## v2.2.3 — 2026-06-22
+
+Sensors: **a fuller temperature panel on partially-mapped chips (e.g. M4 Max).** When a die
+exposes only a subset of its generation's curated SMC keys — M4 Max, for instance, reads back no
+Memory key — SiliconScope now fills the intended-but-absent category from the HID sensor set
+instead of leaving it blank. Per-core readings the chip genuinely doesn't expose are never
+fabricated, and fully-mapped chips (M1–M3) are untouched, with no extra cost. Follows up the M4
+Max report (#6).
+
+Also adds a contributor diagnostic, `sscope-cli --power-debug`, which dumps every IOReport power
+channel across all groups so non-M1 users can report where a rail lives on their chip (e.g.
+whether ANE power sits in `Energy Model` or `PMP` on M2). Follows up #11.
+
+## v2.2.2 — 2026-06-21
+
+Fix: **CPU core frequencies read as ~1–5 MHz on M4** (both E and P clusters). M4 changed the
+`voltage-states` DVFS tables from Hz (M1–M3) to KHz, so the old Hz→MHz conversion collapsed them
+to near-zero. Frequencies now rescale automatically when the Hz reading is implausibly low —
+chip-agnostic, so it also covers any future unit change. M1–M3 are unaffected, and the GPU clock
+(still reported in Hz on M4) was already correct. Thanks to [@Borda](https://github.com/Borda)
+for the detailed M4 Max report (#6).
+
+## v2.2.1 — 2026-06-21
+
+Menu-bar polish — thanks to first-time contributor [@davidarny](https://github.com/davidarny)
+for three of these fixes.
+
+- **Unified popover buttons** — the combined and per-metric popovers now share one button style
+  (rounded panel, hairline border, monospaced label, uniform height), with Open Dashboard as the
+  single accent action. (#7)
+- **Settings opens focused** — opening Settings from the popover now brings the app forward
+  instead of leaving the window behind and greyed-out until a Cmd+Tab. (#8)
+- **App icon sized to Apple's grid** — the Dock icon was full-bleed and read oversized next to
+  stock apps; it's now inset (~100px margin) to match its neighbors. (#9)
+- **Menu-bar dropdowns are mutually exclusive** — opening one SiliconScope dropdown now dismisses
+  the others (the per-metric popovers and the combined SS popover) instead of stacking up, like
+  every other menu-bar item.
+- Dev: `scripts/build-app.sh` now embeds Sparkle.framework so the locally-built bundle launches.
+
 ## v2.2.0 — 2026-06-21
 
 **GPU memory + an AI-cockpit cleanup.**

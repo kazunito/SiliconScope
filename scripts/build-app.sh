@@ -2,10 +2,12 @@
 #
 #  File:      build-app.sh
 #  Created:   2026-06-12
-#  Updated:   2026-06-14
+#  Updated:   2026-06-21
 #  Overview:  Builds a local SiliconScope.app bundle from the SwiftPM executable.
 #  Notes:     This is for development/local install. It does not notarize or create
 #             a DMG; use scripts/package.sh for Developer ID distribution.
+#             Embeds Sparkle.framework (ad-hoc signed) so the bundle actually launches —
+#             the SPM binary links @rpath/Sparkle.framework.
 #
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -63,11 +65,9 @@ cat > "$APPDIR/Contents/Info.plist" <<PLIST
 PLIST
 
 echo "Embedding Sparkle.framework..."
-# The SPM executable links @rpath/Sparkle.framework, so the framework must be bundled
-# even though Sparkle stays inert without SUFeedURL/SUPublicEDKey (no auto-update here).
-SPARKLE_FW_SRC=".build/artifacts/sparkle/Sparkle/Sparkle.xcframework/macos-arm64_x86_64/Sparkle.framework"
 mkdir -p "$APPDIR/Contents/Frameworks"
-cp -R "$SPARKLE_FW_SRC" "$APPDIR/Contents/Frameworks/"
+cp -R "$BIN_DIR/Sparkle.framework" "$APPDIR/Contents/Frameworks/"
+# The SPM binary links @rpath/Sparkle.framework; point rpath at the bundle's Frameworks.
 install_name_tool -add_rpath "@executable_path/../Frameworks" "$APPDIR/Contents/MacOS/$APP" 2>/dev/null || true
 
 echo "Ad-hoc signing..."
@@ -79,10 +79,10 @@ for nested in \
   "$SPV/XPCServices/Downloader.xpc" \
   "$SPV/Autoupdate" \
   "$SPV/Updater.app"; do
-  [ -e "$nested" ] && codesign --force --sign - "$nested"
+  [ -e "$nested" ] && codesign --force --sign - --timestamp=none "$nested"
 done
-codesign --force --sign - "$SPARKLE_FW"
-codesign --force --sign - "$APPDIR"
+codesign --force --sign - --timestamp=none "$SPARKLE_FW"
+codesign --force --sign - --timestamp=none "$APPDIR"
 codesign --verify --strict --verbose=2 "$APPDIR"
 
 echo "Built $APPDIR"

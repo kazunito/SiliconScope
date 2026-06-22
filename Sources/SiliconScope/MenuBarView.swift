@@ -1,7 +1,7 @@
 //
 //  File:      MenuBarView.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-16
+//  Updated:   2026-06-21
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Compact menu-bar popover content: the essentials at a glance (E/P, mem,
 //             GPU, bandwidth, power, die temp), trend sparklines, top processes, plus
@@ -32,27 +32,40 @@ struct MenuBarView: View {
             }
 
             Divider()
-            Button {
-                openWindow(id: "siliconscope-main")
-                NSApplication.shared.activate(ignoringOtherApps: true)
-            } label: {
-                Label(L("Open Dashboard"), systemImage: "macwindow")
-                    .frame(maxWidth: .infinity)
-            }
-            HStack {
-                Button(L("Settings…")) { openSettings() }
-                if UpdaterController.shared.canCheck {
-                    Button(L("Check for Updates…")) { UpdaterController.shared.checkForUpdates() }
+                .padding(.bottom, 2)
+            // One full-width primary action, then two equal-width secondary buttons — all
+            // share PopoverButtonStyle so they match the cards (panel fill, hairline border,
+            // mono label) at a uniform height. "Check for Updates…" lives in Settings.
+            VStack(spacing: 7) {
+                Button {
+                    openWindow(id: "siliconscope-main")
+                    NSApplication.shared.activate(ignoringOtherApps: true)
+                } label: {
+                    Label(L("Open Dashboard"), systemImage: "macwindow")
                 }
-                Spacer()
-                Button(L("Quit")) { NSApplication.shared.terminate(nil) }
+                .buttonStyle(PopoverButtonStyle(prominent: true))
+
+                HStack(spacing: 7) {
+                    Button(L("Settings…")) {
+                        openSettings()
+                        // Bring the app forward so Settings opens in front of (and focused
+                        // over) whatever app the user clicked from — otherwise it appears
+                        // behind, inactive (grey) until a Cmd+Tab. Mirrors "Open Dashboard".
+                        NSApplication.shared.activate(ignoringOtherApps: true)
+                    }
+                    .buttonStyle(PopoverButtonStyle())
+                    Button(L("Quit")) { NSApplication.shared.terminate(nil) }
+                        .buttonStyle(PopoverButtonStyle())
+                }
             }
-            .font(.system(size: 12))
         }
         .padding(14)
         .frame(width: compactGPU ? 340 : 270)
         .background(Theme.bg)
         .foregroundStyle(Theme.text)
+        // Opening the combined "SS" popover dismisses any open per-metric dropdowns, so the
+        // menu-bar surfaces stay mutually exclusive like standard dropdowns.
+        .onAppear { MetricBarController.shared.closeAllPopovers() }
     }
 
     /// Single-line GPU-focused readout: GPU% / GPU W / GPU bandwidth / die °C.
