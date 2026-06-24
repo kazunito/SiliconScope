@@ -227,6 +227,8 @@ adapted but unverified**. On an M2/M3/M4/M5, run `xcrun swift run -q sscope-cli 
 subtitles & translation (Whisper + Apple Intelligence), from the same lab (Calida Lab). SiliconScope
 was born from building it. Free open beta on TestFlight — same ethos: nothing leaves your device.
 
+<a href="https://spectalo.calidalab.ai/"><img src="docs/img/spectalo-library.jpg" width="520" alt="Spectalo — on-device AI video player with on-device subtitles & translation"></a>
+
 ## Acknowledgements
 
 - IOReport / SMC / HID sensor knowledge referenced from **NeoAsitop** (MIT) and
