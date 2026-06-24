@@ -91,8 +91,14 @@ public final class PowerSampler {
         }
 
         // A18: Energy Model only exposes GPU, so cpu/ane/dram stay 0 and the derived sum is wrong.
-        // SMC PSTR is the true system total (direct watts) — surface it as the SoC total.
-        if isA18, let pstr = smc?.readDouble("PSTR") { result.measuredSocWatts = pstr }
+        // Read the real rails from SMC instead (confirmed by Dreaminko's load test, #12):
+        //   PSTR = system total (direct watts); PZC0 = CPU package power.
+        // PZC0 ≈ PZC1 (both ~0.8W idle, ~6.2W under load) — the same CPU reading, not two clusters,
+        // so use one (their sum would exceed PSTR). The E/P split isn't exposed on the A18.
+        if isA18 {
+            if let pstr = smc?.readDouble("PSTR") { result.measuredSocWatts = pstr }
+            if let cpu = smc?.readDouble("PZC0") { result.cpuWatts = cpu }
+        }
 
         return result
     }
