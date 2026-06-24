@@ -1,7 +1,7 @@
 //
 //  File:      SensorCatalog.swift
 //  Created:   2026-06-19
-//  Updated:   2026-06-22
+//  Updated:   2026-06-24
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Curated per-generation SMC temperature-key tables for Apple Silicon (M1–M5).
 //             Apple's SMC FourCC keys are near-arbitrary and change every generation, so the
@@ -16,7 +16,9 @@
 import Foundation
 
 public enum AppleSiliconGen: Sendable {
-    case m1, m2, m3, m4, m5, unknown
+    case m1, m2, m3, m4, m5
+    case a18   // A18 Pro — the MacBook Neo (Mac17,5). Recognized; curated SMC keys TBD (#12).
+    case unknown
 }
 
 public struct CuratedSensor: Sendable {
@@ -29,6 +31,7 @@ public enum SensorCatalog {
     /// Detects the Apple Silicon generation from the CPU brand string ("Apple M1 Max" -> .m1).
     public static func detectGeneration() -> AppleSiliconGen {
         let brand = brandString()
+        if brand.contains("Apple A18") { return .a18 }   // MacBook Neo (A18 Pro)
         guard let r = brand.range(of: "Apple M"),
               let digit = brand[r.upperBound...].first, let n = Int(String(digit)) else { return .unknown }
         switch n {
@@ -49,6 +52,7 @@ public enum SensorCatalog {
         case .m3:      return m3
         case .m4:      return m4
         case .m5:      return m5
+        case .a18:     return []   // no curated SMC table yet — falls back to HID temps (#12)
         case .unknown: return []
         }
     }
