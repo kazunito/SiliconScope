@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.4.0 — 2026-06-24
+
+**Hide the combined menu-bar icon + reach Settings from anywhere.** On notch-limited menu bars,
+you can now turn off the combined "SS" icon (Settings → Menu bar items → **Combined (SS)**) to free
+a slot and keep just the per-metric items you want. Since the SS dropdown used to hold the only
+Settings link, **every per-metric dropdown now has a Settings + Dashboard footer**, so nothing is
+stranded when SS is hidden. (Thanks to community feedback.)
+
+**Recognizes the A18 Pro (MacBook Neo).** SiliconScope now identifies the A18 Pro instead of
+showing an unknown chip; CPU topology, frequencies, temperatures (HID), and memory work, and it
+degrades gracefully where the A18's IOReport power/bandwidth channels differ from the M-series.
+Full power/bandwidth mapping is in progress (#12).
+
 ## v2.3.0 — 2026-06-22
 
 **Connected-peripheral battery in the Battery dropdown.** Open the Battery menu-bar item and a new
