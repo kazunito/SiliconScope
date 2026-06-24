@@ -41,7 +41,7 @@
 
 ## 为什么做它
 
-我是在开发端侧 AI 视频播放器 **Spectalo** 时做出 SiliconScope 的。为了看清它究竟如何驱动芯片，
+我是在开发端侧 AI 视频播放器 **[Spectalo](https://spectalo.calidalab.ai/)** 时做出 SiliconScope 的。为了看清它究竟如何驱动芯片，
 我常常同时开着两个监视器 —— 可两个都不合用：
 
 - **asitop / NeoAsitop** 有芯片级数字，但 TUI 看着粗糙、信息也单薄。

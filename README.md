@@ -41,7 +41,7 @@ Pin any card to its own menu-bar item — **CPU · GPU · Memory · Network · S
 
 ## Why I built it
 
-I built SiliconScope while developing **Spectalo**, an on-device AI video player. To see how
+I built SiliconScope while developing **[Spectalo](https://spectalo.calidalab.ai/)**, an on-device AI video player. To see how
 it was actually driving the chip, I ended up running two monitors at once — and neither one
 fit:
 
@@ -220,6 +220,12 @@ PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). The most useful contribu
 **verify the per-chip temperature keys.** The M1 table is hardware-validated; **M2–M5 are
 adapted but unverified**. On an M2/M3/M4/M5, run `xcrun swift run -q sscope-cli --sensors`
 (+ `sysctl hw.model machdep.cpu.brand_string`) and open an issue with the output.
+
+## Related
+
+**[Spectalo](https://spectalo.calidalab.ai/)** — a beautiful video player with **on-device** AI
+subtitles & translation (Whisper + Apple Intelligence), from the same lab (Calida Lab). SiliconScope
+was born from building it. Free open beta on TestFlight — same ethos: nothing leaves your device.
 
 ## Acknowledgements
 
