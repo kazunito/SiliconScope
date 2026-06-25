@@ -15,6 +15,8 @@
 它源於一個想法：*親眼看看*裝置端 AI 與媒體負載如何驅動 Apple Silicon 的各個加速器 —— 後來成長為
 一款能取代 iStat Menus 的日常監視器。
 
+*已獲 [AAPL Ch.](https://applech2.com/archives/20260620-siliconscope-apple-silicon-mac-system-monitor.html)（日本）與 [ifun.de](https://www.ifun.de/siliconscope-ueberwacht-apple-ki-neural-engine-und-speicher-in-echtzeit-282222/)（德國）報導。*
+
 ![本地 LLM 負載下的 SiliconScope 儀表板](docs/img/dashboard.png)
 
 *執行本地 LLM 時（LM Studio · Llama-3.1-8B，GPU 100%）：SiliconScope 標記出**熱降頻**（GPU 頻率被壓制在峰值的 −20%），將負載與 M1 Max 的 400 GB/s 上限對比測量，辨識執行環境與模型，並即時顯示每個引擎 —— GPU / GPU 記憶體 / ANE / Media 與 E/P 核的疊加趨勢、每核溫度、功耗與頻寬。*

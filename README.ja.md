@@ -15,6 +15,8 @@
 オンデバイス AI とメディアのワークロードが Apple Silicon のアクセラレータをどう動かしているかを
 *実際に見たい* という思いから生まれ、iStat Menus の代わりに使える常用モニターへと育ちました。
 
+*[AAPL Ch.](https://applech2.com/archives/20260620-siliconscope-apple-silicon-mac-system-monitor.html)（日本語）と [ifun.de](https://www.ifun.de/siliconscope-ueberwacht-apple-ki-neural-engine-und-speicher-in-echtzeit-282222/)（ドイツ語）に掲載されました。*
+
 ![ローカル LLM 負荷時の SiliconScope ダッシュボード](docs/img/dashboard.png)
 
 *ローカル LLM 実行中（LM Studio · Llama-3.1-8B、GPU 100%）: SiliconScope は **サーマルスロットリング**（GPU クロックがピーク比 −20% に抑制）を検知し、ワークロードを M1 Max の 400 GB/s 上限に対して測定。ランタイムとモデルを認識し、すべてのエンジンをライブ表示します — GPU / GPU メモリ / ANE / Media と E/P コアの重ね描きトレンド、コア別温度、電力、帯域幅まで。*
