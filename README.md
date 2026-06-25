@@ -15,6 +15,8 @@ menu-bar suite — with first-class **ANE (Neural Engine)**, **Media Engine**, a
 Born from wanting to *see* how on-device AI and media workloads drive the Apple Silicon
 accelerators — and grown into a daily-driver monitor that can stand in for iStat Menus.
 
+*Featured on [AAPL Ch.](https://applech2.com/archives/20260620-siliconscope-apple-silicon-mac-system-monitor.html) (JP) and [ifun.de](https://www.ifun.de/siliconscope-ueberwacht-apple-ki-neural-engine-und-speicher-in-echtzeit-282222/) (DE).*
+
 ![SiliconScope dashboard under a local-LLM load](docs/img/dashboard.png)
 
 *Under a local LLM (LM Studio · Llama-3.1-8B, 100% GPU): SiliconScope flags **thermal throttling** (GPU clock held −20% vs peak), measures the workload against the M1 Max's 400 GB/s ceiling, detects the runtime + model, and shows every engine live — GPU / GPU-memory / ANE / Media and E/P-core overlaid trends, per-core temperatures, power, and bandwidth.*
