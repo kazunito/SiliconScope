@@ -3,11 +3,12 @@
 //  Created:   2026-06-25
 //  Updated:   2026-06-25
 //  Developer: Kennt Kim / Calida Lab
-//  Overview:  Bottom transport bar for session recording (Phase 1): Record/Stop, an elapsed
-//             timecode + live sample count, and an Export menu (CSV or lossless .ssrec). Bound to
-//             SiliconScopeMonitor's @Observable recording state, pinned via .safeAreaInset.
-//  Notes:     The record dot pulses via sample-count parity (no timer). Export uses NSSavePanel.
-//             Phase 2 (replay) will add transport controls (play / scrub / timecode-seek) here.
+//  Overview:  Bottom bar for the LIVE dashboard: Record/Stop (with elapsed timecode + sample
+//             count while recording), and a Replay menu to revisit a session. Stopping a recording
+//             drops straight into replay of what was just captured (saving happens there, after).
+//  Notes:     The record dot pulses via sample-count parity (no timer). Entering replay is done by
+//             posting .openSiliconScopeRecording (handled by DashboardContainer); the open panel
+//             defaults to ~/SiliconScope.
 //
 import SwiftUI
 import AppKit
@@ -31,9 +32,9 @@ struct RecordBar: View {
                 }
             }
             .buttonStyle(.plain)
-            .help(recording ? "Stop recording" : "Record a session of every metric for trend analysis")
+            .help(recording ? "Stop and replay this recording" : "Record a session of every metric")
 
-            if recording || monitor.hasRecording {
+            if recording {
                 Text(timecode(monitor.recordingElapsed))
                     .font(.system(.callout, design: .monospaced))
                     .foregroundStyle(Theme.text)
@@ -41,25 +42,23 @@ struct RecordBar: View {
                     .font(.caption)
                     .foregroundStyle(Theme.dim)
             } else {
-                Text("Record every metric to CSV / .ssrec for trend analysis")
+                Text("Record every metric, then replay it like a DVR")
                     .font(.caption)
                     .foregroundStyle(Theme.faint)
             }
 
             Spacer()
 
-            if monitor.hasRecording && !recording {
-                Button { replayJustRecorded() } label: {
+            if !recording {
+                Menu {
+                    if monitor.recordingFileURL != nil {
+                        Button("Replay Last Session") { replay(monitor.recordingFileURL) }
+                    }
+                    Button("Open Recording…") { openPanel() }
+                } label: {
                     Label("Replay", systemImage: "play.rectangle.fill")
                 }
-                .buttonStyle(.plain).foregroundStyle(Theme.accent)
-                .help("Replay the session you just recorded")
-
-                Button { exportBoth() } label: {
-                    Label("Export", systemImage: "square.and.arrow.up")
-                }
-                .buttonStyle(.plain).foregroundStyle(Theme.accent)
-                .help("Save .ssrec (replay) + .csv (analysis) to ~/SiliconScope")
+                .menuStyle(.borderlessButton).fixedSize().foregroundStyle(Theme.accent)
             }
         }
         .font(.callout)
@@ -71,50 +70,31 @@ struct RecordBar: View {
     }
 
     private func toggle() {
-        if monitor.isRecording { monitor.stopRecording() } else { monitor.startRecording() }
+        if monitor.isRecording {
+            monitor.stopRecording()
+            replay(monitor.recordingFileURL)   // Stop → straight into replay of what was just captured
+        } else {
+            monitor.startRecording()
+        }
+    }
+
+    /// Hands a recording URL to DashboardContainer to enter replay.
+    private func replay(_ url: URL?) {
+        guard let url else { return }
+        NotificationCenter.default.post(name: .openSiliconScopeRecording, object: nil, userInfo: ["url": url])
+    }
+
+    private func openPanel() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.directoryURL = RecordingFiles.defaultDir()
+        if let ssrec = UTType(filenameExtension: "ssrec") { panel.allowedContentTypes = [ssrec] }
+        if panel.runModal() == .OK { replay(panel.url) }
     }
 
     private func timecode(_ s: TimeInterval) -> String {
         let t = Int(s)
         return String(format: "%02d:%02d:%02d", t / 3600, (t % 3600) / 60, t % 60)
-    }
-
-    /// Loads the just-recorded temp .ssrec straight into replay — no export step needed.
-    private func replayJustRecorded() {
-        guard let url = monitor.recordingFileURL else { return }
-        NotificationCenter.default.post(name: .openSiliconScopeRecording, object: nil, userInfo: ["url": url])
-    }
-
-    /// Saves BOTH the lossless .ssrec (replay) and a .csv (analysis), timestamped, into
-    /// ~/SiliconScope by default (created if needed) — the panel lets you pick another location.
-    private func exportBoth() {
-        let panel = NSSavePanel()
-        panel.canCreateDirectories = true
-        panel.directoryURL = Self.defaultRecordingsDir()
-        panel.nameFieldStringValue = "SiliconScope-\(Self.timestamp())"   // no extension — both are added
-        panel.message = "Saves two files: .ssrec (replay) and .csv (analysis)."
-        guard panel.runModal() == .OK, let chosen = panel.url else { return }
-        let base = chosen.deletingPathExtension()
-        let ssrec = base.appendingPathExtension("ssrec")
-        let csv = base.appendingPathExtension("csv")
-        do {
-            try monitor.exportRecording(to: ssrec)
-            try monitor.exportRecordingCSV(to: csv)
-            NSWorkspace.shared.activateFileViewerSelecting([ssrec, csv])
-        } catch {
-            NSSound.beep()
-        }
-    }
-
-    private static func timestamp() -> String {
-        let f = DateFormatter(); f.dateFormat = "yyyyMMdd-HHmmss"
-        return f.string(from: Date())
-    }
-
-    /// ~/SiliconScope, created on first use.
-    private static func defaultRecordingsDir() -> URL {
-        let dir = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("SiliconScope", isDirectory: true)
-        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        return dir
     }
 }

@@ -50,7 +50,7 @@ struct DashboardContainer: View {
     }
 
     private func open(_ url: URL) {
-        do { replay = ReplayController(recording: try SessionReader.load(url)) }
+        do { replay = ReplayController(recording: try SessionReader.load(url), sourceURL: url) }
         catch { replay = nil; loadError = Self.message(for: error) }
     }
 

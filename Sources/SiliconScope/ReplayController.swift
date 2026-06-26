@@ -20,12 +20,16 @@ import SiliconScopeCore
 @Observable
 final class ReplayController {
     let recording: LoadedRecording
+    let sourceURL: URL?          // the .ssrec this was loaded from (for Export from replay)
     private(set) var index = 0
     private(set) var isPlaying = false
     var speed: Double = 1
     private var task: Task<Void, Never>?
 
-    init(recording: LoadedRecording) { self.recording = recording }
+    init(recording: LoadedRecording, sourceURL: URL?) {
+        self.recording = recording
+        self.sourceURL = sourceURL
+    }
 
     var count: Int { recording.count }
     var time: TimeInterval { recording.frames.indices.contains(index) ? recording.frames[index].t : 0 }

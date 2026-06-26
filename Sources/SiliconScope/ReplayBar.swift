@@ -9,6 +9,7 @@
 //  Notes:     The slider's set closure seeks; get reflects the playhead so it tracks during play.
 //
 import SwiftUI
+import AppKit
 import SiliconScopeCore
 
 struct ReplayBar: View {
@@ -51,6 +52,12 @@ struct ReplayBar: View {
 
             Text("\(c.recording.meta.chip) · \(c.count) frames")
                 .font(.caption).foregroundStyle(Theme.dim).lineLimit(1)
+
+            if c.sourceURL != nil {
+                Button { export() } label: { Label("Save", systemImage: "square.and.arrow.up") }
+                    .buttonStyle(.plain).foregroundStyle(Theme.accent)
+                    .help("Save this recording (.ssrec + .csv) to ~/SiliconScope")
+            }
         }
         .font(.callout)
         .foregroundStyle(Theme.text)
@@ -58,6 +65,28 @@ struct ReplayBar: View {
         .padding(.vertical, 6)
         .background(Theme.panel)
         .overlay(Rectangle().frame(height: 1).foregroundStyle(Theme.border), alignment: .top)
+    }
+
+    /// Save the currently-replayed recording: copy its .ssrec and write a .csv alongside,
+    /// timestamped, into ~/SiliconScope (the panel allows another location). Reveals in Finder.
+    private func export() {
+        guard let src = controller.sourceURL else { return }
+        let panel = NSSavePanel()
+        panel.canCreateDirectories = true
+        panel.directoryURL = RecordingFiles.defaultDir()
+        panel.nameFieldStringValue = RecordingFiles.timestampedName()   // no extension — both added
+        panel.message = "Saves .ssrec (replay) + .csv (analysis)."
+        guard panel.runModal() == .OK, let chosen = panel.url else { return }
+        let base = chosen.deletingPathExtension()
+        let ssrec = base.appendingPathExtension("ssrec")
+        let csv = base.appendingPathExtension("csv")
+        let fm = FileManager.default
+        do {
+            if fm.fileExists(atPath: ssrec.path) { try fm.removeItem(at: ssrec) }
+            try fm.copyItem(at: src, to: ssrec)
+            try SessionRecorder.csv(fromRecordingAt: src).write(to: csv, atomically: true, encoding: .utf8)
+            NSWorkspace.shared.activateFileViewerSelecting([ssrec, csv])
+        } catch { NSSound.beep() }
     }
 
     private func speedText(_ v: Double) -> String {
