@@ -1,7 +1,7 @@
 //
 //  File:      SiliconScopeMonitor.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-18
+//  Updated:   2026-06-25
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Observable view-model that drives the UI. Polls SystemSampler on a
 //             background task ~once per second and publishes the latest snapshot plus
@@ -82,6 +82,16 @@ final class SiliconScopeMonitor {
 
     private let sampler = SystemSampler()
     private var loopTask: Task<Void, Never>?
+
+    // Session recording (Phase 1): the recorder streams full snapshots to a temp .ssrec. These
+    // mirror its state into @Observable properties so the RecordBar reflects start/stop and the
+    // live sample count immediately.
+    private let recorder = SessionRecorder()
+    private(set) var isRecording = false
+    private(set) var recordingSampleCount = 0
+    private(set) var hasRecording = false              // a finished recording exists to export
+    var recordingElapsed: TimeInterval { recorder.elapsed }
+    var recordingFileURL: URL? { recorder.fileURL }
 
     init() {
         topology = sampler.topology
@@ -211,6 +221,10 @@ final class SiliconScopeMonitor {
                 self.gpuClockPeakMHz = max(snap.gpu.freqMHz, self.gpuClockPeakMHz * Self.gpuClockPeakDecay)
                 self.updateMemoryRates(snap)
                 self.history.push(snap)
+                if self.isRecording {
+                    self.recorder.append(snap)                       // 1 Hz self-gated inside
+                    self.recordingSampleCount = self.recorder.sampleCount
+                }
                 self.checkAlertsAndNotify()
                 MetricBarController.shared.sync(monitor: self)
                 let interval = UserDefaults.standard.object(forKey: "refreshInterval") as? Double ?? 1.0
@@ -226,6 +240,35 @@ final class SiliconScopeMonitor {
         // C5: drop rate state so a later restart doesn't diff across the pause.
         resetMemoryRates()
     }
+
+    // MARK: - Session recording (Phase 1)
+
+    /// Starts capturing snapshots to a temp .ssrec. No-op if already recording or on failure.
+    func startRecording() {
+        guard !isRecording else { return }
+        do {
+            try recorder.start()
+            isRecording = true
+            recordingSampleCount = 0
+            hasRecording = false
+        } catch {
+            isRecording = false
+        }
+    }
+
+    /// Stops capturing; the recording stays on disk, ready to export.
+    func stopRecording() {
+        guard isRecording else { return }
+        recorder.stop()
+        isRecording = false
+        hasRecording = recorder.fileURL != nil && recorder.sampleCount > 0
+    }
+
+    /// Exports the lossless JSONL recording (.ssrec) to `url`.
+    func exportRecording(to url: URL) throws { try recorder.exportRecording(to: url) }
+
+    /// Exports a flattened CSV of the recording to `url`.
+    func exportRecordingCSV(to url: URL) throws { try recorder.exportCSV(to: url) }
 
     // MARK: - Opt-in runtime API polling
 
