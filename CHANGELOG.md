@@ -1,5 +1,28 @@
 # Changelog
 
+## v3.0.0 — 2026-06-26
+
+**A new way to observe your Mac: rewind time, and zoom into one process.** The 3.x line adds
+two big capabilities on top of the live dashboard.
+
+**🔴 Record & Replay — a DVR for your Mac.** Hit **Record** in the bottom bar to capture *every*
+metric (1 Hz, all engines/temps/power/bandwidth/processes) to a `.ssrec` file; press **Stop** and
+the dashboard drops straight into **replay** — play / pause / step / scrub / 0.5–4× speed, with the
+*entire dashboard* (sparklines, AI-workload verdict, peaks, temps) re-rendered exactly as it looked
+at each moment. **Save** writes both the lossless `.ssrec` (re-openable) and a flattened `.csv` (for
+Excel/Python), timestamped, to `~/SiliconScope`. As far as we know, the first Mac monitor with a
+true record/replay. (Reopen any `.ssrec` later via the Replay menu or by dropping it on the window.)
+
+**🔬 Process Inspector — per-process detail no other Mac GUI shows.** Click a process to open a live
+Inspector: **CPU** (with P-core/E-core split), **Compute** (IPC, instructions/s, cycles/s),
+**Energy** (actual watts + wakeups), **Memory** footprint, **Disk** I/O — and, uniquely,
+**Neural-Engine memory** (whether and how much a process is using the ANE). All sudoless, via
+`proc_pid_rusage`. Honest about limits: GPU / ANE-power / Media / bandwidth can't be attributed to a
+single process on macOS, so they're shown clearly labeled "system-wide."
+
+**⚡ Snappier + finer.** The four IOReport/CPU samplers now run in parallel (≈0.8 s → ~0.2 s per
+tick), and the recording cadence follows your refresh-interval setting.
+
 ## v2.4.1 — 2026-06-24
 
 **MacBook Neo (A18 Pro) now reports power and memory bandwidth.** On the A18, the usual IOReport

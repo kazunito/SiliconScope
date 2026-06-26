@@ -1,7 +1,7 @@
 //
 //  File:      DashboardView.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-25
+//  Updated:   2026-06-26
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Full-window dashboard. Header (chip, cores, SoC power, battery), then
 //             CPU + GPU side by side, combined Memory|Bandwidth and Network|Disk cards
@@ -837,6 +837,9 @@ private struct ProcessCard: View {
                     if !filter.isEmpty {
                         Button { filter = "" } label: { Image(systemName: "xmark.circle.fill") }
                             .buttonStyle(.plain).foregroundStyle(Theme.faint)
+                    } else if onInspect != nil {
+                        Text("tap to inspect")
+                            .font(.system(size: 9.5, design: .monospaced)).foregroundStyle(Theme.faint)
                     }
                 }
                 .padding(.horizontal, 7).padding(.vertical, 5)
