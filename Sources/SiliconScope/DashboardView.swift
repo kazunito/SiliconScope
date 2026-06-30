@@ -1,7 +1,7 @@
 //
 //  File:      DashboardView.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-26
+//  Updated:   2026-06-30
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Full-window dashboard. Header (chip, cores, SoC power, battery), then
 //             CPU + GPU side by side, combined Memory|Bandwidth and Network|Disk cards
@@ -12,20 +12,70 @@
 //             on top of the snapshot's own data-level warnings.
 //
 import SwiftUI
+import AppKit
 import UniformTypeIdentifiers
 import SiliconScopeCore
+
+/// Reports the hosting window's on-screen visibility (occlusion + miniaturize) so the dashboard
+/// can pause its expensive live re-render when it isn't actually visible. Measured cost split:
+/// the data layer (IOReport/SMC/per-process sampling) is ~0.6% CPU, while the live SwiftUI chart
+/// rendering is essentially the entire footprint — so when the window is hidden, re-rendering it
+/// is pure waste. The sampler and menu-bar items keep running (they need fresh data); only the
+/// chart rendering is gated. Also fixes the "high CPU while minimized" half of issue #13.
+private struct WindowVisibilityObserver: NSViewRepresentable {
+    let onChange: (Bool) -> Void
+    func makeNSView(context: Context) -> NSView { NSView() }
+    func updateNSView(_ nsView: NSView, context: Context) {
+        // updateNSView runs on the main actor; by now the view is in a window (nil on the first
+        // call before insertion — attach() no-ops until a window exists, then latches once).
+        context.coordinator.attach(nsView.window, onChange)
+    }
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    // NSObject + selector observers (not closure blocks) so nothing non-Sendable is captured.
+    // @MainActor so it may read the window's main-actor state; window notifications post on main.
+    @MainActor final class Coordinator: NSObject {
+        private weak var window: NSWindow?
+        private var onChange: ((Bool) -> Void)?
+        func attach(_ window: NSWindow?, _ onChange: @escaping (Bool) -> Void) {
+            guard let window, self.window == nil else { return }
+            self.window = window
+            self.onChange = onChange
+            let nc = NotificationCenter.default
+            for name in [NSWindow.didChangeOcclusionStateNotification,
+                         NSWindow.didMiniaturizeNotification,
+                         NSWindow.didDeminiaturizeNotification] {
+                nc.addObserver(self, selector: #selector(report), name: name, object: window)
+            }
+            report()
+        }
+        @objc private func report() {
+            guard let w = window else { return }
+            onChange?(w.occlusionState.contains(.visible) && !w.isMiniaturized)
+        }
+        deinit { NotificationCenter.default.removeObserver(self) }
+    }
+}
 
 // Hosts the dashboard: chooses the data source (live monitor or session replay), builds the
 // DashboardState in its body so @Observable / playhead changes re-render, and pins the matching
 // bottom bar (RecordBar live, ReplayBar in replay). Enters replay via ⌘O (notification) or a
-// dropped .ssrec; exits back to live from the ReplayBar.
+// dropped .ssrec; exits back to live from the ReplayBar. While the window is off-screen it shows
+// a frozen last frame and reads nothing from the monitor, so live updates stop re-rendering.
 struct DashboardContainer: View {
     let monitor: SiliconScopeMonitor
     @State private var replay: ReplayController?
     @State private var loadError: String?
+    @State private var dashVisible = true        // false when the window is occluded or minimized
+    @State private var frozen: DashboardState?   // last live frame, shown (not re-rendered) while hidden
 
     var body: some View {
         content
+            .background(WindowVisibilityObserver { visible in
+                // Capture the last live frame as we go off-screen so the frozen branch has it.
+                if !visible && dashVisible { frozen = DashboardState(live: monitor) }
+                dashVisible = visible
+            })
             .onReceive(NotificationCenter.default.publisher(for: .openSiliconScopeRecording)) { note in
                 if let url = note.userInfo?["url"] as? URL { open(url) }
             }
@@ -46,11 +96,16 @@ struct DashboardContainer: View {
                 .safeAreaInset(edge: .bottom, spacing: 0) {
                     ReplayBar(controller: replay, onExit: { self.replay = nil })
                 }
-        } else {
+        } else if dashVisible {
             DashboardView(state: DashboardState(live: monitor),
                           onBenchmark: { Task { await monitor.runBenchmark() } },
                           onInspect: { monitor.focus($0.pid) })
                 .safeAreaInset(edge: .bottom, spacing: 0) { RecordBar(monitor: monitor) }
+        } else {
+            // Off-screen: render the frozen last frame, reading nothing from the monitor, so
+            // per-tick snapshot changes no longer trigger chart re-renders. (Recording keeps
+            // running in the monitor loop regardless; the menu bar stays live via its own sync.)
+            DashboardView(state: frozen ?? DashboardState(live: monitor), onBenchmark: nil)
         }
     }
 
@@ -83,15 +138,16 @@ struct DashboardView: View {
     let state: DashboardState
     var onBenchmark: (() -> Void)? = nil   // nil → replay: hides the benchmark control + process kill
     var onInspect: ((ProcessRow) -> Void)? = nil   // nil → replay: process inspection disabled
+    @State private var dismissedWarnings: Set<String> = []   // user-dismissed warnings (until the condition clears)
 
     var body: some View {
         let s = state
         let snapshot = s.snapshot
+        let warnings = allWarnings(s)
+        let activeKeys = Set(warnings.map(Self.warningKey))
+        let visibleWarnings = warnings.filter { !dismissedWarnings.contains(Self.warningKey($0)) }
         ScrollView {
             VStack(spacing: 4) {
-                let warnings = allWarnings(s)
-                if !warnings.isEmpty { WarningBanner(warnings: warnings) }
-
                 HeaderView(topology: s.topology, power: snapshot.power, battery: snapshot.battery)
 
                 // AI cockpit pair, side by side (matches the rest of the 2-column grid and
@@ -148,6 +204,31 @@ struct DashboardView: View {
         }
         .background(Theme.bg)
         .foregroundStyle(Theme.text)
+        // Warnings (memory-pressure / GPU-throttle) float as an OVERLAY at the top — shown for as
+        // long as the condition holds, never inserted inline, so the cards never reflow/jump (#16).
+        // It sits over the header (the least-critical row) while active and slides away when the
+        // condition clears; the per-condition detail also lives persistently in the cards
+        // (Memory pressure %, AI Workload thermal verdict).
+        .overlay(alignment: .top) {
+            if !visibleWarnings.isEmpty {
+                WarningBanner(warnings: visibleWarnings,
+                              onDismiss: { dismissedWarnings.insert(Self.warningKey($0)) })
+                    .padding(.horizontal, 10)
+                    .padding(.top, 6)
+                    .frame(maxWidth: 620)
+                    .shadow(color: .black.opacity(0.35), radius: 10, y: 3)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+        .animation(.spring(response: 0.3, dampingFraction: 0.85), value: visibleWarnings.isEmpty)
+        // When a condition clears, forget its dismissal so it can alert again if it recurs.
+        .onChange(of: activeKeys) { _, now in dismissedWarnings.formIntersection(now) }
+    }
+
+    // Stable key per warning condition — strip digits so live values in the message (e.g. the GPU
+    // clock MHz in the throttle text) don't make a persisting warning look like a brand-new one.
+    private static func warningKey(_ w: SystemSnapshot.Warning) -> String {
+        "\(w.level)|" + w.message.filter { !$0.isNumber }
     }
 
     private func allWarnings(_ s: DashboardState) -> [SystemSnapshot.Warning] {
@@ -202,6 +283,7 @@ private struct HeaderView: View {
 
 private struct WarningBanner: View {
     let warnings: [SystemSnapshot.Warning]
+    var onDismiss: ((SystemSnapshot.Warning) -> Void)? = nil
 
     var body: some View {
         VStack(spacing: 5) {
@@ -212,13 +294,25 @@ private struct WarningBanner: View {
                         .font(.system(size: 11))
                     Text(warning.message).font(.system(size: 11.5, weight: .medium, design: .monospaced))
                     Spacer()
+                    if let onDismiss {
+                        Button { onDismiss(warning) } label: {
+                            Image(systemName: "xmark").font(.system(size: 10, weight: .bold)).opacity(0.65)
+                        }
+                        .buttonStyle(.plain)
+                        .help("Dismiss until it clears")
+                    }
                 }
                 .foregroundStyle(critical ? Color(red: 1, green: 0.7, blue: 0.7) : Color(red: 1, green: 0.85, blue: 0.6))
                 .padding(.horizontal, 11).padding(.vertical, 7)
-                .background((critical ? Color.red : Color.orange).opacity(0.16),
-                            in: RoundedRectangle(cornerRadius: 8))
+                .background {
+                    // Opaque base so the floating banner cleanly covers the header behind it
+                    // (no see-through blending), with the alert tint layered on top.
+                    RoundedRectangle(cornerRadius: 8).fill(Theme.panel)
+                        .overlay(RoundedRectangle(cornerRadius: 8)
+                            .fill((critical ? Color.red : Color.orange).opacity(0.18)))
+                }
                 .overlay(RoundedRectangle(cornerRadius: 8)
-                    .strokeBorder((critical ? Color.red : Color.orange).opacity(0.4), lineWidth: 1))
+                    .strokeBorder((critical ? Color.red : Color.orange).opacity(0.5), lineWidth: 1))
             }
         }
     }
@@ -245,13 +339,25 @@ private struct AIWorkloadCard: View {
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 8) {
                     Circle().fill(bottleneck.color).frame(width: 9, height: 9)
+                    // Keep the verdict on ONE line (shrink slightly before wrapping) so a long
+                    // label like "Thermal-throttled" doesn't wrap and crush the half-width card.
                     Text(bottleneck.label)
                         .font(.system(size: 13, weight: .bold, design: .monospaced))
                         .foregroundStyle(bottleneck.color)
-                    Text(bottleneck.detail)
-                        .font(.system(size: 10.5, design: .monospaced))
-                        .foregroundStyle(Theme.dim)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                    // The key value beside the verdict — for throttle the live clock + drop, else
+                    // the engine hint. Short enough to sit inline (the old prose detail was not).
+                    if bottleneck != .idle {
+                        Text(bottleneck == .thermalThrottled
+                             ? String(format: "%.0f MHz (-%.0f%% vs peak)", gpu.freqMHz, clockDropFraction * 100)
+                             : engineHint)
+                            .font(.system(size: 10.5, design: .monospaced))
+                            // Red for the throttle clock value (it's an alarm value); dim otherwise.
+                            .foregroundStyle(bottleneck == .thermalThrottled ? bottleneck.color : Theme.dim)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.75)
+                    }
                     Spacer(minLength: 0)
                 }
                 Bar(label: "Mem BW % of ceiling",
@@ -262,16 +368,6 @@ private struct AIWorkloadCard: View {
                     Text(String(format: "GPU %.0f%%", gpu.usagePercent))
                         .font(.system(size: 10.5, weight: .medium, design: .monospaced))
                         .foregroundStyle(Theme.text)
-                    // Suppress the engine hint when idle — claiming "LLM-style" on an
-                    // idle GPU contradicts the verdict.
-                    if bottleneck != .idle {
-                        Text("·").font(.system(size: 10.5)).foregroundStyle(Theme.faint)
-                        Text(bottleneck == .thermalThrottled
-                             ? String(format: "GPU clock -%.0f%% vs peak", clockDropFraction * 100)
-                             : engineHint)
-                            .font(.system(size: 10.5, design: .monospaced))
-                            .foregroundStyle(Theme.dim)
-                    }
                     Spacer(minLength: 0)
                 }
             }
