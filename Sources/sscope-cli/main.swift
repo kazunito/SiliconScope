@@ -147,6 +147,15 @@ if CommandLine.arguments.contains("--sensors") {
     let hid = HIDSensorReader.read().sorted { $0.name < $1.name }
     print("\n=== raw HID sensors (\(hid.count)) — use these to build/fix a table ===")
     for s in hid { print(String(format: "  %-26@ %5.1f C", s.name as NSString, s.celsius)) }
+
+    // What the dashboard/menu-bar panel actually shows when the curated SMC path is empty
+    // (base chips like M1 Air): the HID set after friendlyHID labeling + category grouping.
+    let panel = TemperatureSampler().hidClassifiedSample()
+    print("\n=== as the panel displays (friendlyHID → groups) ===")
+    for g in panel.groups {
+        print(String(format: "  [%@]  avg %.1f C · max %.1f C", g.category.rawValue as NSString, g.average, g.maximum))
+        for s in g.sensors { print(String(format: "    %-18@ %5.1f C", s.name as NSString, s.celsius)) }
+    }
     print("\nMac model: run `sysctl hw.model machdep.cpu.brand_string` and include it.")
 }
 
