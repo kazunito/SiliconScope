@@ -1,7 +1,7 @@
 //
 //  File:      Theme.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-21
+//  Updated:   2026-07-02
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Shared visual language and reusable UI atoms (Card, Bar, KV, Sparkline,
 //             PopoverButtonStyle).
@@ -109,6 +109,7 @@ func formatBytes(_ bytes: UInt64) -> String {
 struct Card<Content: View, Graph: View>: View {
     let title: String
     var menuBarPin: Binding<Bool>? = nil   // when set, a switch in the title promotes the card to the menu bar
+    var alert: Color? = nil                // non-nil → warning state: colored border (memory pressure / GPU throttle)
     @ViewBuilder var content: Content
     /// Optional graph pinned to the card's bottom edge. It is drawn as a bottom OVERLAY, i.e.
     /// out of the normal layout flow: it cannot push the flowing content taller (that is what
@@ -117,11 +118,12 @@ struct Card<Content: View, Graph: View>: View {
     /// on the SAME baseline regardless of how many Bars sit above. Graphless cards omit it.
     @ViewBuilder var graph: Graph
 
-    init(title: String, menuBarPin: Binding<Bool>? = nil,
+    init(title: String, menuBarPin: Binding<Bool>? = nil, alert: Color? = nil,
          @ViewBuilder content: () -> Content,
          @ViewBuilder graph: () -> Graph) {
         self.title = title
         self.menuBarPin = menuBarPin
+        self.alert = alert
         self.content = content()
         self.graph = graph()
     }
@@ -151,7 +153,10 @@ struct Card<Content: View, Graph: View>: View {
                 .padding(.bottom, 6)
         }
         .background(Theme.panel, in: RoundedRectangle(cornerRadius: 9))
-        .overlay(RoundedRectangle(cornerRadius: 9).strokeBorder(Theme.border, lineWidth: 1))
+        // In a warning state the card border is tinted (amber = elevated, red = critical) so the
+        // user can see AT A GLANCE which metric is under pressure — not just a global banner (#18).
+        .overlay(RoundedRectangle(cornerRadius: 9)
+            .strokeBorder(alert ?? Theme.border, lineWidth: alert == nil ? 1 : 1.5))
         // Clip last so the chart's area gradient respects the rounded corners.
         .clipShape(RoundedRectangle(cornerRadius: 9))
     }
@@ -159,8 +164,8 @@ struct Card<Content: View, Graph: View>: View {
 
 extension Card where Graph == EmptyView {
     /// Graphless card (most cards): keeps existing `Card(title:) { ... }` call sites working.
-    init(title: String, menuBarPin: Binding<Bool>? = nil, @ViewBuilder content: () -> Content) {
-        self.init(title: title, menuBarPin: menuBarPin, content: content, graph: { EmptyView() })
+    init(title: String, menuBarPin: Binding<Bool>? = nil, alert: Color? = nil, @ViewBuilder content: () -> Content) {
+        self.init(title: title, menuBarPin: menuBarPin, alert: alert, content: content, graph: { EmptyView() })
     }
 }
 

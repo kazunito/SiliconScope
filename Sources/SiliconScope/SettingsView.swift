@@ -1,7 +1,7 @@
 //
 //  File:      SettingsView.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-24
+//  Updated:   2026-07-02
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Preferences window (Cmd+,). Refresh cadence, temperature unit, menu-bar
 //             compact GPU mode, launch-at-login, threshold alerts, and the AI runtime API
@@ -22,6 +22,7 @@ struct SettingsView: View {
     @AppStorage("aiRuntimeOllamaPort") private var ollamaPort = 11434
     @AppStorage("aiRuntimeLMStudioPort") private var lmStudioPort = 1234
     @AppStorage("notificationsEnabled") private var notificationsEnabled = false
+    @AppStorage("showWarningBanner") private var showWarningBanner = true
     // Per-metric menu-bar items — same keys the ⬚ pin on each dashboard card writes, so the
     // two stay in sync (MetricBarController reconciles status items from these each tick).
     @AppStorage("menubar.combined") private var mbCombined = true
@@ -74,6 +75,7 @@ struct SettingsView: View {
             Section {
                 Toggle("Launch at login", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, on in LoginItem.setEnabled(on) }
+                Toggle("Show warning banner", isOn: $showWarningBanner)
                 Toggle("Alert notifications", isOn: $notificationsEnabled)
                     .onChange(of: notificationsEnabled) { _, on in if on { Notifier.requestAuthorization() } }
                 if UpdaterController.shared.canCheck {
@@ -84,7 +86,7 @@ struct SettingsView: View {
             } header: {
                 Text("Startup & alerts")
             } footer: {
-                Text("Notify on GPU thermal throttle, memory pressure, or swapping (once per event).")
+                Text("On GPU thermal throttle or memory pressure, the affected card's border turns amber/red. The in-app warning banner is on by default (turn it off above); optional macOS notifications fire once per event.")
             }
 
             Section {

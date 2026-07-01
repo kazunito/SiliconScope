@@ -1,7 +1,7 @@
 //
 //  File:      DashboardView.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-30
+//  Updated:   2026-07-02
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Full-window dashboard. Header (chip, cores, SoC power, battery), then
 //             CPU + GPU side by side, combined Memory|Bandwidth and Network|Disk cards
@@ -138,14 +138,18 @@ struct DashboardView: View {
     let state: DashboardState
     var onBenchmark: (() -> Void)? = nil   // nil → replay: hides the benchmark control + process kill
     var onInspect: ((ProcessRow) -> Void)? = nil   // nil → replay: process inspection disabled
-    @State private var dismissedWarnings: Set<String> = []   // user-dismissed warnings (until the condition clears)
+    @State private var dismissedWarnings: Set<String> = []   // user-dismissed warnings (until the episode ends)
+    @State private var shownWarnings: [SystemSnapshot.Warning] = []   // DEBOUNCED (lingering) set actually displayed
+    @State private var warningClearTask: Task<Void, Never>? = nil     // pending "hide after linger" task
+    @AppStorage("showWarningBanner") private var showWarningBanner = true   // #18: let sysmon users opt out of the banner
 
     var body: some View {
         let s = state
         let snapshot = s.snapshot
         let warnings = allWarnings(s)
-        let activeKeys = Set(warnings.map(Self.warningKey))
-        let visibleWarnings = warnings.filter { !dismissedWarnings.contains(Self.warningKey($0)) }
+        // shownWarnings is the DEBOUNCED set (lingers a few seconds after the condition clears) so an
+        // oscillating pressure/throttle never makes the banner flicker in and out (#18).
+        let visibleWarnings = shownWarnings.filter { !dismissedWarnings.contains(Self.warningKey($0)) }
         ScrollView {
             VStack(spacing: 4) {
                 HeaderView(topology: s.topology, power: snapshot.power, battery: snapshot.battery)
@@ -180,7 +184,8 @@ struct DashboardView: View {
                     AcceleratorCard(gpu: snapshot.gpu, power: snapshot.power, bandwidth: snapshot.bandwidth,
                                     anePeak: s.anePeakWatts, mediaPeak: s.mediaPeakGBs,
                                     gpuHistory: s.history.gpu, gpuMemHistory: s.history.gpuMem,
-                                    mediaHistory: s.history.media, aneHistory: s.history.ane)
+                                    mediaHistory: s.history.media, aneHistory: s.history.ane,
+                                    throttling: s.gpuThrottling)
                 }
                 .frame(height: 166)
 
@@ -210,7 +215,7 @@ struct DashboardView: View {
         // condition clears; the per-condition detail also lives persistently in the cards
         // (Memory pressure %, AI Workload thermal verdict).
         .overlay(alignment: .top) {
-            if !visibleWarnings.isEmpty {
+            if showWarningBanner && !visibleWarnings.isEmpty {
                 WarningBanner(warnings: visibleWarnings,
                               onDismiss: { dismissedWarnings.insert(Self.warningKey($0)) })
                     .padding(.horizontal, 10)
@@ -221,8 +226,24 @@ struct DashboardView: View {
             }
         }
         .animation(.spring(response: 0.3, dampingFraction: 0.85), value: visibleWarnings.isEmpty)
-        // When a condition clears, forget its dismissal so it can alert again if it recurs.
-        .onChange(of: activeKeys) { _, now in dismissedWarnings.formIntersection(now) }
+        // Debounce (#18): keep the banner up while active; when the condition clears, linger 4 s before
+        // hiding so a brief oscillation doesn't respawn it — a recurrence within the window cancels the
+        // hide. Replaces the old "forget the dismissal the instant it clears", which caused the flicker.
+        .onChange(of: warnings) { _, now in
+            if now.isEmpty {
+                if warningClearTask == nil {
+                    warningClearTask = Task { @MainActor in
+                        try? await Task.sleep(for: .seconds(4))
+                        guard !Task.isCancelled else { return }
+                        shownWarnings = []; dismissedWarnings = []; warningClearTask = nil
+                    }
+                }
+            } else {
+                warningClearTask?.cancel(); warningClearTask = nil
+                shownWarnings = now
+                dismissedWarnings.formIntersection(Set(now.map(Self.warningKey)))
+            }
+        }
     }
 
     // Stable key per warning condition — strip digits so live values in the message (e.g. the GPU
@@ -617,6 +638,7 @@ private struct AcceleratorCard: View {
     let gpuMemHistory: [Double]
     let mediaHistory: [Double]
     let aneHistory: [Double]
+    let throttling: Bool                            // #18: red card border while the GPU is thermally throttled
     @AppStorage("menubar.gpu") private var gpuMB = false
 
     private let gpuColor = MetricPalette.gpuC       // green
@@ -625,7 +647,8 @@ private struct AcceleratorCard: View {
     private let aneColor = MetricPalette.aneC       // purple
 
     var body: some View {
-        Card(title: "GPU / Media / Neural Engine", menuBarPin: $gpuMB) {
+        Card(title: "GPU / Media / Neural Engine", menuBarPin: $gpuMB,
+             alert: throttling ? Color(red: 0.88, green: 0.37, blue: 0.37) : nil) {
             Bar(label: "GPU", value: gpu.usage,
                 detail: String(format: "%.0f%%  %.1f W  %.0f MHz", gpu.usagePercent, power.gpuWatts, gpu.freqMHz),
                 color: gpuColor)
@@ -671,8 +694,18 @@ private struct MemoryBandwidthCard: View {
         }
     }
 
+    // #18: nil when nominal → normal border; amber (elevated) / red (critical) tints the card border
+    // so the user sees which metric is under pressure without relying on the (dismissable) banner.
+    private var alertColor: Color? {
+        switch memory.pressure {
+        case .normal:   return nil
+        case .warning:  return Color(red: 0.87, green: 0.66, blue: 0.28)
+        case .critical: return Color(red: 0.88, green: 0.37, blue: 0.37)
+        }
+    }
+
     var body: some View {
-        Card(title: "Memory & Bandwidth") {
+        Card(title: "Memory & Bandwidth", alert: alertColor) {
             HStack(alignment: .top, spacing: 10) {
                 memorySection.frame(maxWidth: .infinity, alignment: .leading)
                 Divider().overlay(Theme.border)
