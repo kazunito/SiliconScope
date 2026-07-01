@@ -763,13 +763,40 @@ private struct MemoryBandwidthCard: View {
             KV(key: "GPU", value: String(format: "%.0f GB/s", bandwidth.gpuGBs))
             KV(key: "Media", value: String(format: "%.0f GB/s", bandwidth.mediaGBs))
             KV(key: "Other", value: String(format: "%.0f GB/s", bandwidth.otherGBs))
+            Spacer(minLength: 4)
+            // #20: the dense Memory column has no room for its own trend, so the memory-used
+            // sparkline shares this (sparser) column's spare space — labelled, stacked with
+            // bandwidth-over-time (same pattern as the Network & Disk card's two graphs). Memory is
+            // scaled to total RAM (0...totalGB, a near-constant series); bandwidth auto-scales (GB/s).
+            VStack(alignment: .leading, spacing: 10) {
+                LabeledSparkline(label: "BW", values: bwHistory,
+                                 color: Color(red: 0.42, green: 0.66, blue: 0.95))
+                LabeledSparkline(label: "Mem", values: memHistory,
+                                 color: Color(red: 0.66, green: 0.60, blue: 0.96),
+                                 yDomain: 0...max(memory.totalGB, 1))
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        // Bandwidth column keeps its graph (only the dense Memory column dropped its own),
-        // pinned to the bottom of this column via the same out-of-flow overlay technique.
-        .overlay(alignment: .bottom) {
-            Sparkline(values: bwHistory, color: Color(red: 0.42, green: 0.66, blue: 0.95), height: 22)
-                .padding(.bottom, 6)
+    }
+}
+
+/// A trend sparkline with a compact leading label — for columns where two series share the space
+/// and color alone doesn't identify them (Memory vs Bandwidth in the Memory & Bandwidth card).
+private struct LabeledSparkline: View {
+    let label: String
+    let values: [Double]
+    let color: Color
+    var height: CGFloat = 18
+    var yDomain: ClosedRange<Double>? = nil
+    var body: some View {
+        // Label sits ABOVE the trend (not overlaid on the line) so it stays readable regardless of
+        // where the line happens to be.
+        VStack(alignment: .leading, spacing: 1) {
+            Text(label)
+                .font(.system(size: 8.5, weight: .semibold, design: .monospaced))
+                .tracking(0.5)
+                .foregroundStyle(color.opacity(0.9))
+            Sparkline(values: values, color: color, height: height, yDomain: yDomain)
         }
     }
 }
