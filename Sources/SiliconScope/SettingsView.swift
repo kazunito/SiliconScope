@@ -1,7 +1,7 @@
 //
 //  File:      SettingsView.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-19
+//  Updated:   2026-07-02
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Preferences window (Cmd+,). Refresh cadence, temperature unit, menu-bar
 //             compact GPU mode, launch-at-login, threshold alerts, and the AI runtime API
@@ -17,12 +17,15 @@ struct SettingsView: View {
     @AppStorage("refreshInterval") private var refreshInterval = 1.0
     @AppStorage("temperatureFahrenheit") private var fahrenheit = false
     @AppStorage("compactGPUMode") private var compactGPU = false
+    @AppStorage("showDockIcon") private var showDockIcon = true
     @AppStorage("aiRuntimeAPIEnabled") private var aiRuntimeAPIEnabled = false
     @AppStorage("aiRuntimeOllamaPort") private var ollamaPort = 11434
     @AppStorage("aiRuntimeLMStudioPort") private var lmStudioPort = 1234
     @AppStorage("notificationsEnabled") private var notificationsEnabled = false
+    @AppStorage("showWarningBanner") private var showWarningBanner = true
     // Per-metric menu-bar items — same keys the ⬚ pin on each dashboard card writes, so the
     // two stay in sync (MetricBarController reconciles status items from these each tick).
+    @AppStorage("menubar.combined") private var mbCombined = true
     @AppStorage("menubar.cpu") private var mbCPU = false
     @AppStorage("menubar.gpu") private var mbGPU = false
     @AppStorage("menubar.mem") private var mbMEM = false
@@ -47,9 +50,15 @@ struct SettingsView: View {
                     Text(L("Fahrenheit (°F)")).tag(true)
                 }
                 Toggle(L("Compact GPU mode (menu bar)"), isOn: $compactGPU)
+                Toggle(L("Show Dock icon"), isOn: $showDockIcon)
+                    .onChange(of: showDockIcon) { _, _ in applyDockIconPolicy() }
+            } footer: {
+                Text(L("Turn off the Dock icon to run SiliconScope as a pure menu-bar utility — the dashboard still opens from any menu-bar item's dropdown."))
             }
 
             Section {
+                Toggle("Combined (SS)", isOn: $mbCombined)
+                Divider()
                 Toggle("CPU", isOn: $mbCPU)
                 Toggle("GPU / Media / Neural", isOn: $mbGPU)
                 Toggle("Memory", isOn: $mbMEM)
@@ -60,12 +69,13 @@ struct SettingsView: View {
             } header: {
                 Text(L("Menu bar items"))
             } footer: {
-                Text(L("Show any metric as its own menu-bar item with a live glyph + dropdown. You can also toggle these with the ⬚ on each dashboard card."))
+                Text(L("Show any metric as its own menu-bar item with a live glyph + dropdown (also toggleable with the ⬚ on each dashboard card). Turn off Combined (SS) to free a menu-bar slot on notch-limited Macs — Settings stays reachable from any item's dropdown."))
             }
 
             Section {
                 Toggle(L("Launch at login"), isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, on in LoginItem.setEnabled(on) }
+                Toggle(L("Show warning banner"), isOn: $showWarningBanner)
                 Toggle(L("Alert notifications"), isOn: $notificationsEnabled)
                     .onChange(of: notificationsEnabled) { _, on in if on { Notifier.requestAuthorization() } }
                 if UpdaterController.shared.canCheck {
@@ -76,7 +86,7 @@ struct SettingsView: View {
             } header: {
                 Text(L("Startup & alerts"))
             } footer: {
-                Text(L("Notify on GPU thermal throttle, memory pressure, or swapping (once per event)."))
+                Text(L("On GPU thermal throttle or memory pressure, the affected card's border turns amber/red. The in-app warning banner is on by default (turn it off above); optional macOS notifications fire once per event."))
             }
 
             Section {

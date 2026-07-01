@@ -4,7 +4,95 @@ v1.0.0 is a general Apple Silicon monitor. The next version specializes toward
 **AI-inference monitoring** on Apple Silicon — the niche neither terminal monitors
 nor Activity Monitor cover.
 
-## TODO — next patch
+## What's next — backlog (updated 2026-06-22)
+
+Current actionable items, roughly by priority. Detail follows below / in the linked notes.
+
+- [ ] **Battery monitoring expansion** — see the dedicated section below. On-brand, sudoless,
+  *monitoring* only (NOT charge control — that needs SMC writes + a privileged helper, which
+  breaks the sudoless/read-only identity; AlDente owns that space and is a complement, not a
+  competitor).
+- [ ] **Remove the "Compact GPU mode (menu bar)" setting** (legacy v1.x) — see below.
+- [ ] **Cut the next release** to ship what's already on `main` but unreleased since v2.2.3:
+  `sscope-cli --sensors-all` (full SMC T-key dump for mapping unmapped chips) and the
+  `String(cBuffer:)` deprecation cleanup. (`--power-debug` already shipped in v2.2.3.)
+- [ ] **M4 Max sensor mapping (#6)** — awaiting a `--sensors-all` dump from an M4 Max owner
+  (Borda/KoheiKanagu). The `*`-flagged keys reading plausible per-core temps are the missing
+  E-Core 3/4, P-Core 5, Memory sensors; add them to `SensorCatalog.m4` once identified.
+- [ ] **M2 ANE channel (#11)** — awaiting a `--power-debug` dump from an M2 owner. If ANE power
+  sits in the `PMP` group (not `Energy Model`) on M2, extend `PowerSampler.sample()` to scan it.
+- [ ] **Homebrew cask** — validated & ready; blocked only by the 30-day repo-age rule →
+  submit ~2026-07-08. See the `homebrew-cask-plan` memory note.
+- [ ] **mlx-serve runtime detection** — deferred until it's bigger; recipe in the
+  `runtime-detection-watch` memory note.
+
+## TODO — battery monitoring expansion
+
+We already read battery charge/charging-state + health/cycles/condition/temp sudolessly from
+`AppleSmartBattery` (IORegistry) and `IOPowerSources` (see `Battery.swift`). Extend the
+*monitoring* (never control), all sudoless:
+
+- [ ] **Charge / discharge rate (W)** — instantaneous power in/out, signed (charging vs
+  draining). Source: `AppleSmartBattery` `InstantAmperage` × `Voltage` (or `BatteryData`),
+  or `IOPSGetPowerSourceDescription`. Show as a live value + sparkline like the other metrics.
+- [ ] **Time to full / time to empty** — `IOPowerSources` exposes `TimeToFullCharge` /
+  `TimeToEmpty` (minutes; -1 = "calculating"); or derive from the rate above + remaining
+  capacity. Display whichever applies to the current charging state.
+- [ ] **Adapter wattage** — `AppleSmartBattery` `AdapterDetails` dict (`Watts`, `Description`,
+  `Voltage`, `Current`): show the connected charger's rated W and whether it's delivering full
+  power (useful for "is this cable/charger underpowering me?").
+- [ ] **Charging state detail** — beyond a bare %: `IsCharging` / `FullyCharged` /
+  `ExternalConnected`, plus "not charging on AC" (held by macOS Optimized Battery Charging /
+  the 80% limit). Makes "why isn't it charging?" legible.
+- [ ] **Battery temperature trend** — we already read battery °C; add a rolling history
+  sparkline (same treatment as CPU/GPU temp).
+- [ ] **Health time-series** — persist a periodic sample of health (max/design capacity) +
+  cycle count so degradation is visible over weeks/months, not just a point-in-time number.
+  (Cycle count moves slowly — sampling daily is enough.)
+
+UI: likely a richer **Battery** dropdown / dashboard card grouping these, gated on
+`hasBattery` (desktops — Mac mini/Studio/Pro — have none; branch like the fanless `fan_exist`).
+
+### Peripheral battery in the battery dropdown (à la iStat Menus)
+
+Show connected accessories' battery in the battery dropdown — iStat-precedented (NOT a full
+multi-device dashboard; that's AirBattery's job). **UX rule: only list devices we can read a
+real value for — no "—/unknown" rows.** So a device we can't read simply doesn't appear (it
+isn't shown as broken). **Implemented (`PeripheralBatterySampler`) + verified on a real machine:**
+
+| Device type | Sudoless source | Status |
+|---|---|---|
+| Apple Magic Mouse / Trackpad / Keyboard | IORegistry `BatteryPercent` on the HID node | ✅ **shipped** |
+| AirPods (L / R / Case) | `system_profiler SPBluetoothDataType` (cached ~60 s) | ✅ **shipped** |
+| **Logitech over BLE (e.g. MX Master 3S)** | **none reachable** — see below | ❌ OS limit |
+
+**Logitech-over-BLE finding (2026-06-22, tested on an MX Master 3S).** No *zero-permission* path
+reaches its battery:
+- IORegistry `BatteryPercent`: absent (Apple devices only).
+- `IOBluetoothDevice`: only an `ExtendedFeatures` *schema* (Logitech HID++ BatteryPercent id 0x47), no value.
+- `system_profiler`: absent. macOS's own battery menu can't show it either.
+- HID++ over `IOHIDDevice`: report id `0x10` → **`kIOReturnNotFound`** — over BLE macOS surfaces
+  only the mouse collection (usage 1/2), no `0xFF00` HID++ collection. (HID++ *does* work for a
+  USB Bolt-receiver Logitech connection, just not BLE-direct.)
+
+**But it IS likely implementable via CoreBluetooth** — that's the references' BLE path, which I did
+NOT try: read the standard **BLE Battery Service `0x180F` / characteristic `0x2A19`** via
+`CBCentralManager.retrieveConnectedPeripherals(withServices:)` → connect → read (see
+[batteryconsole](https://github.com/omar16100/batteryconsole) `ble.rs`). Two caveats: (a) it needs
+the **Bluetooth permission prompt** (breaks the current zero-permissions stance); (b) uncertain
+whether the MX Master exposes the *standard* `0x180F` at all (Logitech sometimes ships only its
+proprietary HID++-over-GATT, which would be a much larger job). **Decision: deferred — revisit only
+if a user specifically requests peripheral battery for a BLE Logitech device.** Cheapest next step
+if revisited: a `CBUUID("180F")` probe to confirm the device exposes it before building anything.
+The HID++/IOHIDDevice prototype was removed (useless for BLE; we don't show "—" rows anyway).
+
+Gotchas (shipped tiers): `system_profiler` is ~0.2 s (measured) → cached behind a short TTL,
+SystemSampler drives a ~5 s cadence, called off the main thread. AirPods report only while
+connected/advertising; values stale/absent when cased.
+
+Remaining: **UI wiring** — a Battery dropdown / dashboard card listing these (gated on having any).
+
+## TODO — cleanup
 
 - [ ] **Remove the "Compact GPU mode (menu bar)" setting** (legacy v1.x). It swapped the SS
   combined dropdown for a one-line GPU readout — now redundant with the per-metric GPU

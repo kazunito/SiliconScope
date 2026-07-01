@@ -1,10 +1,10 @@
 //
 //  File:      RuntimeAPISample.swift
 //  Created:   2026-06-14
-//  Updated:   2026-06-14
+//  Updated:   2026-07-02
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Result of an OPT-IN poll of a local AI runtime's HTTP API (Ollama,
-//             llama.cpp server, LM Studio). Carries the loaded model(s), the authoritative
+//             llama.cpp server, LM Studio, exo). Carries the loaded model(s), the authoritative
 //             GPU/CPU split (Ollama size_vram/size), and tokens/sec when the runtime
 //             exposes it. Mmap-independent — fixes the RSS under-count for resident models.
 //  Notes:     tokensPerSec is nil unless the runtime reports it (never fabricated). The
@@ -13,7 +13,7 @@
 //
 import Foundation
 
-public struct RuntimeModelInfo: Sendable, Equatable, Identifiable {
+public struct RuntimeModelInfo: Sendable, Equatable, Identifiable, Codable {
     public let name: String
     public let sizeBytes: UInt64        // total model size (Ollama); 0 if the API omits it
     public let sizeVRAMBytes: UInt64    // resident on GPU (Ollama size_vram); 0 if unknown
@@ -45,9 +45,9 @@ public struct RuntimeModelInfo: Sendable, Equatable, Identifiable {
     }
 }
 
-public struct RuntimeAPISample: Sendable, Equatable {
-    public enum Source: String, Sendable, Equatable { case ollama, llamaCpp, lmStudio, rapidMLX }
-    public enum Status: String, Sendable, Equatable {
+public struct RuntimeAPISample: Sendable, Equatable, Codable {
+    public enum Source: String, Sendable, Equatable, Codable { case ollama, llamaCpp, lmStudio, rapidMLX, exo }
+    public enum Status: String, Sendable, Equatable, Codable {
         case disabled            // feature off
         case unreachable         // no runtime / port closed / decode failure / stale (C4)
         case runningNoServer     // ① detected a runtime but its API/server isn't answering

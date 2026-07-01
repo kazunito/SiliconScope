@@ -1,5 +1,125 @@
 # Changelog
 
+## v3.0.4 — 2026-07-02
+
+**Dashboard graphs + a new runtime.**
+
+- **Memory usage over time.** The Memory & Bandwidth card now plots memory-used as a labelled
+  sparkline stacked alongside the bandwidth trend (in the bandwidth column, like the Network & Disk
+  card's two graphs) — so you can see how memory has evolved across the session, not just the
+  current split. Thanks **@Thoralf-M** ([#20](https://github.com/kennss/SiliconScope/issues/20)).
+- **exo is now a recognized AI runtime.** SiliconScope detects
+  [exo](https://github.com/exo-explore/exo) and reads its loaded model over the OpenAI-compatible
+  API on `127.0.0.1:52415` (opt-in, localhost only). Thanks **@nickalexej**
+  ([#21](https://github.com/kennss/SiliconScope/issues/21)).
+- **Quieter, clearer warnings.** Memory-pressure / GPU-throttle warnings no longer flicker on and
+  off every second — they linger briefly then clear once, the affected card's border tints
+  amber/red so you can see *which* metric tripped, and the whole banner is now toggleable in
+  Settings. Thanks **@muescha** ([#18](https://github.com/kennss/SiliconScope/issues/18)).
+
+## v3.0.3 — 2026-07-02
+
+Full support for the **base M1** (MacBook Air M1 / Mac mini / iMac) — two fixes that only
+affected the non-Pro/Max M1:
+
+- **Sensor names now map correctly.** The Sensors panel showed raw HID labels
+  (`eACC/pACC/SOC MTR Temp Sensor`) on base M1; they now read **E-Core / P-Core / GPU / ANE /
+  SoC** like every other chip.
+- **Per-component power now reads.** CPU (E/P), GPU, ANE, and DRAM power showed **0 W** on base
+  M1 — those rails live in a different IOReport group there (`PMP`), which SiliconScope now reads.
+  On-device **Whisper / Core ML** ANE draw now shows up on a MacBook Air.
+
+## v3.0.2 — 2026-06-30
+
+- **Run as a pure menu-bar utility (optional).** A new **Show Dock icon** setting (default on):
+  turn it off and the Dock icon disappears — SiliconScope lives entirely in the menu bar, and the
+  dashboard still opens from any menu-bar item's dropdown. Idea from **@zhangchen456**
+  ([#17](https://github.com/kennss/SiliconScope/pull/17)).
+
+## v3.0.1 — 2026-06-30
+
+**Stability & UI polish.**
+
+- **Closing the window no longer quits the app.** SiliconScope is a menu-bar-resident monitor, so
+  closing the dashboard now just hides it — the app stays live in the menu bar, and "Open
+  Dashboard" (or a Dock-icon click) brings it right back.
+- **Warning hints no longer shove the layout around.** Memory-pressure and GPU-throttle alerts used
+  to be inserted inline at the top, pushing every card down (and back up) as the condition came and
+  went. They now float as a dismissible overlay (✕ to close) while the condition holds, so the
+  cards stay put. Thanks **@muescha** ([#16](https://github.com/kennss/SiliconScope/issues/16)).
+- **Lighter when it's not on screen.** The live charts now pause rendering while the window is
+  minimized or fully covered (the data sampling itself was already negligible).
+- **AI Workload reads better under throttling.** When the GPU is thermal-throttled the card now
+  shows the clock value — e.g. *580 MHz (−55% vs peak)* — in red next to the verdict, instead of a
+  prose blurb that got truncated in the half-width card.
+
+## v3.0.0 — 2026-06-26
+
+**A new way to observe your Mac: rewind time, and zoom into one process.** The 3.x line adds
+two big capabilities on top of the live dashboard.
+
+**🔴 Record & Replay — a DVR for your Mac.** Hit **Record** in the bottom bar to capture *every*
+metric (1 Hz, all engines/temps/power/bandwidth/processes) to a `.ssrec` file; press **Stop** and
+the dashboard drops straight into **replay** — play / pause / step / scrub / 0.5–4× speed, with the
+*entire dashboard* (sparklines, AI-workload verdict, peaks, temps) re-rendered exactly as it looked
+at each moment. **Save** writes both the lossless `.ssrec` (re-openable) and a flattened `.csv` (for
+Excel/Python), timestamped, to `~/SiliconScope`. As far as we know, the first Mac monitor with a
+true record/replay. (Reopen any `.ssrec` later via the Replay menu or by dropping it on the window.)
+
+**🔬 Process Inspector — per-process detail no other Mac GUI shows.** Click a process to open a live
+Inspector: **CPU** (with P-core/E-core split), **Compute** (IPC, instructions/s, cycles/s),
+**Energy** (actual watts + wakeups), **Memory** footprint, **Disk** I/O — and, uniquely,
+**Neural-Engine memory** (whether and how much a process is using the ANE). All sudoless, via
+`proc_pid_rusage`. Honest about limits: GPU / ANE-power / Media / bandwidth can't be attributed to a
+single process on macOS, so they're shown clearly labeled "system-wide."
+
+**⚡ Snappier + finer.** The four IOReport/CPU samplers now run in parallel (≈0.8 s → ~0.2 s per
+tick), and the recording cadence follows your refresh-interval setting.
+
+## v2.4.1 — 2026-06-24
+
+**MacBook Neo (A18 Pro) now reports power and memory bandwidth.** On the A18, the usual IOReport
+power/bandwidth channels read zero (the Energy Model only populates GPU, and there's no
+per-requestor bandwidth), so SiliconScope now reads the A18's real sources instead:
+
+- **System power** from SMC `PSTR`, and **CPU package power** from SMC `PZC0` (verified jumping
+  from ~0.8 W idle to ~6.2 W under load).
+- **Total memory bandwidth** by summing the IOReport `PMP` → `DRAM BW` lanes.
+
+That makes SiliconScope the first Mac monitor to surface power and bandwidth on the MacBook Neo —
+which, together with GPU usage, drives the AI-workload (bandwidth- vs compute-bound) read on the
+Neo too. Per-component ANE/Media and the CPU E/P split aren't exposed by the A18 and remain
+unavailable. Huge thanks to **@Dreaminko** ([#12](https://github.com/kennss/SiliconScope/issues/12)),
+who ran the diagnostic dumps that mapped all of this.
+
+## v2.4.0 — 2026-06-24
+
+**Hide the combined menu-bar icon + reach Settings from anywhere.** On notch-limited menu bars,
+you can now turn off the combined "SS" icon (Settings → Menu bar items → **Combined (SS)**) to free
+a slot and keep just the per-metric items you want. Since the SS dropdown used to hold the only
+Settings link, **every per-metric dropdown now has a Settings + Dashboard footer**, so nothing is
+stranded when SS is hidden. (Thanks to community feedback.)
+
+**Recognizes the A18 Pro (MacBook Neo).** SiliconScope now identifies the A18 Pro instead of
+showing an unknown chip; CPU topology, frequencies, temperatures (HID), and memory work, and it
+degrades gracefully where the A18's IOReport power/bandwidth channels differ from the M-series.
+Full power/bandwidth mapping is in progress (#12).
+
+## v2.3.0 — 2026-06-22
+
+**Connected-peripheral battery in the Battery dropdown.** Open the Battery menu-bar item and a new
+**Peripherals** section (right under the main battery) shows the battery of connected accessories —
+Apple Magic Mouse / Trackpad / Keyboard (via IORegistry) and AirPods with a Left / Right / Case
+breakdown (via system_profiler). Only devices that report a real value are listed (no blank rows),
+low (≤20%) shown in red, all sudoless and sampled on a light cadence. (Bluetooth Logitech devices
+like the MX Master expose battery only over a proprietary GATT path macOS doesn't surface, so
+they're omitted rather than shown empty.)
+
+Sensors: **M4 Pro/Max GPU 1/2** — adds the `Tg1U` / `Tg1k` keys those dies use, confirmed from an
+M4 Max sensor dump (#6). Also a new contributor diagnostic, `sscope-cli --sensors-all`, which lists
+every present SMC temperature key (flagging ones not yet in the curated table) to help map sensors
+on chips SiliconScope doesn't fully cover yet.
+
 ## v2.2.3 — 2026-06-22
 
 Sensors: **a fuller temperature panel on partially-mapped chips (e.g. M4 Max).** When a die

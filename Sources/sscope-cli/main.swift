@@ -1,7 +1,7 @@
 //
 //  File:      main.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-18
+//  Updated:   2026-07-02
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Verification CLI for SiliconScopeCore. Prints sudoless power + CPU samples
 //             so we can confirm the data layer works in a real SwiftPM build.
@@ -116,7 +116,7 @@ if CommandLine.arguments.contains("--bench") {
         primaryKind: kind, ollamaEmbeddedPort: ai.ollamaEmbeddedPort,
         ollamaPort: 11434, lmStudioPort: 1234)
     if let kind, let model = api.loadedModels.first?.name {
-        let port = switch kind { case .lmStudio: 1234; case .rapidMLX: 8000; default: 11434 }
+        let port = switch kind { case .lmStudio: 1234; case .rapidMLX: 8000; case .exo: 52415; default: 11434 }
         print("\nbenchmark: \(kind.displayName) · \(model) — generating…")
         if let r = await BenchmarkClient().run(kind: kind, port: port, model: model) {
             print(String(format: "  decode: %.1f tok/s  (%d tokens)", r.tokensPerSec, r.tokenCount))
@@ -147,6 +147,15 @@ if CommandLine.arguments.contains("--sensors") {
     let hid = HIDSensorReader.read().sorted { $0.name < $1.name }
     print("\n=== raw HID sensors (\(hid.count)) — use these to build/fix a table ===")
     for s in hid { print(String(format: "  %-26@ %5.1f C", s.name as NSString, s.celsius)) }
+
+    // What the dashboard/menu-bar panel actually shows when the curated SMC path is empty
+    // (base chips like M1 Air): the HID set after friendlyHID labeling + category grouping.
+    let panel = TemperatureSampler().hidClassifiedSample()
+    print("\n=== as the panel displays (friendlyHID → groups) ===")
+    for g in panel.groups {
+        print(String(format: "  [%@]  avg %.1f C · max %.1f C", g.category.rawValue as NSString, g.average, g.maximum))
+        for s in g.sensors { print(String(format: "    %-18@ %5.1f C", s.name as NSString, s.celsius)) }
+    }
     print("\nMac model: run `sysctl hw.model machdep.cpu.brand_string` and include it.")
 }
 
@@ -160,4 +169,54 @@ if CommandLine.arguments.contains("--power-debug") {
     print("explains a 0 reading. Tip: run a webcam app (Photo Booth) to actually exercise the ANE.")
     for l in lines { print("  \(l)") }
     print("\nMac model: run `sysctl hw.model machdep.cpu.brand_string` and include it.")
+}
+
+// Full SMC temperature-key dump for mapping sensors on chips not in the curated table.
+// Run: sscope-cli --sensors-all   (paste into a sensor-key contribution issue)
+if CommandLine.arguments.contains("--sensors-all") {
+    let gen = SensorCatalog.detectGeneration()
+    let curated = Set(SensorCatalog.curated(for: gen).map(\.key))
+    let all = TemperatureSampler().allSMCKeys()
+    print("\n=== all present SMC \"T*\" keys — generation: \(gen) (\(all.count) keys) ===")
+    print("  (* = present on this chip but NOT in our curated table — candidate for a missing sensor)")
+    for e in all {
+        let mark = curated.contains(e.key) ? " " : "*"
+        let val = e.celsius.map { String(format: "%5.1f C", $0) } ?? "   —  "
+        print(String(format: "  %@ %-5@ [%-4@] %@", mark as NSString, e.key as NSString, e.type as NSString, val as NSString))
+    }
+    print("\nMac model: run `sysctl hw.model machdep.cpu.brand_string` and include it.")
+}
+
+// Full SMC key dump — ALL keys incl. power (P*), current (I*), voltage (V*) — for discovering a
+// chip's SMC power layout (e.g. A18 system power PSTR, CPU/GPU rails). Run: sscope-cli --smc-all
+if CommandLine.arguments.contains("--smc-all") {
+    let all = TemperatureSampler().allSMCKeysFull()
+    let piv = all.filter { ["P", "I", "V"].contains($0.key.first.map(String.init) ?? "") }
+    print("\n=== SMC power / current / voltage keys (P* / I* / V*) — \(piv.count) ===")
+    print("  Looking for: system power PSTR, adapter PDTR, battery power, and any CPU/GPU power rails.")
+    for e in piv {
+        let v = e.value.map { String(format: "%.3f", $0) } ?? "—"
+        print(String(format: "  %-5@ [%-4@] %@", e.key as NSString, e.type as NSString, v as NSString))
+    }
+    print("\n=== all SMC keys (\(all.count)) ===")
+    for e in all {
+        let v = e.value.map { String(format: "%.3f", $0) } ?? "—"
+        print(String(format: "  %-5@ [%-4@] %@", e.key as NSString, e.type as NSString, v as NSString))
+    }
+    print("\nMac model: run `sysctl hw.model machdep.cpu.brand_string` and include it.")
+}
+
+// Connected-peripheral battery levels (Apple Magic Mouse/Trackpad/Keyboard etc., sudoless via
+// IORegistry BatteryPercent). Run: sscope-cli --peripherals
+if CommandLine.arguments.contains("--peripherals") {
+    let devices = PeripheralBatterySampler().sample()
+    print("\n=== peripheral battery (\(devices.count)) — sudoless (IORegistry + system_profiler) ===")
+    if devices.isEmpty {
+        print("  (none — no connected device reports a battery value via IORegistry / system_profiler)")
+    }
+    for d in devices {
+        let extra = d.detail.map { "  (\($0))" } ?? ""
+        print(String(format: "  %-22@ %-9@ %3d%%%@",
+                     d.name as NSString, d.kind.rawValue as NSString, d.percent, extra as NSString))
+    }
 }

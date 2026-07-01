@@ -1,7 +1,7 @@
 //
 //  File:      SensorClassificationTests.swift
 //  Created:   2026-06-20
-//  Updated:   2026-06-21
+//  Updated:   2026-07-01
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Pins the pure classification maps: SMC-key → category, raw HID name → friendly
 //             label/category, the per-generation curated key catalog, and the bandwidth
@@ -36,6 +36,66 @@ final class SensorClassificationTests: XCTestCase {
         XCTAssertEqual(r.category, .cpu); XCTAssertEqual(r.label, "tdie3")
 
         XCTAssertEqual(TemperatureSampler.friendlyHID("GPU something").category, .gpu)
+    }
+
+    /// Base M1 (MacBook Air) exposes "<unit> MTR Temp Sensor<N>" / "PMGR SOC Die" HID names when
+    /// its SMC core keys aren't in the curated table. friendlyHID must clean-label + categorize
+    /// these (not show raw "pACC MTR Temp Sensor5"). Names are the real set read on an M1 Air.
+    func testFriendlyHIDBaseM1MTRNames() {
+        var r = TemperatureSampler.friendlyHID("eACC MTR Temp Sensor0")
+        XCTAssertEqual(r.category, .cpu); XCTAssertEqual(r.label, "E-Core 0")
+        r = TemperatureSampler.friendlyHID("pACC MTR Temp Sensor5")
+        XCTAssertEqual(r.category, .cpu); XCTAssertEqual(r.label, "P-Core 5")
+        r = TemperatureSampler.friendlyHID("GPU MTR Temp Sensor4")
+        XCTAssertEqual(r.category, .gpu); XCTAssertEqual(r.label, "GPU 4")
+        r = TemperatureSampler.friendlyHID("ANE MTR Temp Sensor1")
+        XCTAssertEqual(r.category, .other); XCTAssertEqual(r.label, "ANE 1")
+        r = TemperatureSampler.friendlyHID("ISP MTR Temp Sensor5")
+        XCTAssertEqual(r.category, .other); XCTAssertEqual(r.label, "ISP 5")
+        r = TemperatureSampler.friendlyHID("SOC MTR Temp Sensor2")
+        XCTAssertEqual(r.category, .other); XCTAssertEqual(r.label, "SoC 2")
+        r = TemperatureSampler.friendlyHID("PMGR SOC Die Temp Sensor1")   // disambiguated from SOC MTR
+        XCTAssertEqual(r.category, .other); XCTAssertEqual(r.label, "SoC die 1")
+        // No trailing digit → no index suffix.
+        XCTAssertEqual(TemperatureSampler.friendlyHID("eACC MTR Temp Sensor").label, "E-Core")
+        // M1 Max HID names (PMU tdie…) must be UNCHANGED (fall through to the SoC/CPU default).
+        XCTAssertEqual(TemperatureSampler.friendlyHID("PMU tdie3").label, "tdie3")
+        XCTAssertEqual(TemperatureSampler.friendlyHID("PMU tdie3").category, .cpu)
+    }
+
+    /// The FULL raw HID sensor set read on a real MacBook Air M1 (2026-07-01) run through the actual
+    /// buildSample→friendlyHID path — proves what the panel will display on base M1 (which reads
+    /// 0/18 curated keys). Prints the grouped result and pins the key labels.
+    func testBaseM1AirFullHIDSetClassifiesCleanly() {
+        let air: [(name: String, celsius: Double)] = [
+            ("ANE MTR Temp Sensor1", 30.0), ("GPU MTR Temp Sensor1", 30.0), ("GPU MTR Temp Sensor4", 30.0),
+            ("ISP MTR Temp Sensor5", 30.0), ("NAND CH0 temp", 35.0),
+            ("PMGR SOC Die Temp Sensor0", 36.9), ("PMGR SOC Die Temp Sensor1", 37.0), ("PMGR SOC Die Temp Sensor2", 36.8),
+            ("PMU TP3w", 42.3), ("PMU tcal", 51.9),
+            ("PMU tdev1", -21.7), ("PMU tdev3", 36.7), ("PMU tdev8", 36.8),
+            ("PMU tdie1", 42.9), ("PMU tdie8", 41.0), ("PMU2 tdie1", 43.6),
+            ("SOC MTR Temp Sensor0", 33.2), ("SOC MTR Temp Sensor1", 37.7), ("SOC MTR Temp Sensor2", 35.3),
+            ("eACC MTR Temp Sensor0", 32.5), ("eACC MTR Temp Sensor3", 34.0),
+            ("gas gauge battery", 32.5),
+            ("pACC MTR Temp Sensor2", 35.1), ("pACC MTR Temp Sensor5", 38.5), ("pACC MTR Temp Sensor9", 35.6),
+        ]
+        let sample = TemperatureSampler.buildSample(fromHID: air.filter { $0.celsius > 5 && $0.celsius < 130 })
+        print("\n=== M1 Air panel display (generated from the real HID set via actual code) ===")
+        for g in sample.groups {
+            print("  [\(g.category.rawValue)]")
+            for s in g.sensors { print(String(format: "    %-14@ %5.1f C", s.name as NSString, s.celsius)) }
+        }
+        let cpu = sample.groups.first { $0.category == .cpu }!.sensors.map(\.name)
+        let gpu = sample.groups.first { $0.category == .gpu }!.sensors.map(\.name)
+        let other = sample.groups.first { $0.category == .other }!.sensors.map(\.name)
+        XCTAssertTrue(cpu.contains("E-Core 0") && cpu.contains("P-Core 5"))   // eACC/pACC → cores
+        XCTAssertTrue(gpu.contains("GPU 1") && gpu.contains("GPU 4"))         // GPU MTR → GPU
+        XCTAssertTrue(other.contains("ANE 1") && other.contains("SoC 0"))    // ANE/SOC → Other
+        XCTAssertTrue(other.contains("SoC die 0"))                           // PMGR SOC Die disambiguated
+        XCTAssertFalse(cpu.contains { $0.contains("MTR") })                   // NO raw "MTR" names leak
+        // Cores present → the redundant low-level die points are dropped from the CPU group.
+        XCTAssertTrue(cpu.allSatisfy { $0.hasPrefix("E-Core") || $0.hasPrefix("P-Core") })
+        XCTAssertFalse(cpu.contains { $0.contains("tdie") || $0.contains("tcal") || $0.contains("tdev") })
     }
 
     // MARK: - Curated per-generation catalog

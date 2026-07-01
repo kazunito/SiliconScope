@@ -1,7 +1,7 @@
 //
 //  File:      SiliconScopeMonitor.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-18
+//  Updated:   2026-07-02
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Observable view-model that drives the UI. Polls SystemSampler on a
 //             background task ~once per second and publishes the latest snapshot plus
@@ -18,139 +18,58 @@ import SiliconScopeCore
 @MainActor
 @Observable
 final class SiliconScopeMonitor {
-    /// Rolling time-series for sparklines (last ~60 samples per series).
-    struct History {
-        var soc: [Double] = []
-        var pCPU: [Double] = []        // 0...1
-        var eCPU: [Double] = []        // 0...1
-        var gpu: [Double] = []         // 0...1
-        var gpuMem: [Double] = []      // 0...1 (GPU in-use memory / total unified memory)
-        var ane: [Double] = []         // Watts
-        var media: [Double] = []       // GB/s (Media Engine)
-        var bandwidth: [Double] = []   // GB/s
-        var dieTemp: [Double] = []     // Celsius
-        var memory: [Double] = []      // GB used
-        var memFraction: [Double] = [] // 0...1 (used / total) — plotted on a fixed 0...1 axis
-        var netDown: [Double] = []     // bytes/s
-        var netUp: [Double] = []       // bytes/s
-        var diskRead: [Double] = []    // bytes/s
-        var diskWrite: [Double] = []   // bytes/s
-
-        mutating func push(_ s: SystemSnapshot) {
-            roll(&soc, s.power.socWatts)
-            roll(&pCPU, s.cpu.pUsage)
-            roll(&eCPU, s.cpu.eUsage)
-            roll(&gpu, s.gpu.usage)
-            roll(&gpuMem, s.gpu.inUseMemoryFraction)
-            roll(&ane, s.power.aneWatts)
-            roll(&media, s.bandwidth.mediaGBs)
-            roll(&bandwidth, s.bandwidth.totalGBs)
-            roll(&dieTemp, s.temperature.cpuCelsius)
-            roll(&memory, s.memory.usedGB)
-            roll(&memFraction, s.memory.usedFraction)
-            roll(&netDown, s.network.downloadBytesPerSec)
-            roll(&netUp, s.network.uploadBytesPerSec)
-            roll(&diskRead, s.disk.readBytesPerSec)
-            roll(&diskWrite, s.disk.writeBytesPerSec)
-        }
-        private func roll(_ series: inout [Double], _ value: Double) {
-            series.append(value)
-            if series.count > 60 { series.removeFirst(series.count - 60) }
-        }
-    }
-
     private(set) var snapshot = SystemSnapshot()
-    private(set) var history = History()
     let topology: CPUTopology?
 
-    // Chip-agnostic bar scaling: track observed peaks instead of hardcoding per-chip
-    // maxima (bandwidth and GPU max differ across M1/Pro/Max/Ultra/M2/M3/M4).
-    private(set) var bandwidthPeakGBs: Double = 80
-    private(set) var mediaPeakGBs: Double = 2
-    private(set) var anePeakWatts: Double = 2
+    // All path-dependent derivation (sparkline history, decaying peaks, memory rates, and the
+    // throttle / ceiling / bottleneck / memory-risk verdicts) lives in MetricsEngine so the live
+    // monitor and session replay share identical logic. The monitor delegates every derived value.
+    private let engine: MetricsEngine
+    private var lastIngest: DispatchTime?
 
-    // Rolling peak GPU clock (MHz), basis for throttle detection. Decays slowly so a
-    // brief boost doesn't pin it forever, yet it outlasts a sustained throttle — unlike
-    // a short-window max, which would normalize the suppressed clock as the new peak.
-    private(set) var gpuClockPeakMHz: Double = 0
-    private static let gpuClockPeakDecay = 0.999
-    // Same slow decay for the bandwidth / media / ANE peaks that normalize the menu-bar
-    // glyph + trend graphs (and the bandwidth-bound verdict): a new high is adopted
-    // instantly, otherwise the peak decays toward a floor so a one-off spike never pins the
-    // scale and it self-calibrates to whatever the chip actually achieves (M1…M5+).
-    private static let peakDecay = 0.999
+    var history: MetricsEngine.History { engine.history }
+    var bandwidthPeakGBs: Double { engine.bandwidthPeakGBs }
+    var mediaPeakGBs: Double { engine.mediaPeakGBs }
+    var anePeakWatts: Double { engine.anePeakWatts }
+    var gpuClockPeakMHz: Double { engine.gpuClockPeakMHz }
+    var gpuThrottling: Bool { engine.gpuThrottling }
+    var gpuClockDropFraction: Double { engine.gpuClockDropFraction }
+    var bandwidthCeilingGBs: Double { engine.bandwidthCeilingGBs }
+    var bandwidthPercentOfCeiling: Double { engine.bandwidthPercentOfCeiling }
+    var bottleneck: Bottleneck { engine.bottleneck }
+    var memoryRisk: MemoryBudget.Risk { engine.memoryRisk }
+    var memoryPageInRate: Double { engine.memoryPageInRate }
+    var memoryPageOutRate: Double { engine.memoryPageOutRate }
+    var memorySwapInRate: Double { engine.memorySwapInRate }
+    var memorySwapOutRate: Double { engine.memorySwapOutRate }
+    var memoryCompressionRate: Double { engine.memoryCompressionRate }
 
     private let sampler = SystemSampler()
     private var loopTask: Task<Void, Never>?
 
+    // Session recording (Phase 1): the recorder streams full snapshots to a temp .ssrec. These
+    // mirror its state into @Observable properties so the RecordBar reflects start/stop and the
+    // live sample count immediately. cadence:0 = record EVERY sample tick, so the recording rate
+    // follows the user's sample-interval setting (the loop's own cadence) rather than a fixed gate.
+    private let recorder = SessionRecorder(cadence: 0)
+    private(set) var isRecording = false
+    private(set) var recordingSampleCount = 0
+    private(set) var hasRecording = false              // a finished recording exists to export
+    var recordingElapsed: TimeInterval { recorder.elapsed }
+    var recordingFileURL: URL? { recorder.fileURL }
+
+    // Process Inspector: while a pid is focused, sample just that pid each loop tick (cheap — a few
+    // syscalls on one pid) using the same dt. focusEnded flags that the focused process exited.
+    var focusedPID: Int32?
+    private(set) var focusedDetail: ProcessDetail?
+    private(set) var focusedHistory = ProcessDetailHistory()
+    private(set) var focusEnded = false
+    private var focusSampler: ProcessDetailSampler?
+
     init() {
         topology = sampler.topology
+        engine = MetricsEngine(topology: sampler.topology)
         benchmarks = Self.loadBenchmarks()
-    }
-
-    /// True when the GPU clock is held well below its rolling peak while the GPU is
-    /// active and thermal pressure has risen above nominal — i.e. thermal throttling.
-    /// The clock-drop guard distinguishes a real throttle from ordinary DVFS idle (a
-    /// low clock with no work), and the usage guard keeps an idle GPU from tripping it.
-    var gpuThrottling: Bool {
-        guard gpuClockPeakMHz > 0 else { return false }
-        return snapshot.gpu.usage > 0.3
-            && snapshot.thermal.pressure != .nominal
-            && snapshot.gpu.freqMHz < 0.85 * gpuClockPeakMHz
-    }
-
-    /// How far the current GPU clock sits below its rolling peak (0...1; 0 when at/above).
-    var gpuClockDropFraction: Double {
-        guard gpuClockPeakMHz > 0, snapshot.gpu.freqMHz < gpuClockPeakMHz else { return 0 }
-        return 1 - snapshot.gpu.freqMHz / gpuClockPeakMHz
-    }
-
-    /// Unified-memory bandwidth ceiling (GB/s). The per-chip spec value, raised to the
-    /// observed peak if traffic ever exceeds it (so the figure never under-reports and
-    /// still works on chips missing from the table).
-    var bandwidthCeilingGBs: Double {
-        let spec = topology.map { Bottleneck.bandwidthCeilingGBs(chipName: $0.chipName, pCoreCount: $0.pCoreCount) } ?? 0
-        return max(spec, bandwidthPeakGBs)
-    }
-
-    /// Current total unified-memory bandwidth as a fraction of the ceiling (0...1).
-    var bandwidthPercentOfCeiling: Double {
-        let ceiling = bandwidthCeilingGBs
-        return ceiling > 0 ? min(1, snapshot.bandwidth.totalGBs / ceiling) : 0
-    }
-
-    /// The single dominant AI-workload bottleneck right now (hero feature verdict).
-    /// Classified on a short rolling average of GPU% and bandwidth so the verdict doesn't
-    /// flicker when the GPU oscillates sample-to-sample (e.g. 69%↔100% during decode).
-    var bottleneck: Bottleneck {
-        Bottleneck.classify(memoryCritical: snapshot.memory.pressure == .critical,
-                            gpuUsage: Self.tailAverage(history.gpu, count: 3, fallback: snapshot.gpu.usage),
-                            bandwidthGBs: Self.tailAverage(history.bandwidth, count: 3, fallback: snapshot.bandwidth.totalGBs),
-                            achievableGBs: bandwidthPeakGBs,
-                            throttling: gpuThrottling)
-    }
-
-    private static func tailAverage(_ values: [Double], count: Int, fallback: Double) -> Double {
-        let tail = values.suffix(count)
-        return tail.isEmpty ? fallback : tail.reduce(0, +) / Double(tail.count)
-    }
-
-    // Memory-pressure precursor: rate deltas of the lifetime VM counters (pages/sec).
-    // Mirrors gpuClockPeakMHz tracking — the static budget risk lives in Core, the
-    // temporal refinement (the real "before tokens/sec collapses" signal) lives here.
-    private struct MemCounters { let pageins, pageouts, swapins, swapouts, compressions, timeNs: UInt64 }
-    private var previousMem: MemCounters?
-    private(set) var memoryPageInRate: Double = 0        // pages/sec (PAGES panel)
-    private(set) var memoryPageOutRate: Double = 0
-    private(set) var memorySwapInRate: Double = 0        // recovery reads (normal)
-    private(set) var memorySwapOutRate: Double = 0       // swapouts/sec — eviction under pressure
-    private(set) var memoryCompressionRate: Double = 0   // compressions pages/sec
-    private static let compressionRatePagesPerSec = 200.0
-
-    private func resetMemoryRates() {
-        previousMem = nil
-        memoryPageInRate = 0; memoryPageOutRate = 0
-        memorySwapInRate = 0; memorySwapOutRate = 0; memoryCompressionRate = 0
     }
 
     // Opt-in runtime API (③): polled on its own cadence behind UserDefaults
@@ -172,23 +91,10 @@ final class SiliconScopeMonitor {
     private var lastNotified: [String: Date] = [:]
     private static let notifyCooldown: TimeInterval = 300   // 5 min per condition
 
-    /// Refined memory risk: the static budget baseline plus live swap/compression rates.
-    /// swapping ⇐ active swap I/O (or the static baseline); tight ⇐ compression rising
-    /// while headroom is nearly gone — catches the collapse before static used% would.
-    var memoryRisk: MemoryBudget.Risk {
-        let base = snapshot.memoryBudget.risk
-        if base == .swapping || memorySwapOutRate > 0 { return .swapping }
-        if memoryCompressionRate > Self.compressionRatePagesPerSec
-            && snapshot.memoryBudget.headroomNowBytes < (1 << 30) {
-            return .tight
-        }
-        return base
-    }
-
     func start() {
         guard loopTask == nil else { return }
         // C5: clear rate state so the first tick after (re)start emits no spurious delta.
-        resetMemoryRates()
+        engine.reset(); lastIngest = nil
         let sampler = sampler
         loopTask = Task { [weak self] in
             while !Task.isCancelled {
@@ -204,13 +110,26 @@ final class SiliconScopeMonitor {
                 }
                 var snap = sampled
                 snap.runtimeAPI = self.effectiveRuntimeAPI()    // C4 staleness applied
+                // Advance the derivation engine first (folds peaks, rates, history), then publish
+                // the snapshot — so the Observation-triggered re-render reads fresh engine state.
+                let now = DispatchTime.now()
+                let dt = self.lastIngest.map { Double(now.uptimeNanoseconds - $0.uptimeNanoseconds) / 1_000_000_000 } ?? 0
+                self.lastIngest = now
+                self.engine.ingest(snap, dt: dt)
                 self.snapshot = snap
-                self.bandwidthPeakGBs = max(snap.bandwidth.totalGBs, max(40, self.bandwidthPeakGBs * Self.peakDecay))
-                self.mediaPeakGBs = max(snap.bandwidth.mediaGBs, max(1, self.mediaPeakGBs * Self.peakDecay))
-                self.anePeakWatts = max(snap.power.aneWatts, max(1, self.anePeakWatts * Self.peakDecay))
-                self.gpuClockPeakMHz = max(snap.gpu.freqMHz, self.gpuClockPeakMHz * Self.gpuClockPeakDecay)
-                self.updateMemoryRates(snap)
-                self.history.push(snap)
+                if self.isRecording {
+                    self.recorder.append(snap)                       // 1 Hz self-gated inside
+                    self.recordingSampleCount = self.recorder.sampleCount
+                }
+                if let sampler = self.focusSampler {                 // Process Inspector (same dt)
+                    if let d = sampler.sample(dt: dt) {
+                        self.focusedDetail = d
+                        self.focusedHistory.push(d)
+                    } else {
+                        self.focusEnded = true                       // focused process exited
+                        self.focusSampler = nil
+                    }
+                }
                 self.checkAlertsAndNotify()
                 MetricBarController.shared.sync(monitor: self)
                 let interval = UserDefaults.standard.object(forKey: "refreshInterval") as? Double ?? 1.0
@@ -223,8 +142,58 @@ final class SiliconScopeMonitor {
         loopTask?.cancel()
         loopTask = nil
         stopAPIPolling()
+        endFocus()
         // C5: drop rate state so a later restart doesn't diff across the pause.
-        resetMemoryRates()
+        engine.reset(); lastIngest = nil
+    }
+
+    // MARK: - Session recording (Phase 1)
+
+    /// Starts capturing snapshots to a temp .ssrec. No-op if already recording or on failure.
+    func startRecording() {
+        guard !isRecording else { return }
+        do {
+            try recorder.start(topology: topology)
+            isRecording = true
+            recordingSampleCount = 0
+            hasRecording = false
+        } catch {
+            isRecording = false
+        }
+    }
+
+    /// Stops capturing; the recording stays on disk, ready to export.
+    func stopRecording() {
+        guard isRecording else { return }
+        recorder.stop()
+        isRecording = false
+        hasRecording = recorder.fileURL != nil && recorder.sampleCount > 0
+    }
+
+    /// Exports the lossless JSONL recording (.ssrec) to `url`.
+    func exportRecording(to url: URL) throws { try recorder.exportRecording(to: url) }
+
+    /// Exports a flattened CSV of the recording to `url`.
+    func exportRecordingCSV(to url: URL) throws { try recorder.exportCSV(to: url) }
+
+    // MARK: - Process Inspector
+
+    /// Focus a pid: a fresh sampler + history; the loop samples it each tick until endFocus().
+    func focus(_ pid: Int32) {
+        focusedPID = pid
+        focusSampler = ProcessDetailSampler(pid: pid)
+        focusedHistory = ProcessDetailHistory()
+        focusedDetail = nil
+        focusEnded = false
+    }
+
+    /// Stop inspecting (also clears the captured detail/history).
+    func endFocus() {
+        focusedPID = nil
+        focusSampler = nil
+        focusedDetail = nil
+        focusedHistory = ProcessDetailHistory()
+        focusEnded = false
     }
 
     // MARK: - Opt-in runtime API polling
@@ -346,6 +315,7 @@ final class SiliconScopeMonitor {
         switch kind {
         case .lmStudio: return Self.port(forKey: "aiRuntimeLMStudioPort", default: 1234)
         case .rapidMLX: return 8000
+        case .exo:      return 52415
         case .llamaCpp: return snapshot.aiRuntime.ollamaEmbeddedPort ?? 8080
         default:        return Self.port(forKey: "aiRuntimeOllamaPort", default: 11434)
         }
@@ -392,31 +362,6 @@ final class SiliconScopeMonitor {
         notifiedConditions = Set(active.map(\.key))
     }
 
-    /// Diffs the lifetime VM counters into pages/sec rates (guards against counter resets).
-    private func updateMemoryRates(_ snap: SystemSnapshot) {
-        let nowNs = DispatchTime.now().uptimeNanoseconds
-        let m = snap.memory
-        let cur = MemCounters(pageins: m.pageins, pageouts: m.pageouts, swapins: m.swapins,
-                              swapouts: m.swapouts, compressions: m.compressions, timeNs: nowNs)
-        defer { previousMem = cur }
-        guard let prev = previousMem, nowNs > prev.timeNs else { resetRatesOnly(); return }
-        let secs = Double(nowNs - prev.timeNs) / 1_000_000_000
-        guard secs > 0 else { return }
-        func delta(_ now: UInt64, _ was: UInt64) -> Double { now >= was ? Double(now - was) : 0 }
-        memoryPageInRate  = delta(cur.pageins, prev.pageins)   / secs
-        memoryPageOutRate = delta(cur.pageouts, prev.pageouts) / secs
-        memorySwapInRate  = delta(cur.swapins, prev.swapins)   / secs
-        // Only swapouts (eviction under pressure) signal a problem; swapins are recovery
-        // reads of pages swapped earlier and must NOT trip the "swapping" warning.
-        memorySwapOutRate = delta(cur.swapouts, prev.swapouts) / secs
-        memoryCompressionRate = delta(cur.compressions, prev.compressions) / secs
-    }
-
-    /// Zeros the rates without touching previousMem (the caller's defer sets it).
-    private func resetRatesOnly() {
-        memoryPageInRate = 0; memoryPageOutRate = 0
-        memorySwapInRate = 0; memorySwapOutRate = 0; memoryCompressionRate = 0
-    }
 }
 
 /// Mutable power-sample accumulator shared between runBenchmark and its power-probe task.

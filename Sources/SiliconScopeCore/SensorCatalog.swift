@@ -1,7 +1,7 @@
 //
 //  File:      SensorCatalog.swift
 //  Created:   2026-06-19
-//  Updated:   2026-06-19
+//  Updated:   2026-06-24
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Curated per-generation SMC temperature-key tables for Apple Silicon (M1–M5).
 //             Apple's SMC FourCC keys are near-arbitrary and change every generation, so the
@@ -16,7 +16,9 @@
 import Foundation
 
 public enum AppleSiliconGen: Sendable {
-    case m1, m2, m3, m4, m5, unknown
+    case m1, m2, m3, m4, m5
+    case a18   // A18 Pro — the MacBook Neo (Mac17,5). Recognized; curated SMC keys TBD (#12).
+    case unknown
 }
 
 public struct CuratedSensor: Sendable {
@@ -29,6 +31,7 @@ public enum SensorCatalog {
     /// Detects the Apple Silicon generation from the CPU brand string ("Apple M1 Max" -> .m1).
     public static func detectGeneration() -> AppleSiliconGen {
         let brand = brandString()
+        if brand.contains("Apple A18") { return .a18 }   // MacBook Neo (A18 Pro)
         guard let r = brand.range(of: "Apple M"),
               let digit = brand[r.upperBound...].first, let n = Int(String(digit)) else { return .unknown }
         switch n {
@@ -49,6 +52,7 @@ public enum SensorCatalog {
         case .m3:      return m3
         case .m4:      return m4
         case .m5:      return m5
+        case .a18:     return []   // no curated SMC table yet — falls back to HID temps (#12)
         case .unknown: return []
         }
     }
@@ -90,7 +94,9 @@ public enum SensorCatalog {
         cpu([("Te05", "E-Core 1"), ("Te0S", "E-Core 2"), ("Te09", "E-Core 3"), ("Te0H", "E-Core 4"),
              ("Tp01", "P-Core 1"), ("Tp05", "P-Core 2"), ("Tp09", "P-Core 3"), ("Tp0D", "P-Core 4"),
              ("Tp0V", "P-Core 5"), ("Tp0Y", "P-Core 6"), ("Tp0b", "P-Core 7"), ("Tp0e", "P-Core 8")]) +
-        gpu([("Tg0K", "GPU 3"), ("Tg0L", "GPU 4"), ("Tg0d", "GPU 5"),
+        gpu([("Tg0G", "GPU 1"), ("Tg0H", "GPU 2"),                    // base M4
+             ("Tg1U", "GPU 1"), ("Tg1k", "GPU 2"),                    // M4 Pro/Max/Ultra (mutually exclusive w/ base)
+             ("Tg0K", "GPU 3"), ("Tg0L", "GPU 4"), ("Tg0d", "GPU 5"),
              ("Tg0e", "GPU 6"), ("Tg0j", "GPU 7"), ("Tg0k", "GPU 8")]) +
         mem([("Tm0p", "Memory 1"), ("Tm1p", "Memory 2"), ("Tm2p", "Memory 3")])
 
@@ -109,6 +115,6 @@ public enum SensorCatalog {
         guard sysctlbyname("machdep.cpu.brand_string", nil, &size, nil, 0) == 0, size > 0 else { return "" }
         var buffer = [CChar](repeating: 0, count: size)
         guard sysctlbyname("machdep.cpu.brand_string", &buffer, &size, nil, 0) == 0 else { return "" }
-        return String(cString: buffer)
+        return String(cBuffer: buffer)
     }
 }

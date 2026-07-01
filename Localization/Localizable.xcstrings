@@ -2240,6 +2240,102 @@
           }
         }
       }
+    },
+    "Show Dock icon": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dockアイコンを表示"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock 아이콘 표시"
+          }
+        }
+      }
+    },
+    "Turn off the Dock icon to run SiliconScope as a pure menu-bar utility — the dashboard still opens from any menu-bar item's dropdown.": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dockアイコンをオフにすると、SiliconScopeを純粋なメニューバーユーティリティとして実行できます — ダッシュボードはどのメニューバー項目のドロップダウンからでも開けます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock 아이콘을 끄면 SiliconScope를 순수한 메뉴바 유틸리티로 실행할 수 있습니다 — 대시보드는 어떤 메뉴바 항목의 드롭다운에서도 열 수 있습니다."
+          }
+        }
+      }
+    },
+    "Show any metric as its own menu-bar item with a live glyph + dropdown (also toggleable with the ⬚ on each dashboard card). Turn off Combined (SS) to free a menu-bar slot on notch-limited Macs — Settings stays reachable from any item's dropdown.": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "各指標をライブグリフ＋ドロップダウン付きの個別メニューバー項目として表示できます（各ダッシュボードカードの⬚でも切り替え可能）。ノッチで余裕のないMacではCombined (SS)をオフにしてメニューバーの枠を空けられます — 設定はどの項目のドロップダウンからでも開けます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "각 지표를 라이브 글리프 + 드롭다운이 있는 개별 메뉴바 항목으로 표시할 수 있습니다(각 대시보드 카드의 ⬚로도 전환 가능). 노치로 공간이 부족한 Mac에서는 Combined (SS)를 꺼서 메뉴바 자리를 확보하세요 — 설정은 어떤 항목의 드롭다운에서도 열 수 있습니다."
+          }
+        }
+      }
+    },
+    "Show warning banner": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "警告バナーを表示"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "경고 배너 표시"
+          }
+        }
+      }
+    },
+    "On GPU thermal throttle or memory pressure, the affected card's border turns amber/red. The in-app warning banner is on by default (turn it off above); optional macOS notifications fire once per event.": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPUの発熱スロットリングやメモリ逼迫が発生すると、該当カードの枠がオレンジ/赤に変わります。アプリ内警告バナーはデフォルトでオン（上でオフに切り替え可能）、任意のmacOS通知はイベントごとに1回発火します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 발열 스로틀링이나 메모리 압력이 발생하면 해당 카드의 테두리가 주황/빨강으로 바뀝니다. 앱 내 경고 배너는 기본적으로 켜져 있으며(위에서 끌 수 있음), 선택적 macOS 알림은 이벤트당 한 번 발생합니다."
+          }
+        }
+      }
+    },
+    "Inspect %@": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ を調査"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 검사"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

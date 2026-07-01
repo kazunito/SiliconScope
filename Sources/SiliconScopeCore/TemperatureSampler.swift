@@ -1,7 +1,7 @@
 //
 //  File:      TemperatureSampler.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-21
+//  Updated:   2026-07-01
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  Reads categorized temperatures sudolessly. Prefers the rich Apple Silicon
 //             HID sensor set (IOHIDEventSystem, via HIDSensorReader) — the source iStat
@@ -126,6 +126,21 @@ public final class TemperatureSampler {
         return (String(describing: gen), entries)
     }
 
+    /// Full dump of every SMC "T…" key present on this Mac (key · type · value), regardless of
+    /// whether it's in the curated table. Lets contributors on unmapped chips (e.g. M4 Max)
+    /// surface keys SiliconScope doesn't yet know — a missing sensor may live under an unknown
+    /// FourCC. Surfaced by `sscope-cli --sensors-all`.
+    public func allSMCKeys() -> [(key: String, type: String, celsius: Double?)] {
+        smc?.allTemperatureKeys() ?? []
+    }
+
+    /// Full dump of EVERY SMC key (not just temperatures) — power/current/voltage included — for
+    /// discovering a chip's SMC power layout (e.g. system power `PSTR` on the A18). Surfaced by
+    /// `sscope-cli --smc-all`.
+    public func allSMCKeysFull() -> [(key: String, type: String, value: Double?)] {
+        smc?.allKeys() ?? []
+    }
+
     /// Reads the curated SMC key table for the detected Apple Silicon generation, directly
     /// (not by scanning), yielding friendly per-unit names. Returns nil if the chip is
     /// unknown or none of the keys read back (then the caller falls back to HID / scan).
@@ -196,6 +211,14 @@ public final class TemperatureSampler {
             byCategory[category, default: []].append(
                 TempSensor(rawName: s.name, name: label, celsius: s.celsius))
         }
+        // When the chip exposes dedicated core sensors (E-Core/P-Core, from eACC/pACC HID names),
+        // the many low-level SoC die points (tdie/tdev/tcal/TP…) are redundant clutter — drop them
+        // from the CPU group so it reads like the curated per-core view. Keep them only when they're
+        // the SOLE CPU signal (chips without eACC/pACC), so cpuCelsius never goes empty.
+        if let cpu = byCategory[.cpu] {
+            let cores = cpu.filter { $0.name.hasPrefix("E-Core") || $0.name.hasPrefix("P-Core") }
+            if !cores.isEmpty { byCategory[.cpu] = cores }
+        }
         var result = TemperatureSample()
         var groups: [SensorGroup] = []
         for category in SensorCategory.allCases {
@@ -220,8 +243,38 @@ public final class TemperatureSampler {
         let label = raw.replacingOccurrences(of: "PMU ", with: "")
         if n.contains("battery") || n.contains("gas gauge") { return (.battery, "Battery") }
         if n.contains("nand") || n.contains("ssd") || n.contains("flash") { return (.memory, label) }
+
+        // Apple Silicon "<unit> MTR Temp Sensor<N>" / "PMGR SOC Die" HID names carry the unit in a
+        // prefix — the set base chips (e.g. MacBook Air M1, whose SMC core keys aren't in the
+        // curated table) expose. Classify + clean-label so the HID fallback reads like the curated
+        // path instead of raw "pACC MTR Temp Sensor5". hidUnitIndex keeps each sensor's own id.
+        if n.hasPrefix("eacc") { return (.cpu, "E-Core" + hidUnitIndex(raw)) }   // efficiency cluster
+        if n.hasPrefix("pacc") { return (.cpu, "P-Core" + hidUnitIndex(raw)) }   // performance cluster
+        if n.hasPrefix("gpu")  { return (.gpu, "GPU" + hidUnitIndex(raw)) }
+        if n.hasPrefix("ane")  { return (.other, "ANE" + hidUnitIndex(raw)) }
+        if n.hasPrefix("isp")  { return (.other, "ISP" + hidUnitIndex(raw)) }
+        if n.contains("soc")   { return (.other, (n.contains("die") ? "SoC die" : "SoC") + hidUnitIndex(raw)) }  // "SOC MTR" vs "PMGR SOC Die"
+
         if n.contains("gpu") { return (.gpu, label) }
         if n.contains("dram") || n.contains("ddr") { return (.memory, label) }
         return (.cpu, label)   // tdie / tdev / TP* / tcal — SoC die / CPU complex
+    }
+
+    /// Trailing numeric id of an Apple Silicon HID sensor name (" 5" from "pACC MTR Temp Sensor5"),
+    /// or "" if none — keeps same-unit sensors distinct in the panel.
+    private static func hidUnitIndex(_ raw: String) -> String {
+        var digits = ""
+        for ch in raw.reversed() {
+            if ch.isNumber { digits.insert(ch, at: digits.startIndex) } else { break }
+        }
+        return digits.isEmpty ? "" : " " + digits
+    }
+
+    /// The HID sensor set classified into panel groups (what the dashboard shows when the curated
+    /// SMC path reads nothing back) — lets `sscope-cli --sensors` verify friendlyHID labeling on
+    /// chips not in the curated table (e.g. base M1) without installing the GUI.
+    public func hidClassifiedSample() -> TemperatureSample {
+        let hid = HIDSensorReader.read().filter { $0.celsius > 5 && $0.celsius < 130 }
+        return Self.buildSample(fromHID: hid)
     }
 }

@@ -1,7 +1,7 @@
 //
 //  File:      SiliconScopeApp.swift
 //  Created:   2026-06-08
-//  Updated:   2026-06-16
+//  Updated:   2026-06-30
 //  Developer: Kennt Kim / Calida Lab
 //  Overview:  App entry point. Shows a full dashboard Window and a MenuBarExtra (with a
 //             live 5-bar MenuBarIcon glyph), both backed by one shared SiliconScopeMonitor.
@@ -14,27 +14,81 @@
 //
 import SwiftUI
 import AppKit
+import UniformTypeIdentifiers
+
+extension Notification.Name {
+    /// Posted by menu-bar dropdowns to open Settings; handled by SettingsOpenerBridge.
+    static let openSiliconScopeSettings = Notification.Name("ai.calidalab.SiliconScope.openSettings")
+    /// Posted by the "Open Recording…" command (carries the .ssrec URL); handled by DashboardContainer.
+    static let openSiliconScopeRecording = Notification.Name("ai.calidalab.SiliconScope.openRecording")
+}
+
+/// Invisible view in the dashboard scene that routes the menu-bar dropdowns' Settings request to
+/// SwiftUI's `openSettings`. The dropdowns are AppKit NSPopovers where `@Environment(\.openSettings)`
+/// isn't available and `showSettingsWindow:` doesn't surface the window — but a scene-attached view
+/// like this one can call openSettings() directly, which does.
+private struct SettingsOpenerBridge: View {
+    @Environment(\.openSettings) private var openSettings
+    var body: some View {
+        Color.clear
+            .onReceive(NotificationCenter.default.publisher(for: .openSiliconScopeSettings)) { _ in
+                openSettings()
+                NSApplication.shared.activate(ignoringOtherApps: true)
+            }
+    }
+}
+
+/// Keeps the app alive when the dashboard window is closed — it lives on in the menu bar — instead
+/// of quitting the whole app (the macOS default for the last-window-closed). Reopens the dashboard
+/// on a Dock-icon click. This is the right behavior for a menu-bar-resident monitor (issue #13).
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationShouldTerminateAfterLastWindowClosed(_ app: NSApplication) -> Bool { false }
+    func applicationShouldHandleReopen(_ app: NSApplication, hasVisibleWindows: Bool) -> Bool {
+        if !hasVisibleWindows { MainActor.assumeIsolated { openMainDashboard() } }
+        return true
+    }
+}
+
+/// Sets the Dock-icon presence from the user's "Show Dock icon" setting (default on). Off =
+/// `.accessory` — a pure menu-bar utility with no Dock icon (the dashboard still opens from any
+/// menu-bar dropdown). A single stable policy, not a per-window toggle, so the icon never flickers.
+@MainActor func applyDockIconPolicy() {
+    let showDock = UserDefaults.standard.object(forKey: "showDockIcon") as? Bool ?? true
+    NSApplication.shared.setActivationPolicy(showDock ? .regular : .accessory)
+}
 
 @main
 struct SiliconScopeApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var monitor = SiliconScopeMonitor()
 
+    // The combined "SS" menu-bar item and all per-metric items are AppKit NSStatusItems managed
+    // by MetricBarController (driven from the monitor loop), so each can be toggled — including
+    // hiding the combined SS on notch-limited menu bars. (SwiftUI's MenuBarExtra can't: its
+    // isInserted: init has no custom-label form for the live glyph, and toggling it loops the
+    // main menu.) The monitor is started from the dashboard window's onAppear at launch.
     var body: some Scene {
         dashboardWindow
-        mainMenuBar
         Settings { SettingsView() }
     }
 
     private var dashboardWindow: some Scene {
         Window("SiliconScope", id: "siliconscope-main") {
-            DashboardView(monitor: monitor)
+            DashboardContainer(monitor: monitor)
                 .frame(minWidth: 640, minHeight: 600)
+                .background(SettingsOpenerBridge())   // routes dropdown "Settings" → openSettings()
                 .onAppear {
-                    NSApplication.shared.setActivationPolicy(.regular)
+                    applyDockIconPolicy()
                     if let icon = Self.loadAppIcon() {
                         NSApplication.shared.applicationIconImage = icon
                     }
                     NSApplication.shared.activate(ignoringOtherApps: true)
+                    // Closing the dashboard hides it (we stay in the menu bar) rather than destroying
+                    // it, so openMainDashboard() can bring the same window back. Pairs with the
+                    // AppDelegate's terminate-after-last-window = false.
+                    NSApplication.shared.windows
+                        .first { $0.identifier?.rawValue == "siliconscope-main" }?
+                        .isReleasedWhenClosed = false
                     monitor.start()
                 }
         }
@@ -45,18 +99,23 @@ struct SiliconScopeApp: App {
                 Button(L("Check for Updates…")) { UpdaterController.shared.checkForUpdates() }
                     .disabled(!UpdaterController.shared.canCheck)
             }
+            CommandGroup(after: .newItem) {
+                Button("Open Recording…") { Self.openRecordingPanel() }
+                    .keyboardShortcut("o", modifiers: .command)
+            }
         }
     }
 
-    private var mainMenuBar: some Scene {
-        MenuBarExtra {
-            MenuBarView(monitor: monitor)
-                .onAppear { monitor.start() }
-        } label: {
-            MenuBarIcon(monitor: monitor)
-        }
-        .menuBarExtraStyle(.window)
+    /// File → Open Recording…: pick a .ssrec and hand it to DashboardContainer via notification.
+    private static func openRecordingPanel() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        if let ssrec = UTType(filenameExtension: "ssrec") { panel.allowedContentTypes = [ssrec] }
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        NotificationCenter.default.post(name: .openSiliconScopeRecording, object: nil, userInfo: ["url": url])
     }
+
 
     /// Resolves the app icon without ever touching SwiftPM's `Bundle.module`.
     /// `Bundle.module`'s generated accessor calls `fatalError` when its resource
