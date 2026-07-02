@@ -60,6 +60,7 @@
 "GPU thermal throttling" = "GPU 발열 스로틀링";
 "GPU throttling — clock %.0f MHz (-%.0f%% vs peak)" = "GPU 스로틀링 — 클럭 %.0f MHz (피크 대비 -%.0f%%)";
 "Health" = "건강도";
+"Inspect %@" = "%@ 검사";
 "LM Studio port" = "LM Studio 포트";
 "Launch at login" = "로그인 시 실행";
 "Left Fan" = "왼쪽 팬";
@@ -84,6 +85,7 @@
 "Notify on GPU thermal throttle, memory pressure, or swapping (once per event)." = "GPU 발열 스로틀링, 메모리 압력, 스와핑 발생 시 알립니다 (이벤트당 1회).";
 "Offload" = "오프로드";
 "Ollama port" = "Ollama 포트";
+"On GPU thermal throttle or memory pressure, the affected card's border turns amber/red. The in-app warning banner is on by default (turn it off above); optional macOS notifications fire once per event." = "GPU 발열 스로틀링이나 메모리 압력이 발생하면 해당 카드의 테두리가 주황/빨강으로 바뀝니다. 앱 내 경고 배너는 기본적으로 켜져 있으며(위에서 끌 수 있음), 선택적 macOS 알림은 이벤트당 한 번 발생합니다.";
 "Open Dashboard" = "대시보드 열기";
 "Other" = "기타";
 "P-cores" = "P 코어";
@@ -104,7 +106,10 @@
 "Right Fan" = "오른쪽 팬";
 "Sensors" = "센서";
 "Settings…" = "설정…";
+"Show Dock icon" = "Dock 아이콘 표시";
+"Show any metric as its own menu-bar item with a live glyph + dropdown (also toggleable with the ⬚ on each dashboard card). Turn off Combined (SS) to free a menu-bar slot on notch-limited Macs — Settings stays reachable from any item's dropdown." = "각 지표를 라이브 글리프 + 드롭다운이 있는 개별 메뉴바 항목으로 표시할 수 있습니다(각 대시보드 카드의 ⬚로도 전환 가능). 노치로 공간이 부족한 Mac에서는 Combined (SS)를 꺼서 메뉴바 자리를 확보하세요 — 설정은 어떤 항목의 드롭다운에서도 열 수 있습니다.";
 "Show this in the menu bar" = "메뉴바에 표시";
+"Show warning banner" = "경고 배너 표시";
 "Showing in the menu bar — click to hide" = "메뉴바에 표시 중 — 클릭하면 숨김";
 "SoC power" = "SoC 전력";
 "Startup & alerts" = "시작 및 알림";
@@ -120,6 +125,7 @@
 "Top by Memory" = "메모리 사용 상위";
 "Total" = "합계";
 "Total (SoC)" = "합계 (SoC)";
+"Turn off the Dock icon to run SiliconScope as a pure menu-bar utility — the dashboard still opens from any menu-bar item's dropdown." = "Dock 아이콘을 끄면 SiliconScope를 순수한 메뉴바 유틸리티로 실행할 수 있습니다 — 대시보드는 어떤 메뉴바 항목의 드롭다운에서도 열 수 있습니다.";
 "Unified memory is full — swapping is limiting throughput." = "통합 메모리가 가득 참 — 스와핑이 처리량을 제한하고 있습니다.";
 "Uptime" = "가동 시간";
 "Used" = "사용 중";

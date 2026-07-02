@@ -1,0 +1,37 @@
+/* Generated from Localization/CoreLocalizable.xcstrings by scripts/gen-strings.py — do not edit. */
+
+"%@ (idle)" = "%@（閒置）";
+"%@ idle · GPU: other app" = "%@ 閒置 · GPU：其他 App";
+"ANE (CoreML)" = "ANE（CoreML）";
+"Bandwidth-bound" = "頻寬受限";
+"Charged" = "已充飽";
+"Charging" = "充電中";
+"Clock held down by heat — sustained performance limited" = "因發熱受限的時脈 — 持續效能受限";
+"Compute-bound" = "運算受限";
+"GPU active" = "GPU 運作中";
+"GPU active — incl. video" = "GPU 運作中 — 含視訊";
+"GPU active — type unknown" = "GPU 運作中 — 類型不明";
+"GPU busy — no single bottleneck" = "GPU 忙碌中 — 無單一瓶頸";
+"GPU compute is the limiter" = "GPU 運算為限制因素";
+"Idle" = "閒置";
+"LLM (GPU/Metal)" = "LLM（GPU/Metal）";
+"LLM (likely)" = "LLM（推估）";
+"Memory bandwidth is the limiter" = "記憶體頻寬為限制因素";
+"Memory pressure: critical" = "記憶體壓力：危急";
+"Memory pressure: elevated" = "記憶體壓力：偏高";
+"Memory-pressured" = "記憶體壓力偏高";
+"No Battery" = "無電池";
+"No significant GPU workload" = "無明顯 GPU 負載";
+"Not Charging" = "未充電";
+"On Battery" = "使用電池";
+"Thermal pressure — serious" = "熱壓力 — 嚴重";
+"Thermal throttling — critical" = "過熱降頻 — 危急";
+"Thermal-throttled" = "過熱降頻中";
+"Unified memory full — swapping limits throughput" = "統一記憶體已滿 — 置換限制輸送量";
+"critical" = "危急";
+"fair" = "尚可";
+"in-app / unmanaged" = "App 內／非受管";
+"nominal" = "正常";
+"none" = "無";
+"serious" = "嚴重";
+"unknown" = "不明";

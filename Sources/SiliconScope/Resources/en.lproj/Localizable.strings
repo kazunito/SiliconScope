@@ -60,6 +60,7 @@
 "GPU thermal throttling" = "GPU thermal throttling";
 "GPU throttling — clock %.0f MHz (-%.0f%% vs peak)" = "GPU throttling — clock %.0f MHz (-%.0f%% vs peak)";
 "Health" = "Health";
+"Inspect %@" = "Inspect %@";
 "LM Studio port" = "LM Studio port";
 "Launch at login" = "Launch at login";
 "Left Fan" = "Left Fan";
@@ -84,6 +85,7 @@
 "Notify on GPU thermal throttle, memory pressure, or swapping (once per event)." = "Notify on GPU thermal throttle, memory pressure, or swapping (once per event).";
 "Offload" = "Offload";
 "Ollama port" = "Ollama port";
+"On GPU thermal throttle or memory pressure, the affected card's border turns amber/red. The in-app warning banner is on by default (turn it off above); optional macOS notifications fire once per event." = "On GPU thermal throttle or memory pressure, the affected card's border turns amber/red. The in-app warning banner is on by default (turn it off above); optional macOS notifications fire once per event.";
 "Open Dashboard" = "Open Dashboard";
 "Other" = "Other";
 "P-cores" = "P-cores";
@@ -104,7 +106,10 @@
 "Right Fan" = "Right Fan";
 "Sensors" = "Sensors";
 "Settings…" = "Settings…";
+"Show Dock icon" = "Show Dock icon";
+"Show any metric as its own menu-bar item with a live glyph + dropdown (also toggleable with the ⬚ on each dashboard card). Turn off Combined (SS) to free a menu-bar slot on notch-limited Macs — Settings stays reachable from any item's dropdown." = "Show any metric as its own menu-bar item with a live glyph + dropdown (also toggleable with the ⬚ on each dashboard card). Turn off Combined (SS) to free a menu-bar slot on notch-limited Macs — Settings stays reachable from any item's dropdown.";
 "Show this in the menu bar" = "Show this in the menu bar";
+"Show warning banner" = "Show warning banner";
 "Showing in the menu bar — click to hide" = "Showing in the menu bar — click to hide";
 "SoC power" = "SoC power";
 "Startup & alerts" = "Startup & alerts";
@@ -120,6 +125,7 @@
 "Top by Memory" = "Top by Memory";
 "Total" = "Total";
 "Total (SoC)" = "Total (SoC)";
+"Turn off the Dock icon to run SiliconScope as a pure menu-bar utility — the dashboard still opens from any menu-bar item's dropdown." = "Turn off the Dock icon to run SiliconScope as a pure menu-bar utility — the dashboard still opens from any menu-bar item's dropdown.";
 "Unified memory is full — swapping is limiting throughput." = "Unified memory is full — swapping is limiting throughput.";
 "Uptime" = "Uptime";
 "Used" = "Used";

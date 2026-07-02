@@ -14,6 +14,12 @@
             "state": "translated",
             "value": "%@ (유휴)"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@（閒置）"
+          }
         }
       }
     },
@@ -29,6 +35,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ 유휴 · GPU: 다른 앱"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 閒置 · GPU：其他 App"
           }
         }
       }
@@ -46,6 +58,12 @@
             "state": "translated",
             "value": "ANE (CoreML)"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ANE（CoreML）"
+          }
         }
       }
     },
@@ -61,6 +79,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "대역폭 제한"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "頻寬受限"
           }
         }
       }
@@ -78,6 +102,12 @@
             "state": "translated",
             "value": "충전 완료"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已充飽"
+          }
         }
       }
     },
@@ -93,6 +123,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "충전 중"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "充電中"
           }
         }
       }
@@ -110,6 +146,12 @@
             "state": "translated",
             "value": "발열로 클럭 억제 — 지속 성능 제한"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "因發熱受限的時脈 — 持續效能受限"
+          }
         }
       }
     },
@@ -126,21 +168,11 @@
             "state": "translated",
             "value": "연산 제한"
           }
-        }
-      }
-    },
-    "fair": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "やや高"
-          }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "다소 높음"
+            "value": "運算受限"
           }
         }
       }
@@ -158,6 +190,12 @@
             "state": "translated",
             "value": "GPU 활성"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 運作中"
+          }
         }
       }
     },
@@ -173,6 +211,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "GPU 활성 — 비디오 포함"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 運作中 — 含視訊"
           }
         }
       }
@@ -190,6 +234,12 @@
             "state": "translated",
             "value": "GPU 활성 — 유형 불명"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 運作中 — 類型不明"
+          }
         }
       }
     },
@@ -205,6 +255,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "GPU 사용 중 — 단일 병목 없음"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 忙碌中 — 無單一瓶頸"
           }
         }
       }
@@ -222,6 +278,12 @@
             "state": "translated",
             "value": "GPU 연산이 병목입니다"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 運算為限制因素"
+          }
         }
       }
     },
@@ -238,37 +300,11 @@
             "state": "translated",
             "value": "유휴"
           }
-        }
-      }
-    },
-    "in-app / unmanaged": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "アプリ内 / 非管理"
-          }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "앱 내 / 비관리"
-          }
-        }
-      }
-    },
-    "critical": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "危機的"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "위험"
+            "value": "閒置"
           }
         }
       }
@@ -286,6 +322,12 @@
             "state": "translated",
             "value": "LLM (GPU/Metal)"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LLM（GPU/Metal）"
+          }
         }
       }
     },
@@ -301,6 +343,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "LLM (추정)"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LLM（推估）"
           }
         }
       }
@@ -318,6 +366,12 @@
             "state": "translated",
             "value": "메모리 대역폭이 병목입니다"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記憶體頻寬為限制因素"
+          }
         }
       }
     },
@@ -333,6 +387,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "메모리 압력: 위험"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記憶體壓力：危急"
           }
         }
       }
@@ -350,6 +410,12 @@
             "state": "translated",
             "value": "메모리 압력: 상승"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記憶體壓力：偏高"
+          }
         }
       }
     },
@@ -365,6 +431,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "메모리 압박"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記憶體壓力偏高"
           }
         }
       }
@@ -382,6 +454,12 @@
             "state": "translated",
             "value": "배터리 없음"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無電池"
+          }
         }
       }
     },
@@ -398,37 +476,11 @@
             "state": "translated",
             "value": "뚜렷한 GPU 부하 없음"
           }
-        }
-      }
-    },
-    "nominal": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "正常"
-          }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "정상"
-          }
-        }
-      }
-    },
-    "none": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "なし"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "없음"
+            "value": "無明顯 GPU 負載"
           }
         }
       }
@@ -446,6 +498,12 @@
             "state": "translated",
             "value": "충전 안 함"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未充電"
+          }
         }
       }
     },
@@ -462,21 +520,11 @@
             "state": "translated",
             "value": "배터리 구동"
           }
-        }
-      }
-    },
-    "serious": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "深刻"
-          }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "심각"
+            "value": "使用電池"
           }
         }
       }
@@ -494,6 +542,12 @@
             "state": "translated",
             "value": "발열 압력 — 심각"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "熱壓力 — 嚴重"
+          }
         }
       }
     },
@@ -509,6 +563,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "발열 스로틀링 — 위험"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "過熱降頻 — 危急"
           }
         }
       }
@@ -526,6 +586,12 @@
             "state": "translated",
             "value": "발열 스로틀링"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "過熱降頻中"
+          }
         }
       }
     },
@@ -542,6 +608,144 @@
             "state": "translated",
             "value": "통합 메모리 가득 참 — 스와핑이 처리량 제한"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "統一記憶體已滿 — 置換限制輸送量"
+          }
+        }
+      }
+    },
+    "critical": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "危機的"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "위험"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "危急"
+          }
+        }
+      }
+    },
+    "fair": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "やや高"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다소 높음"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚可"
+          }
+        }
+      }
+    },
+    "in-app / unmanaged": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アプリ内 / 非管理"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "앱 내 / 비관리"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App 內／非受管"
+          }
+        }
+      }
+    },
+    "nominal": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正常"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "정상"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正常"
+          }
+        }
+      }
+    },
+    "none": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "なし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "없음"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無"
+          }
+        }
+      }
+    },
+    "serious": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "深刻"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "심각"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "嚴重"
+          }
         }
       }
     },
@@ -557,6 +761,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "불명"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不明"
           }
         }
       }

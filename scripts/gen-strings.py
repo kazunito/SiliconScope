@@ -10,14 +10,14 @@
 #  Notes:     Two targets carry their own bundle/catalog:
 #               - the SiliconScope app  (Localizable.xcstrings)
 #               - the SiliconScopeCore  (CoreLocalizable.xcstrings) — logic-layer display strings
-#             en values default to the key itself (source language); ja from localizations.ja.
+#             en values default to the key itself (source language); other langs from localizations.<lang>.
 #
 import json
 import os
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LANGS = ["en", "ja", "ko"]
+LANGS = ["en", "ja", "ko", "zh-Hant-TW"]
 
 # (catalog path, target Resources dir) pairs.
 CATALOGS = [

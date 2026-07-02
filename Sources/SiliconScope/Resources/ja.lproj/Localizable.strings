@@ -60,6 +60,7 @@
 "GPU thermal throttling" = "GPU 発熱スロットリング";
 "GPU throttling — clock %.0f MHz (-%.0f%% vs peak)" = "GPU スロットリング — クロック %.0f MHz（ピーク比 -%.0f%%）";
 "Health" = "健全度";
+"Inspect %@" = "%@ を調査";
 "LM Studio port" = "LM Studio ポート";
 "Launch at login" = "ログイン時に起動";
 "Left Fan" = "左ファン";
@@ -84,6 +85,7 @@
 "Notify on GPU thermal throttle, memory pressure, or swapping (once per event)." = "GPUの発熱スロットリング、メモリ逼迫、スワップ発生時に通知します（イベントごとに1回）。";
 "Offload" = "オフロード";
 "Ollama port" = "Ollama ポート";
+"On GPU thermal throttle or memory pressure, the affected card's border turns amber/red. The in-app warning banner is on by default (turn it off above); optional macOS notifications fire once per event." = "GPUの発熱スロットリングやメモリ逼迫が発生すると、該当カードの枠がオレンジ/赤に変わります。アプリ内警告バナーはデフォルトでオン（上でオフに切り替え可能）、任意のmacOS通知はイベントごとに1回発火します。";
 "Open Dashboard" = "ダッシュボードを開く";
 "Other" = "その他";
 "P-cores" = "P コア";
@@ -104,7 +106,10 @@
 "Right Fan" = "右ファン";
 "Sensors" = "センサー";
 "Settings…" = "設定…";
+"Show Dock icon" = "Dockアイコンを表示";
+"Show any metric as its own menu-bar item with a live glyph + dropdown (also toggleable with the ⬚ on each dashboard card). Turn off Combined (SS) to free a menu-bar slot on notch-limited Macs — Settings stays reachable from any item's dropdown." = "各指標をライブグリフ＋ドロップダウン付きの個別メニューバー項目として表示できます（各ダッシュボードカードの⬚でも切り替え可能）。ノッチで余裕のないMacではCombined (SS)をオフにしてメニューバーの枠を空けられます — 設定はどの項目のドロップダウンからでも開けます。";
 "Show this in the menu bar" = "メニューバーに表示";
+"Show warning banner" = "警告バナーを表示";
 "Showing in the menu bar — click to hide" = "メニューバーに表示中 — クリックで非表示";
 "SoC power" = "SoC 電力";
 "Startup & alerts" = "起動とアラート";
@@ -120,6 +125,7 @@
 "Top by Memory" = "メモリ使用上位";
 "Total" = "合計";
 "Total (SoC)" = "合計（SoC）";
+"Turn off the Dock icon to run SiliconScope as a pure menu-bar utility — the dashboard still opens from any menu-bar item's dropdown." = "Dockアイコンをオフにすると、SiliconScopeを純粋なメニューバーユーティリティとして実行できます — ダッシュボードはどのメニューバー項目のドロップダウンからでも開けます。";
 "Unified memory is full — swapping is limiting throughput." = "ユニファイドメモリが満杯 — スワップがスループットを制限しています。";
 "Uptime" = "稼働時間";
 "Used" = "使用中";

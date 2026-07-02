@@ -1,66 +1,24 @@
 {
   "sourceLanguage": "en",
   "strings": {
-    "+%@ alongside · ~%@ if you unload %@ (Q4_K_M)": {
+    "%.1f GB in use": {
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "+%1$@ 併用可 · %3$@ をアンロードすれば ~%2$@ (Q4_K_M)"
+            "value": "%.1f GB 使用中"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "+%1$@ 동시 사용 · %3$@ 를 내리면 ~%2$@ (Q4_K_M)"
-          }
-        }
-      }
-    },
-    "↑ Upload": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "↑ アップロード"
+            "value": "%.1f GB 사용 중"
           }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "↑ 업로드"
-          }
-        }
-      }
-    },
-    "↓ Download": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "↓ ダウンロード"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "↓ 다운로드"
-          }
-        }
-      }
-    },
-    "· likely CPU offload (est.)": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "· CPU オフロードの可能性（推定）"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "· CPU 오프로드 가능성 (추정)"
+            "value": "已使用 %.1f GB"
           }
         }
       }
@@ -78,6 +36,12 @@
             "state": "translated",
             "value": "%@ 여유"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剩餘 %@"
+          }
         }
       }
     },
@@ -94,53 +58,33 @@
             "state": "translated",
             "value": "%lld 코어 · %lldE+%lldP"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld 核心 · %lldE+%lldP"
+          }
         }
       }
     },
-    "Active": {
+    "+%@ alongside · ~%@ if you unload %@ (Q4_K_M)": {
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "アクティブ"
+            "value": "+%1$@ 併用可 · %3$@ をアンロードすれば ~%2$@ (Q4_K_M)"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "활성"
-          }
-        }
-      }
-    },
-    "Activity": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "アクティビティ"
+            "value": "+%1$@ 동시 사용 · %3$@ 를 내리면 ~%2$@ (Q4_K_M)"
           }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "활동"
-          }
-        }
-      }
-    },
-    "AI runtime": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "AIランタイム"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "AI 런타임"
+            "value": "+%1$@ 同時可用 · 卸載 %3$@ 後約 ~%2$@ (Q4_K_M)"
           }
         }
       }
@@ -158,6 +102,12 @@
             "state": "translated",
             "value": "AI 런타임"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI 執行環境"
+          }
         }
       }
     },
@@ -174,21 +124,33 @@
             "state": "translated",
             "value": "AI 워크로드"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI 工作負載"
+          }
         }
       }
     },
-    "Alert notifications": {
+    "AI runtime": {
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "アラート通知"
+            "value": "AIランタイム"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "알림"
+            "value": "AI 런타임"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI 執行環境"
           }
         }
       }
@@ -206,6 +168,78 @@
             "state": "translated",
             "value": "ANE 추정"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ANE 預估"
+          }
+        }
+      }
+    },
+    "Active": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アクティブ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "활성"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "運作中"
+          }
+        }
+      }
+    },
+    "Activity": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アクティビティ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "활동"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "活動"
+          }
+        }
+      }
+    },
+    "Alert notifications": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アラート通知"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알림"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "警示通知"
+          }
         }
       }
     },
@@ -221,6 +255,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "앱 메모리"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App 記憶體"
           }
         }
       }
@@ -238,21 +278,11 @@
             "state": "translated",
             "value": "전력을 쓰는 앱"
           }
-        }
-      }
-    },
-    "avg %@ · max %@": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "平均 %@ · 最大 %@"
-          }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "평균 %@ · 최대 %@"
+            "value": "耗電的 App"
           }
         }
       }
@@ -270,6 +300,12 @@
             "state": "translated",
             "value": "업데이트 자동 확인"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動檢查更新"
+          }
         }
       }
     },
@@ -285,6 +321,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "대역폭"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "頻寬"
           }
         }
       }
@@ -302,6 +344,12 @@
             "state": "translated",
             "value": "배터리"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "電池"
+          }
         }
       }
     },
@@ -318,85 +366,11 @@
             "state": "translated",
             "value": "벤치마크 실패 — %@ 의 로컬 서버에 연결되나요?"
           }
-        }
-      }
-    },
-    "Cached": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "キャッシュ"
-          }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "캐시"
-          }
-        }
-      }
-    },
-    "Cached Files": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "キャッシュファイル"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "캐시 파일"
-          }
-        }
-      }
-    },
-    "Cancel": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "キャンセル"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "취소"
-          }
-        }
-      }
-    },
-    "Celsius (°C)": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "摂氏 (°C)"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "섭씨 (°C)"
-          }
-        }
-      }
-    },
-    "Check for Updates…": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "アップデートを確認…"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "업데이트 확인…"
+            "value": "基準測試失敗 — %@ 的本機伺服器可連線嗎？"
           }
         }
       }
@@ -414,85 +388,11 @@
             "state": "translated",
             "value": "CLI 런타임 — 로컬 API 없음"
           }
-        }
-      }
-    },
-    "Compact GPU mode (menu bar)": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "コンパクトGPU表示（メニューバー）"
-          }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "컴팩트 GPU 모드 (메뉴바)"
-          }
-        }
-      }
-    },
-    "Compressed": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "圧縮済み"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "압축됨"
-          }
-        }
-      }
-    },
-    "Condition": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "状態"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "상태"
-          }
-        }
-      }
-    },
-    "Connect to local AI runtimes": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ローカルAIランタイムに接続"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "로컬 AI 런타임에 연결"
-          }
-        }
-      }
-    },
-    "Connected": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "接続済み"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "연결됨"
+            "value": "CLI 執行環境 — 無本機 API"
           }
         }
       }
@@ -510,6 +410,232 @@
             "state": "translated",
             "value": "CPU 온도"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CPU 溫度"
+          }
+        }
+      }
+    },
+    "Cached": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キャッシュ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "캐시"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已快取"
+          }
+        }
+      }
+    },
+    "Cached Files": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キャッシュファイル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "캐시 파일"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快取檔案"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キャンセル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "취소"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
+          }
+        }
+      }
+    },
+    "Celsius (°C)": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "摂氏 (°C)"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "섭씨 (°C)"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "攝氏 (°C)"
+          }
+        }
+      }
+    },
+    "Check for Updates…": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アップデートを確認…"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "업데이트 확인…"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "檢查更新…"
+          }
+        }
+      }
+    },
+    "Compact GPU mode (menu bar)": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コンパクトGPU表示（メニューバー）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "컴팩트 GPU 모드 (메뉴바)"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "精簡 GPU 模式（選單列）"
+          }
+        }
+      }
+    },
+    "Compressed": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "圧縮済み"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "압축됨"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已壓縮"
+          }
+        }
+      }
+    },
+    "Condition": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "状態"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "상태"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "狀態"
+          }
+        }
+      }
+    },
+    "Connect to local AI runtimes": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ローカルAIランタイムに接続"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "로컬 AI 런타임에 연결"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "連接本機 AI 執行環境"
+          }
+        }
+      }
+    },
+    "Connected": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続済み"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "연결됨"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已連線"
+          }
         }
       }
     },
@@ -526,37 +652,11 @@
             "state": "translated",
             "value": "사이클"
           }
-        }
-      }
-    },
-    "Disk": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ディスク"
-          }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "디스크"
-          }
-        }
-      }
-    },
-    "Disks": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ディスク"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "디스크"
+            "value": "循環次數"
           }
         }
       }
@@ -574,6 +674,56 @@
             "state": "translated",
             "value": "DRAM 전력"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DRAM 功耗"
+          }
+        }
+      }
+    },
+    "Disk": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ディスク"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "디스크"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "磁碟"
+          }
+        }
+      }
+    },
+    "Disks": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ディスク"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "디스크"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "磁碟"
+          }
         }
       }
     },
@@ -589,6 +739,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "E(앰버) / P(블루) 사용률 · 60초"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E（琥珀）/ P（藍）使用率 · 60秒"
           }
         }
       }
@@ -606,6 +762,12 @@
             "state": "translated",
             "value": "E 코어"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E 核心"
+          }
         }
       }
     },
@@ -621,6 +783,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "먼저 설정에서 “로컬 AI 런타임에 연결”을 켜고 모델을 불러오세요"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "請先在設定中開啟「連接本機 AI 執行環境」並載入模型"
           }
         }
       }
@@ -638,6 +806,12 @@
             "state": "translated",
             "value": "모델과 tok/s를 보려면 설정에서 “로컬 AI 런타임에 연결”을 켜세요"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在設定中開啟「連接本機 AI 執行環境」以顯示模型與 tok/s"
+          }
         }
       }
     },
@@ -653,6 +827,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "엔진"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "引擎"
           }
         }
       }
@@ -670,6 +850,12 @@
             "state": "translated",
             "value": "화씨 (°F)"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "華氏 (°F)"
+          }
         }
       }
     },
@@ -685,6 +871,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "팬 %lld"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "風扇 %lld"
           }
         }
       }
@@ -702,21 +894,11 @@
             "state": "translated",
             "value": "팬리스"
           }
-        }
-      }
-    },
-    "fanless": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ファンレス"
-          }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "팬리스"
+            "value": "無風扇"
           }
         }
       }
@@ -734,6 +916,12 @@
             "state": "translated",
             "value": "팬"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "風扇"
+          }
         }
       }
     },
@@ -749,6 +937,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "이름으로 필터"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "依名稱篩選"
           }
         }
       }
@@ -766,6 +960,12 @@
             "state": "translated",
             "value": "현재 수용 가능"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目前可容納"
+          }
         }
       }
     },
@@ -781,6 +981,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "강제 종료"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "強制結束"
           }
         }
       }
@@ -798,6 +1004,12 @@
             "state": "translated",
             "value": "%@ 강제 종료"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "強制結束 %@"
+          }
         }
       }
     },
@@ -813,6 +1025,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ 를 강제 종료할까요?  (pid %d)"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要強制結束 %@ 嗎？  (pid %d)"
           }
         }
       }
@@ -830,21 +1048,11 @@
             "state": "translated",
             "value": "여유"
           }
-        }
-      }
-    },
-    "free %@ / %@": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "空き %@ / %@"
-          }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "여유 %@ / %@"
+            "value": "可用"
           }
         }
       }
@@ -862,37 +1070,11 @@
             "state": "translated",
             "value": "스와핑을 피하려면 메모리를 확보하세요."
           }
-        }
-      }
-    },
-    "GPU (green) / Media (orange) / ANE (purple) · 60s": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GPU（緑）/ メディア（橙）/ ANE（紫）· 60秒"
-          }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "GPU(그린) / 미디어(오렌지) / ANE(퍼플) · 60초"
-          }
-        }
-      }
-    },
-    "GPU / Media / Neural": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GPU / メディア / ニューラル"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GPU / 미디어 / 뉴럴"
+            "value": "請釋放記憶體以避免置換。"
           }
         }
       }
@@ -910,37 +1092,55 @@
             "state": "translated",
             "value": "GPU(그린) / GPU 메모리(시안) / ANE(퍼플) / Media(오렌지) · 60초"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU（綠）/ GPU 記憶體（青）/ ANE（紫）/ Media（橙）· 60秒"
+          }
         }
       }
     },
-    "GPU memory": {
+    "GPU (green) / Media (orange) / ANE (purple) · 60s": {
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "GPU メモリ"
+            "value": "GPU（緑）/ メディア（橙）/ ANE（紫）· 60秒"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "GPU 메모리"
+            "value": "GPU(그린) / 미디어(오렌지) / ANE(퍼플) · 60초"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU（綠）/ 媒體（橙）/ ANE（紫）· 60秒"
           }
         }
       }
     },
-    "%.1f GB in use": {
+    "GPU / Media / Neural": {
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%.1f GB 使用中"
+            "value": "GPU / メディア / ニューラル"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%.1f GB 사용 중"
+            "value": "GPU / 미디어 / 뉴럴"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU / 媒體 / 神經網路"
           }
         }
       }
@@ -958,6 +1158,12 @@
             "state": "translated",
             "value": "GPU / 미디어 / Neural Engine"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU / 媒體 / Neural Engine"
+          }
         }
       }
     },
@@ -973,6 +1179,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "GPU 클럭 피크 대비 -%.0f%%"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 時脈 較峰值低 -%.0f%%"
           }
         }
       }
@@ -990,6 +1202,34 @@
             "state": "translated",
             "value": "발열로 GPU 클럭이 피크보다 %.0f%% 낮게 억제됨 — 지속 성능이 제한됩니다."
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "因發熱導致 GPU 時脈被限制在低於峰值 %.0f%% — 持續效能受限。"
+          }
+        }
+      }
+    },
+    "GPU memory": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU メモリ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 메모리"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 記憶體"
+          }
         }
       }
     },
@@ -1005,6 +1245,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "GPU 발열 스로틀링"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 過熱降頻"
           }
         }
       }
@@ -1022,6 +1268,12 @@
             "state": "translated",
             "value": "GPU 발열 스로틀링"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 過熱降頻"
+          }
         }
       }
     },
@@ -1037,6 +1289,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "GPU 스로틀링 — 클럭 %.0f MHz (피크 대비 -%.0f%%)"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 降頻 — 時脈 %.0f MHz（較峰值 -%.0f%%）"
           }
         }
       }
@@ -1054,53 +1312,33 @@
             "state": "translated",
             "value": "건강도"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "健康度"
+          }
         }
       }
     },
-    "Launch at login": {
+    "Inspect %@": {
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ログイン時に起動"
+            "value": "%@ を調査"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "로그인 시 실행"
-          }
-        }
-      }
-    },
-    "largest model ~%@ (Q4_K_M)": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "最大モデル ~%@ (Q4_K_M)"
+            "value": "%@ 검사"
           }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "최대 모델 ~%@ (Q4_K_M)"
-          }
-        }
-      }
-    },
-    "Left Fan": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "左ファン"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "왼쪽 팬"
+            "value": "檢視 %@"
           }
         }
       }
@@ -1118,6 +1356,56 @@
             "state": "translated",
             "value": "LM Studio 포트"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LM Studio 連接埠"
+          }
+        }
+      }
+    },
+    "Launch at login": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ログイン時に起動"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "로그인 시 실행"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "登入時啟動"
+          }
+        }
+      }
+    },
+    "Left Fan": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "左ファン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "왼쪽 팬"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "左風扇"
+          }
         }
       }
     },
@@ -1133,6 +1421,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "로드 애버리지"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "負載平均值"
           }
         }
       }
@@ -1150,101 +1444,11 @@
             "state": "translated",
             "value": "로컬 AI 런타임 API (옵트인)"
           }
-        }
-      }
-    },
-    "Measure tok/s": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "tok/s を計測"
-          }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "tok/s 측정"
-          }
-        }
-      }
-    },
-    "measuring tok/s…": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "tok/s 計測中…"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "tok/s 측정 중…"
-          }
-        }
-      }
-    },
-    "Media": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "メディア"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "미디어"
-          }
-        }
-      }
-    },
-    "Mem BW % of ceiling": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "メモリ帯域 上限に対する割合"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "메모리 대역폭 상한 대비 비율"
-          }
-        }
-      }
-    },
-    "Memory": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "メモリ"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "메모리"
-          }
-        }
-      }
-    },
-    "Memory & Bandwidth": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "メモリと帯域"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "메모리와 대역폭"
+            "value": "本機 AI 執行環境 API（選擇加入）"
           }
         }
       }
@@ -1262,6 +1466,122 @@
             "state": "translated",
             "value": "메모리"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記憶體"
+          }
+        }
+      }
+    },
+    "Measure tok/s": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tok/s を計測"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tok/s 측정"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "測量 tok/s"
+          }
+        }
+      }
+    },
+    "Media": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メディア"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "미디어"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "媒體"
+          }
+        }
+      }
+    },
+    "Mem BW % of ceiling": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メモリ帯域 上限に対する割合"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메모리 대역폭 상한 대비 비율"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記憶體頻寬 佔上限百分比"
+          }
+        }
+      }
+    },
+    "Memory": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メモリ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메모리"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記憶體"
+          }
+        }
+      }
+    },
+    "Memory & Bandwidth": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メモリと帯域"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메모리와 대역폭"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記憶體與頻寬"
+          }
         }
       }
     },
@@ -1277,6 +1597,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "메모리 압력: 위험"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記憶體壓力：危急"
           }
         }
       }
@@ -1294,6 +1620,12 @@
             "state": "translated",
             "value": "메모리 스와핑 발생"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記憶體置換中"
+          }
         }
       }
     },
@@ -1309,6 +1641,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "모델 예산"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模型預算"
           }
         }
       }
@@ -1326,6 +1664,12 @@
             "state": "translated",
             "value": "이름"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "名稱"
+          }
         }
       }
     },
@@ -1341,6 +1685,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "네트워크"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "網路"
           }
         }
       }
@@ -1358,6 +1708,12 @@
             "state": "translated",
             "value": "네트워크와 디스크"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "網路與磁碟"
+          }
         }
       }
     },
@@ -1373,6 +1729,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "네트워크 디스크"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "網路磁碟"
           }
         }
       }
@@ -1390,6 +1752,12 @@
             "state": "translated",
             "value": "배터리 없음 (데스크탑 Mac)"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無電池（桌上型 Mac）"
+          }
         }
       }
     },
@@ -1406,21 +1774,11 @@
             "state": "translated",
             "value": "로컬 AI 런타임이 감지되지 않음"
           }
-        }
-      }
-    },
-    "no sensors available": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "利用可能なセンサーなし"
-          }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "사용 가능한 센서 없음"
+            "value": "未偵測到本機 AI 執行環境"
           }
         }
       }
@@ -1438,6 +1796,12 @@
             "state": "translated",
             "value": "연결 안 됨"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未連線"
+          }
         }
       }
     },
@@ -1453,6 +1817,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "GPU 발열 스로틀링, 메모리 압력, 스와핑 발생 시 알립니다 (이벤트당 1회)."
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPU 過熱降頻、記憶體壓力或發生置換時通知（每個事件通知一次）。"
           }
         }
       }
@@ -1470,6 +1840,12 @@
             "state": "translated",
             "value": "오프로드"
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "卸載"
+          }
         }
       }
     },
@@ -1486,821 +1862,11 @@
             "state": "translated",
             "value": "Ollama 포트"
           }
-        }
-      }
-    },
-    "Open Dashboard": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ダッシュボードを開く"
-          }
         },
-        "ko": {
+        "zh-Hant-TW": {
           "stringUnit": {
             "state": "translated",
-            "value": "대시보드 열기"
-          }
-        }
-      }
-    },
-    "Other": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "その他"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "기타"
-          }
-        }
-      }
-    },
-    "P-cores": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "P コア"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "P 코어"
-          }
-        }
-      }
-    },
-    "Page-ins": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ページイン"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "페이지 인"
-          }
-        }
-      }
-    },
-    "Page-outs": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ページアウト"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "페이지 아웃"
-          }
-        }
-      }
-    },
-    "Pages / sec": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ページ / 秒"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "페이지 / 초"
-          }
-        }
-      }
-    },
-    "Peak ↑ %@": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ピーク ↑ %@"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "피크 ↑ %@"
-          }
-        }
-      }
-    },
-    "Peak ↓ %@": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ピーク ↓ %@"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "피크 ↓ %@"
-          }
-        }
-      }
-    },
-    "Power": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "電力"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "전력"
-          }
-        }
-      }
-    },
-    "Pressure": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "プレッシャー"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "압력"
-          }
-        }
-      }
-    },
-    "Processes": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "プロセス"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "프로세스"
-          }
-        }
-      }
-    },
-    "Quit": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "終了"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "종료"
-          }
-        }
-      }
-    },
-    "Quit %@": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ を終了"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ 종료"
-          }
-        }
-      }
-    },
-    "Quit %@  (pid %d)?": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ を終了しますか？  (pid %d)"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ 를 종료할까요?  (pid %d)"
-          }
-        }
-      }
-    },
-    "Read": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "読み込み"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "읽기"
-          }
-        }
-      }
-    },
-    "re-measure": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "再計測"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "다시 측정"
-          }
-        }
-      }
-    },
-    "Reads the loaded model, processor split, and tokens/sec from AI runtimes on 127.0.0.1. Nothing leaves your Mac.": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "127.0.0.1 上のAIランタイムから、読み込み済みモデル・プロセッサ配分・トークン/秒を読み取ります。データがMacの外に出ることはありません。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "127.0.0.1의 AI 런타임에서 불러온 모델, 프로세서 분배, 초당 토큰을 읽습니다. 어떤 데이터도 Mac을 떠나지 않습니다."
-          }
-        }
-      }
-    },
-    "Refresh interval": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "更新間隔"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "새로 고침 간격"
-          }
-        }
-      }
-    },
-    "Right Fan": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "右ファン"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "오른쪽 팬"
-          }
-        }
-      }
-    },
-    "runtime API unreachable": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ランタイム API に到達できません"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "런타임 API에 연결할 수 없음"
-          }
-        }
-      }
-    },
-    "runtime idle — GPU load is from another app (in-app / unmanaged)": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ランタイム待機中 — GPU 負荷は別アプリ由来（アプリ内 / 非管理）"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "런타임 유휴 — GPU 부하는 다른 앱에서 발생 (앱 내 / 비관리)"
-          }
-        }
-      }
-    },
-    "runtime running — no model loaded": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ランタイム稼働中 — モデル未読み込み"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "런타임 실행 중 — 불러온 모델 없음"
-          }
-        }
-      }
-    },
-    "runtime running — start its local server for model + tok/s": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ランタイム稼働中 — モデルと tok/s のためローカルサーバーを起動"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "런타임 실행 중 — 모델과 tok/s를 위해 로컬 서버를 시작하세요"
-          }
-        }
-      }
-    },
-    "Sensors": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "センサー"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "센서"
-          }
-        }
-      }
-    },
-    "Settings…": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "設定…"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "설정…"
-          }
-        }
-      }
-    },
-    "Show this in the menu bar": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "メニューバーに表示"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "메뉴바에 표시"
-          }
-        }
-      }
-    },
-    "Showing in the menu bar — click to hide": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "メニューバーに表示中 — クリックで非表示"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "메뉴바에 표시 중 — 클릭하면 숨김"
-          }
-        }
-      }
-    },
-    "SoC power": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SoC 電力"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SoC 전력"
-          }
-        }
-      }
-    },
-    "Startup & alerts": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "起動とアラート"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "시작 및 알림"
-          }
-        }
-      }
-    },
-    "Swap": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "スワップ"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "스왑"
-          }
-        }
-      }
-    },
-    "Swap-ins": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "スワップイン"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "스왑 인"
-          }
-        }
-      }
-    },
-    "Swap-outs": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "スワップアウト"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "스왑 아웃"
-          }
-        }
-      }
-    },
-    "Temperature": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "温度"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "온도"
-          }
-        }
-      }
-    },
-    "Temperature unit": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "温度の単位"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "온도 단위"
-          }
-        }
-      }
-    },
-    "Temperatures": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "各部温度"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "부위별 온도"
-          }
-        }
-      }
-    },
-    "Top by Memory": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "メモリ使用上位"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "메모리 사용 상위"
-          }
-        }
-      }
-    },
-    "Top Processes": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "上位プロセス"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "상위 프로세스"
-          }
-        }
-      }
-    },
-    "TOP PROCESSES": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "上位プロセス"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "상위 프로세스"
-          }
-        }
-      }
-    },
-    "Total": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "合計"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "합계"
-          }
-        }
-      }
-    },
-    "Total (SoC)": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "合計（SoC）"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "합계 (SoC)"
-          }
-        }
-      }
-    },
-    "TRENDS": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "トレンド"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "추세"
-          }
-        }
-      }
-    },
-    "Unified memory is full — swapping is limiting throughput.": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ユニファイドメモリが満杯 — スワップがスループットを制限しています。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "통합 메모리가 가득 참 — 스와핑이 처리량을 제한하고 있습니다."
-          }
-        }
-      }
-    },
-    "Uptime": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "稼働時間"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "가동 시간"
-          }
-        }
-      }
-    },
-    "Used": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "使用中"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사용 중"
-          }
-        }
-      }
-    },
-    "Wired": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ワイヤード"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "와이어드"
-          }
-        }
-      }
-    },
-    "Workload": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ワークロード"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "워크로드"
-          }
-        }
-      }
-    },
-    "Write": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "書き込み"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "쓰기"
-          }
-        }
-      }
-    },
-    "Show Dock icon": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dockアイコンを表示"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dock 아이콘 표시"
-          }
-        }
-      }
-    },
-    "Turn off the Dock icon to run SiliconScope as a pure menu-bar utility — the dashboard still opens from any menu-bar item's dropdown.": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dockアイコンをオフにすると、SiliconScopeを純粋なメニューバーユーティリティとして実行できます — ダッシュボードはどのメニューバー項目のドロップダウンからでも開けます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dock 아이콘을 끄면 SiliconScope를 순수한 메뉴바 유틸리티로 실행할 수 있습니다 — 대시보드는 어떤 메뉴바 항목의 드롭다운에서도 열 수 있습니다."
-          }
-        }
-      }
-    },
-    "Show any metric as its own menu-bar item with a live glyph + dropdown (also toggleable with the ⬚ on each dashboard card). Turn off Combined (SS) to free a menu-bar slot on notch-limited Macs — Settings stays reachable from any item's dropdown.": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "各指標をライブグリフ＋ドロップダウン付きの個別メニューバー項目として表示できます（各ダッシュボードカードの⬚でも切り替え可能）。ノッチで余裕のないMacではCombined (SS)をオフにしてメニューバーの枠を空けられます — 設定はどの項目のドロップダウンからでも開けます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "각 지표를 라이브 글리프 + 드롭다운이 있는 개별 메뉴바 항목으로 표시할 수 있습니다(각 대시보드 카드의 ⬚로도 전환 가능). 노치로 공간이 부족한 Mac에서는 Combined (SS)를 꺼서 메뉴바 자리를 확보하세요 — 설정은 어떤 항목의 드롭다운에서도 열 수 있습니다."
-          }
-        }
-      }
-    },
-    "Show warning banner": {
-      "localizations": {
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "警告バナーを表示"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "경고 배너 표시"
+            "value": "Ollama 連接埠"
           }
         }
       }
@@ -2318,21 +1884,1331 @@
             "state": "translated",
             "value": "GPU 발열 스로틀링이나 메모리 압력이 발생하면 해당 카드의 테두리가 주황/빨강으로 바뀝니다. 앱 내 경고 배너는 기본적으로 켜져 있으며(위에서 끌 수 있음), 선택적 macOS 알림은 이벤트당 한 번 발생합니다."
           }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "發生 GPU 過熱降頻或記憶體壓力時，受影響卡片的邊框會變成琥珀色/紅色。App 內警示橫幅預設為開啟（可在上方關閉）；選用的 macOS 通知則每個事件觸發一次。"
+          }
         }
       }
     },
-    "Inspect %@": {
+    "Open Dashboard": {
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ を調査"
+            "value": "ダッシュボードを開く"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ 검사"
+            "value": "대시보드 열기"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開啟儀表板"
+          }
+        }
+      }
+    },
+    "Other": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "その他"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기타"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "其他"
+          }
+        }
+      }
+    },
+    "P-cores": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "P コア"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "P 코어"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "P 核心"
+          }
+        }
+      }
+    },
+    "Page-ins": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ページイン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "페이지 인"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "換入頁面"
+          }
+        }
+      }
+    },
+    "Page-outs": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ページアウト"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "페이지 아웃"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "換出頁面"
+          }
+        }
+      }
+    },
+    "Pages / sec": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ページ / 秒"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "페이지 / 초"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "頁面 / 秒"
+          }
+        }
+      }
+    },
+    "Peak ↑ %@": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ピーク ↑ %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "피크 ↑ %@"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尖峰 ↑ %@"
+          }
+        }
+      }
+    },
+    "Peak ↓ %@": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ピーク ↓ %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "피크 ↓ %@"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尖峰 ↓ %@"
+          }
+        }
+      }
+    },
+    "Power": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "電力"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "전력"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "功耗"
+          }
+        }
+      }
+    },
+    "Pressure": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "プレッシャー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "압력"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "壓力"
+          }
+        }
+      }
+    },
+    "Processes": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "プロセス"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "프로세스"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "程序"
+          }
+        }
+      }
+    },
+    "Quit": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "終了"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "종료"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "結束"
+          }
+        }
+      }
+    },
+    "Quit %@": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ を終了"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 종료"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "結束 %@"
+          }
+        }
+      }
+    },
+    "Quit %@  (pid %d)?": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ を終了しますか？  (pid %d)"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 를 종료할까요?  (pid %d)"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要結束 %@ 嗎？  (pid %d)"
+          }
+        }
+      }
+    },
+    "Read": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み込み"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "읽기"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "讀取"
+          }
+        }
+      }
+    },
+    "Reads the loaded model, processor split, and tokens/sec from AI runtimes on 127.0.0.1. Nothing leaves your Mac.": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "127.0.0.1 上のAIランタイムから、読み込み済みモデル・プロセッサ配分・トークン/秒を読み取ります。データがMacの外に出ることはありません。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "127.0.0.1의 AI 런타임에서 불러온 모델, 프로세서 분배, 초당 토큰을 읽습니다. 어떤 데이터도 Mac을 떠나지 않습니다."
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "從 127.0.0.1 上的 AI 執行環境讀取已載入的模型、處理器分配與每秒權杖數。所有資料都不會離開你的 Mac。"
+          }
+        }
+      }
+    },
+    "Refresh interval": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新間隔"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "새로 고침 간격"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新整理間隔"
+          }
+        }
+      }
+    },
+    "Right Fan": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "右ファン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오른쪽 팬"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "右風扇"
+          }
+        }
+      }
+    },
+    "Sensors": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "センサー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "센서"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "感測器"
+          }
+        }
+      }
+    },
+    "Settings…": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定…"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "설정…"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定…"
+          }
+        }
+      }
+    },
+    "Show Dock icon": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dockアイコンを表示"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock 아이콘 표시"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "顯示 Dock 圖示"
+          }
+        }
+      }
+    },
+    "Show any metric as its own menu-bar item with a live glyph + dropdown (also toggleable with the ⬚ on each dashboard card). Turn off Combined (SS) to free a menu-bar slot on notch-limited Macs — Settings stays reachable from any item's dropdown.": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "各指標をライブグリフ＋ドロップダウン付きの個別メニューバー項目として表示できます（各ダッシュボードカードの⬚でも切り替え可能）。ノッチで余裕のないMacではCombined (SS)をオフにしてメニューバーの枠を空けられます — 設定はどの項目のドロップダウンからでも開けます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "각 지표를 라이브 글리프 + 드롭다운이 있는 개별 메뉴바 항목으로 표시할 수 있습니다(각 대시보드 카드의 ⬚로도 전환 가능). 노치로 공간이 부족한 Mac에서는 Combined (SS)를 꺼서 메뉴바 자리를 확보하세요 — 설정은 어떤 항목의 드롭다운에서도 열 수 있습니다."
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可將任何指標顯示為獨立的選單列項目，附即時圖示與下拉選單（也可透過各儀表板卡片上的 ⬚ 切換）。在瀏海空間有限的 Mac 上，關閉 Combined (SS) 可釋出選單列空間 — 仍可從任一項目的下拉選單開啟設定。"
+          }
+        }
+      }
+    },
+    "Show this in the menu bar": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メニューバーに表示"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메뉴바에 표시"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在選單列中顯示"
+          }
+        }
+      }
+    },
+    "Show warning banner": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "警告バナーを表示"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "경고 배너 표시"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "顯示警示橫幅"
+          }
+        }
+      }
+    },
+    "Showing in the menu bar — click to hide": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メニューバーに表示中 — クリックで非表示"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메뉴바에 표시 중 — 클릭하면 숨김"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已在選單列中顯示 — 點按以隱藏"
+          }
+        }
+      }
+    },
+    "SoC power": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SoC 電力"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SoC 전력"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SoC 功耗"
+          }
+        }
+      }
+    },
+    "Startup & alerts": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "起動とアラート"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시작 및 알림"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啟動與警示"
+          }
+        }
+      }
+    },
+    "Swap": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スワップ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "스왑"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "置換"
+          }
+        }
+      }
+    },
+    "Swap-ins": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スワップイン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "스왑 인"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "置換換入"
+          }
+        }
+      }
+    },
+    "Swap-outs": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スワップアウト"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "스왑 아웃"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "置換換出"
+          }
+        }
+      }
+    },
+    "TOP PROCESSES": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上位プロセス"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "상위 프로세스"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "前列程序"
+          }
+        }
+      }
+    },
+    "TRENDS": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "トレンド"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추세"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "趨勢"
+          }
+        }
+      }
+    },
+    "Temperature": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "温度"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "온도"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "溫度"
+          }
+        }
+      }
+    },
+    "Temperature unit": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "温度の単位"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "온도 단위"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "溫度單位"
+          }
+        }
+      }
+    },
+    "Temperatures": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "各部温度"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "부위별 온도"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "各部位溫度"
+          }
+        }
+      }
+    },
+    "Top Processes": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上位プロセス"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "상위 프로세스"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "前列程序"
+          }
+        }
+      }
+    },
+    "Top by Memory": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メモリ使用上位"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메모리 사용 상위"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記憶體使用前列"
+          }
+        }
+      }
+    },
+    "Total": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "合計"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "합계"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "總計"
+          }
+        }
+      }
+    },
+    "Total (SoC)": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "合計（SoC）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "합계 (SoC)"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "總計（SoC）"
+          }
+        }
+      }
+    },
+    "Turn off the Dock icon to run SiliconScope as a pure menu-bar utility — the dashboard still opens from any menu-bar item's dropdown.": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dockアイコンをオフにすると、SiliconScopeを純粋なメニューバーユーティリティとして実行できます — ダッシュボードはどのメニューバー項目のドロップダウンからでも開けます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock 아이콘을 끄면 SiliconScope를 순수한 메뉴바 유틸리티로 실행할 수 있습니다 — 대시보드는 어떤 메뉴바 항목의 드롭다운에서도 열 수 있습니다."
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "關閉 Dock 圖示可讓 SiliconScope 以純選單列工具程式的方式執行 — 儀表板仍可從任一選單列項目的下拉選單開啟。"
+          }
+        }
+      }
+    },
+    "Unified memory is full — swapping is limiting throughput.": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ユニファイドメモリが満杯 — スワップがスループットを制限しています。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "통합 메모리가 가득 참 — 스와핑이 처리량을 제한하고 있습니다."
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "統一記憶體已滿 — 置換正在限制輸送量。"
+          }
+        }
+      }
+    },
+    "Uptime": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "稼働時間"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가동 시간"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "執行時間"
+          }
+        }
+      }
+    },
+    "Used": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사용 중"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用中"
+          }
+        }
+      }
+    },
+    "Wired": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ワイヤード"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "와이어드"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "固定"
+          }
+        }
+      }
+    },
+    "Workload": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ワークロード"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "워크로드"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "工作負載"
+          }
+        }
+      }
+    },
+    "Write": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書き込み"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "쓰기"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "寫入"
+          }
+        }
+      }
+    },
+    "avg %@ · max %@": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平均 %@ · 最大 %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "평균 %@ · 최대 %@"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平均 %@ · 最大 %@"
+          }
+        }
+      }
+    },
+    "fanless": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファンレス"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "팬리스"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無風扇"
+          }
+        }
+      }
+    },
+    "free %@ / %@": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空き %@ / %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "여유 %@ / %@"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可用 %@ / %@"
+          }
+        }
+      }
+    },
+    "largest model ~%@ (Q4_K_M)": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最大モデル ~%@ (Q4_K_M)"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최대 모델 ~%@ (Q4_K_M)"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最大模型 ~%@ (Q4_K_M)"
+          }
+        }
+      }
+    },
+    "measuring tok/s…": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tok/s 計測中…"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tok/s 측정 중…"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在測量 tok/s…"
+          }
+        }
+      }
+    },
+    "no sensors available": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "利用可能なセンサーなし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사용 가능한 센서 없음"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無可用感測器"
+          }
+        }
+      }
+    },
+    "re-measure": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再計測"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다시 측정"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新測量"
+          }
+        }
+      }
+    },
+    "runtime API unreachable": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ランタイム API に到達できません"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "런타임 API에 연결할 수 없음"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法連線至執行環境 API"
+          }
+        }
+      }
+    },
+    "runtime idle — GPU load is from another app (in-app / unmanaged)": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ランタイム待機中 — GPU 負荷は別アプリ由来（アプリ内 / 非管理）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "런타임 유휴 — GPU 부하는 다른 앱에서 발생 (앱 내 / 비관리)"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "執行環境閒置中 — GPU 負載來自其他 App（App 內／非受管）"
+          }
+        }
+      }
+    },
+    "runtime running — no model loaded": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ランタイム稼働中 — モデル未読み込み"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "런타임 실행 중 — 불러온 모델 없음"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "執行環境運作中 — 未載入模型"
+          }
+        }
+      }
+    },
+    "runtime running — start its local server for model + tok/s": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ランタイム稼働中 — モデルと tok/s のためローカルサーバーを起動"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "런타임 실행 중 — 모델과 tok/s를 위해 로컬 서버를 시작하세요"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "執行環境運作中 — 啟動其本機伺服器以取得模型與 tok/s"
+          }
+        }
+      }
+    },
+    "· likely CPU offload (est.)": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· CPU オフロードの可能性（推定）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· CPU 오프로드 가능성 (추정)"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· 可能為 CPU 卸載（推估）"
+          }
+        }
+      }
+    },
+    "↑ Upload": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "↑ アップロード"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "↑ 업로드"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "↑ 上傳"
+          }
+        }
+      }
+    },
+    "↓ Download": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "↓ ダウンロード"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "↓ 다운로드"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "↓ 下載"
           }
         }
       }
